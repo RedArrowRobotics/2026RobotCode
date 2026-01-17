@@ -27,5 +27,7 @@ public class ControlInputs {
         public Triggers() {
             componentsBoard.setOutput(1, false);
         }
+
+      public final Trigger slowSpeed = new Trigger(() -> driveController.getRawButton(1) );
     }
 }

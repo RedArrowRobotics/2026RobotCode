@@ -35,6 +35,7 @@ public class Robot extends TimedRobot {
     try {
       robotContainer = new RobotContainer();
     } catch (Exception e) {
+      System.out.println("Exception caught in Robot()");
       e.printStackTrace();
     }
     powerDistribution = new PowerDistribution(20,ModuleType.kRev);

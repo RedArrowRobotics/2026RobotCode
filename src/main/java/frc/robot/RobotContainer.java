@@ -39,15 +39,28 @@ public class RobotContainer {
 
     public RobotContainer() throws IOException, Exception {
         swerveDriveTrain = new DriveSubsystem();
+
+        swerveDriveTrain.setDefaultCommand( 
+                swerveDriveTrain.teleopDrive(
+                () -> {
+                    var power = controlInputs.getdriveController().toSwerve();
+                    if (controlTriggers.slowSpeed.getAsBoolean()) {
+                        power = power.times(0.5);
+                    }
+                    return power;
+                },
+                DriveOrientation.FIELD_CENTRIC)
+                );
+      
          
         autoChooser = AutoBuilder.buildAutoChooser();
-            }
+    }
 
-            public void robotPeriodic() {
+    public void robotPeriodic() {
         sensorInputs.readSensors();
-            }
+    }
 
-             public void teleopPeriodic() {
+    public void teleopPeriodic() {
     
     }
 
