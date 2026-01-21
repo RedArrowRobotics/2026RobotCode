@@ -1,4 +1,9 @@
-public class FuelIntakeSubsystem {
+package frc.robot.subsystems;
+
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+public class FuelIntakeSubsystem extends SubsystemBase {
 
   public Command intakeIn() {
     // Inline construction of command goes here.
