@@ -33,7 +33,7 @@ public class ControlInputs {
 
     public static void updateAlerts() {
         driveControllerAlert.set(driveController.isConnected());
-        driveControllerAlert.set(componentsBoard.isConnected());
+        componentsBoardAlert.set(componentsBoard.isConnected());
     }
     /*public class Triggers {
         public Triggers() {
