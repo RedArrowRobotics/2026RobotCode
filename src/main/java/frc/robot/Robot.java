@@ -29,6 +29,8 @@ public class Robot extends TimedRobot {
     private Optional<RobotContainer> robotContainer = Optional.empty();
     private PowerDistribution powerDistribution;
 
+    private static final Alert robotInitAlert = new Alert("An uncaught exception occured while setting up the robot. Check logs for more info.", AlertType.kError);
+    
     /**
      * This function is run when the robot is first started up and should be used for any
      * initialization code.
@@ -37,7 +39,7 @@ public class Robot extends TimedRobot {
         try {
             robotContainer = Optional.of(new RobotContainer());
         } catch (Exception e) {
-            Alerts.robotInit.set(true);
+            robotInitAlert.set(true);
             e.printStackTrace();
         }
         powerDistribution = new PowerDistribution(20, ModuleType.kRev);
@@ -54,6 +56,7 @@ public class Robot extends TimedRobot {
             robotContainer.ifPresent(RobotContainer::putDashboardData);
             SmartDashboard.putNumber("Match Time", DriverStation.getMatchTime());
             SmartDashboard.putData(powerDistribution);
+            ControlInputs.updateAlerts();
         }
     }
 

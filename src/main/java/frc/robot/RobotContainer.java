@@ -3,6 +3,8 @@ package frc.robot;
 import java.io.IOException;
 import java.util.Optional;
 import com.pathplanner.lib.auto.AutoBuilder;
+import edu.wpi.first.wpilibj.Alert;
+import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
