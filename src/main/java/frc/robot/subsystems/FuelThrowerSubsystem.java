@@ -1,6 +1,6 @@
 public class FuelThrowerSubsystem {
 
-  public Command intakeIn() {
+  public Command throwerActivate() {
     // Inline construction of command goes here.
     // Subsystem::RunOnce implicitly requires `this` subsystem.
     return runOnce(
@@ -9,7 +9,7 @@ public class FuelThrowerSubsystem {
         });
   }
 
-  public Command intakeOut() {
+  public Command throwerDeactivate() {
     // Inline construction of command goes here.
     // Subsystem::RunOnce implicitly requires `this` subsystem.
     return runOnce(
@@ -18,7 +18,7 @@ public class FuelThrowerSubsystem {
         });
   }
 
-  public Command intakeStop() {
+  public Command throwerRotateLeft() {
     // Inline construction of command goes here.
     // Subsystem::RunOnce implicitly requires `this` subsystem.
     return runOnce(
@@ -27,7 +27,7 @@ public class FuelThrowerSubsystem {
         });
   }
 
-  public Command extendIntake() {
+  public Command throwerRotateRight() {
     // Inline construction of command goes here.
     // Subsystem::RunOnce implicitly requires `this` subsystem.
     return runOnce(
@@ -36,7 +36,7 @@ public class FuelThrowerSubsystem {
         });
   }
 
-  public Command retractIntake() {
+  public Command throwerStopRotate() {
     // Inline construction of command goes here.
     // Subsystem::RunOnce implicitly requires `this` subsystem.
     return runOnce(
@@ -45,9 +45,31 @@ public class FuelThrowerSubsystem {
         });
   }
 
-  public boolean genericSensor() {
-    // Query some boolean state, such as a digital sensor.
-    return false;
+  public Command throwerPitchUp() {
+    // Inline construction of command goes here.
+    // Subsystem::RunOnce implicitly requires `this` subsystem.
+    return runOnce(
+        () -> {
+          /* one-time action goes here */
+        });
   }
-  
+
+  public Command throwerPitchDown() {
+    // Inline construction of command goes here.
+    // Subsystem::RunOnce implicitly requires `this` subsystem.
+    return runOnce(
+        () -> {
+          /* one-time action goes here */
+        });
+  }
+
+  public Command throwerStopPitch() {
+    // Inline construction of command goes here.
+    // Subsystem::RunOnce implicitly requires `this` subsystem.
+    return runOnce(
+        () -> {
+          /* one-time action goes here */
+        });
+  }
+
 }
