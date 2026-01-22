@@ -1,6 +1,6 @@
 public class ClimberSubsystem {
 
-  public Command intakeIn() {
+  public Command climberAscend() {
     // Inline construction of command goes here.
     // Subsystem::RunOnce implicitly requires `this` subsystem.
     return runOnce(
@@ -9,7 +9,7 @@ public class ClimberSubsystem {
         });
   }
 
-  public Command intakeOut() {
+  public Command climberStop() {
     // Inline construction of command goes here.
     // Subsystem::RunOnce implicitly requires `this` subsystem.
     return runOnce(
@@ -18,7 +18,7 @@ public class ClimberSubsystem {
         });
   }
 
-  public Command intakeStop() {
+  public Command climberDescend() {
     // Inline construction of command goes here.
     // Subsystem::RunOnce implicitly requires `this` subsystem.
     return runOnce(
@@ -27,27 +27,4 @@ public class ClimberSubsystem {
         });
   }
 
-  public Command extendIntake() {
-    // Inline construction of command goes here.
-    // Subsystem::RunOnce implicitly requires `this` subsystem.
-    return runOnce(
-        () -> {
-          /* one-time action goes here */
-        });
-  }
-
-  public Command retractIntake() {
-    // Inline construction of command goes here.
-    // Subsystem::RunOnce implicitly requires `this` subsystem.
-    return runOnce(
-        () -> {
-          /* one-time action goes here */
-        });
-  }
-
-  public boolean genericSensor() {
-    // Query some boolean state, such as a digital sensor.
-    return false;
-  }
-  
 }
