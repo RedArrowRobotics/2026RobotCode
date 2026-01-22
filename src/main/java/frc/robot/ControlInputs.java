@@ -1,5 +1,6 @@
 package frc.robot;
 
+//import frc.robot.subsystems.FuelIntakeSubsystem;
 import frc.robot.subsystems.DriveSubsystem.DrivePower;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -27,7 +28,12 @@ public class ControlInputs {
         public Triggers() {
             componentsBoard.setOutput(1, false);
         }
+      //Drivestick
+      public final Trigger slowSpeed = new Trigger(() -> driveController.getRawButton(1));
 
-      public final Trigger slowSpeed = new Trigger(() -> driveController.getRawButton(1) );
+      //Components Board
+      public final Trigger intakeFuel = new Trigger(() -> componentsBoard.getRawButton(1));
+      public final Trigger pukeFuel = new Trigger(() -> componentsBoard.getRawButton(2));
+      public final Trigger shootFuel = new Trigger(() -> componentsBoard.getRawButton(0));
     }
 }

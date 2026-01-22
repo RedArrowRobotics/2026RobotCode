@@ -27,11 +27,15 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.DriveSubsystem;
+//import frc.robot.subsystems.FuelIntakeSubsystem;
+import frc.robot.subsystems.FuelThrowerSubsystem;
 import frc.robot.subsystems.DriveSubsystem.DriveOrientation;
 
 public class RobotContainer {
   
     private final ControlInputs controlInputs = new ControlInputs();
+    //private final FuelIntakeSubsystem fuelIntakeSubsystem = new FuelIntakeSubsystem();
+    private final FuelThrowerSubsystem fuelShooter = new FuelThrowerSubsystem();
     private final ControlInputs.Triggers controlTriggers = controlInputs.new Triggers();
     private final DriveSubsystem swerveDriveTrain;
     private final SensorInputs sensorInputs = new SensorInputs();
@@ -52,6 +56,15 @@ public class RobotContainer {
                 DriveOrientation.FIELD_CENTRIC)
                 );
       
+        //Intake Commands
+        //NamedCommands.registerCommand("Intake In", fuelIntakeSubsystem.intakeIn());
+
+        //controlTriggers.intakeFuel.onTrue(NamedCommands.getCommand("Intake In"));
+
+        //Shooter Commands
+        NamedCommands.registerCommand("Shoot Fuel", fuelShooter.shootFuel());
+
+        controlTriggers.shootFuel.onTrue(NamedCommands.getCommand("Shoot Fuel"));
          
         autoChooser = AutoBuilder.buildAutoChooser();
     }
