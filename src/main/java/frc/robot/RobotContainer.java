@@ -21,7 +21,6 @@ public class RobotContainer {
     private final FuelShooterSubsystem fuelShooter = new FuelShooterSubsystem();
     private final AgitatorSubsystem agitator = new AgitatorSubsystem();
     private final ClimberSubsystem climber = new ClimberSubsystem();
-    private final SensorInputs sensorInputs = new SensorInputs();
     private final SendableChooser<Command> autoChooser;
 
     public RobotContainer() throws IOException, Exception {
@@ -42,7 +41,7 @@ public class RobotContainer {
     }
 
     public void putDashboardData() {
-        SmartDashboard.putData(sensorInputs.navxAhrs);
+        SmartDashboard.putData(SensorInputs.navxAhrs);
     }
 
     public Optional<Command> getAutonomousCommand() {
