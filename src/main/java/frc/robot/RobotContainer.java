@@ -7,6 +7,7 @@ import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.AgitatorSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.DriveSubsystem.DriveOrientation;
 import frc.robot.subsystems.FuelIntakeSubsystem;
@@ -17,6 +18,7 @@ public class RobotContainer {
     private final DriveSubsystem swerveDriveTrain;
     private final FuelIntakeSubsystem fuelIntake = new FuelIntakeSubsystem();
     private final FuelShooterSubsystem fuelShooter = new FuelShooterSubsystem();
+    private final AgitatorSubsystem agitator = new AgitatorSubsystem();
     private final SensorInputs sensorInputs = new SensorInputs();
     private final SendableChooser<Command> autoChooser;
 
