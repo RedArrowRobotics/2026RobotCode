@@ -12,8 +12,8 @@ public class ControlInputs {
     public static final CommandJoystick driveController = new CommandJoystick(OperatorConstants.DRIVE_JOYSTICK_PORT);
     public static final CommandGenericHID componentsBoard = new CommandGenericHID(OperatorConstants.COMPONENTS_BOARD_PORT);
 
-    private static final Alert driveControllerAlert = new Alert("The drive joystick is not connected to the driver's station.", AlertType.kWarning);
-    private static final Alert componentsBoardAlert = new Alert("The components control board is not connected to the driver's station.", AlertType.kWarning);
+    private static final Alert driveControllerAlert = new Alert("The drive joystick is not connected to the drivers station.", AlertType.kWarning);
+    private static final Alert componentsBoardAlert = new Alert("The components control board is not connected to the drivers station.", AlertType.kWarning);
     
     public static Twist2d getDrivePower() {
         // Multipliers for the drive stick axes

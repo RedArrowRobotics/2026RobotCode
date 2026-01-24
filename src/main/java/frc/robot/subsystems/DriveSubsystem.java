@@ -18,6 +18,8 @@ import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.LinearVelocity;
+import edu.wpi.first.wpilibj.Alert;
+import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.MatchType;
 import edu.wpi.first.wpilibj.Filesystem;
@@ -43,11 +45,15 @@ public class DriveSubsystem extends SubsystemBase {
     final LinearVelocity maximumSpeed = MetersPerSecond.of(3.31);
 
     static final Trigger slowSpeed = ControlInputs.driveController.button(1);
-
+    
+    private static final Alert telemetryAlert = new Alert("YAGSL telemetry is set to HIGH. Higher telemetry could induce some lag.", AlertType.kInfo);
+    
     public DriveSubsystem() throws IOException, ParseException {
         if (DriverStation.getMatchType() == MatchType.None) {
+            telemetryAlert.set(true);
             SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
         } else {
+            telemetryAlert.set(false);
             SwerveDriveTelemetry.verbosity = TelemetryVerbosity.LOW;
         }
 
