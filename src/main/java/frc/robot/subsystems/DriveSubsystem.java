@@ -1,24 +1,27 @@
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
+import java.io.File;
+import java.io.IOException;
+import org.json.simple.parser.ParseException;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
-
-import static edu.wpi.first.units.Units.Degrees;
-import static edu.wpi.first.units.Units.MetersPerSecond;
-import static edu.wpi.first.units.Units.RadiansPerSecond;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.function.Supplier;
-
-import org.json.simple.parser.ParseException;
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Twist2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.MatchType;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.DriverStation.MatchType;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -26,21 +29,11 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.ControlInputs;
 import frc.robot.LimelightHelpers;
-import swervelib.parser.SwerveParser;
+import frc.robot.Constants.DriveConstants;
 import swervelib.SwerveDrive;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.units.measure.AngularVelocity;
-import edu.wpi.first.units.measure.LinearVelocity;
+import swervelib.parser.SwerveParser;
 import swervelib.telemetry.SwerveDriveTelemetry;
 import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
-import edu.wpi.first.cameraserver.CameraServer;
-import edu.wpi.first.cscore.HttpCamera;
-import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.geometry.Twist2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.cameraserver.CameraServer;
 
 public class DriveSubsystem extends SubsystemBase {
     SwerveDrive swerveDrive;
@@ -60,7 +53,7 @@ public class DriveSubsystem extends SubsystemBase {
 
         RobotConfig config;
 
-        File swerveJsonDirectory = new File(Filesystem.getDeployDirectory(), "swerve-practice");
+        File swerveJsonDirectory = new File(Filesystem.getDeployDirectory(), DriveConstants.SWERVE_CONFIG);
         swerveDrive = new SwerveParser(swerveJsonDirectory)
                 .createSwerveDrive(maximumSpeed.in(MetersPerSecond));
         config = RobotConfig.fromGUISettings();
