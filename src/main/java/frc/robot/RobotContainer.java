@@ -36,8 +36,7 @@ public class RobotContainer {
         ControlInputs.componentsBoard.button(0).onTrue(fuelShooter.shootFuel());
         ControlInputs.componentsBoard.button(1).onTrue(fuelIntake.intakeIn());
         ControlInputs.componentsBoard.button(2).onTrue(fuelIntake.intakeOut());
-        ControlInputs.componentsBoard.button(6).onTrue(agitator.startAgitating());
-        ControlInputs.componentsBoard.button(7).onTrue(agitator.stopAgitating());
+        ControlInputs.componentsBoard.button(5).onTrue(agitator.startAgitating());
 
         NamedCommands.registerCommand("Shoot Fuel", fuelShooter.shootFuel());
     }
