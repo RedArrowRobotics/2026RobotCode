@@ -34,6 +34,10 @@ public class RobotContainer {
 
     private void configureBindings() {
         ControlInputs.componentsBoard.button(0).onTrue(fuelShooter.shootFuel());
+        ControlInputs.componentsBoard.button(8).onTrue(fuelShooter.throwerRotateLeft());
+        ControlInputs.componentsBoard.button(9).onTrue(fuelShooter.throwerRotateRight());
+        ControlInputs.componentsBoard.button(10).onTrue(fuelShooter.throwerPitchUp());
+        ControlInputs.componentsBoard.button(11).onTrue(fuelShooter.throwerPitchDown());
         ControlInputs.componentsBoard.button(1).onTrue(fuelIntake.intakeIn());
         ControlInputs.componentsBoard.button(2).onTrue(fuelIntake.intakeOut());
 
