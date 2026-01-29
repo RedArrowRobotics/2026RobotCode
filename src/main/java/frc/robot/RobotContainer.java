@@ -36,8 +36,10 @@ public class RobotContainer {
         ControlInputs.componentsBoard.button(0).onTrue(fuelShooter.shootFuel());
         ControlInputs.componentsBoard.button(1).onTrue(fuelIntake.intakeIn());
         ControlInputs.componentsBoard.button(2).onTrue(fuelIntake.intakeOut());
-
         NamedCommands.registerCommand("Shoot Fuel", fuelShooter.shootFuel());
+        ControlInputs.componentsBoard.button(3).onTrue(climber.climberAscend());
+        ControlInputs.componentsBoard.button(4).onTrue(climber.climberStop());
+        ControlInputs.componentsBoard.button(5).onTrue(climber.climberDescend());
     }
 
     public void putDashboardData() {
