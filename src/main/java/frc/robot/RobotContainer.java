@@ -30,6 +30,7 @@ public class RobotContainer {
         autoChooser = AutoBuilder.buildAutoChooser();
 
         configureBindings();
+        configureSendables();
     }
 
     private void configureBindings() {
@@ -40,8 +41,14 @@ public class RobotContainer {
         NamedCommands.registerCommand("Shoot Fuel", fuelShooter.shootFuel());
     }
 
-    public void putDashboardData() {
+    /**
+     * Adds sendable data to the dashboard. Sendable data will automatically update
+     * each iteration of the robot loop, so this function only needs to be called
+     * once.
+     */
+    private void configureSendables() {
         SmartDashboard.putData(SensorInputs.navxAhrs);
+        swerveDriveTrain.sysId.configureSendables();
     }
 
     public Optional<Command> getAutonomousCommand() {
@@ -49,9 +56,8 @@ public class RobotContainer {
         // Optional
         return Optional.ofNullable(autoChooser.getSelected());
     }
-    
+
     public void resetGyro() {
         swerveDriveTrain.resetGyro();
     }
 }
-

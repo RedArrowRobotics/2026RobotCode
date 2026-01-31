@@ -52,7 +52,6 @@ public class Robot extends TimedRobot {
         // block in order for anything in the Command-based framework to work.
         CommandScheduler.getInstance().run();
         {
-            robotContainer.ifPresent(RobotContainer::putDashboardData);
             SmartDashboard.putNumber("Match Time", DriverStation.getMatchTime());
             SmartDashboard.putData(powerDistribution);
             ControlInputs.updateAlerts();

@@ -1,8 +1,11 @@
 package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
+import static edu.wpi.first.units.Units.Volts;
+
 import java.io.File;
 import java.io.IOException;
 import org.json.simple.parser.ParseException;
@@ -18,15 +21,20 @@ import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.LinearVelocity;
+import edu.wpi.first.units.measure.MutDistance;
+import edu.wpi.first.units.measure.MutLinearVelocity;
+import edu.wpi.first.units.measure.MutVoltage;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.MatchType;
 import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.ControlInputs;
 import frc.robot.LimelightHelpers;
 import frc.robot.Constants.DriveConstants;
@@ -36,11 +44,12 @@ import swervelib.telemetry.SwerveDriveTelemetry;
 import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 
 public class DriveSubsystem extends SubsystemBase {
-    SwerveDrive swerveDrive;
+    private SwerveDrive swerveDrive;
     private final Field2d field = new Field2d();
-    boolean trustPose = false;
-    boolean isPathRunning = false;
-    final LinearVelocity maximumSpeed = MetersPerSecond.of(3.31);
+    private boolean trustPose = false;
+    private boolean isPathRunning = false;
+    private final LinearVelocity maximumSpeed = MetersPerSecond.of(3.31);
+    public final SysId sysId = new SysId();
 
     static final Trigger slowSpeed = ControlInputs.driveController.button(1);
 
@@ -97,10 +106,12 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     /**
-     * Command to drive the robot using translative values and heading as angular velocity. Should
+     * Command to drive the robot using translative values and heading as angular
+     * velocity. Should
      * be used as a default command.
      *
-     * @param input_power A function that supplies multipliers on linear and angular velocity.
+     * @param input_power A function that supplies multipliers on linear and angular
+     *                    velocity.
      * @param orientation The type of orientation to use.
      * @return Drive command.
      */
@@ -129,8 +140,7 @@ public class DriveSubsystem extends SubsystemBase {
             ChassisSpeeds chassisSpeeds = new ChassisSpeeds();
             chassisSpeeds.vxMetersPerSecond = .1 * swerveDrive.getMaximumChassisVelocity();
             chassisSpeeds.vyMetersPerSecond = 0 * swerveDrive.getMaximumChassisVelocity();
-            chassisSpeeds.omegaRadiansPerSecond =
-                    0 * swerveDrive.getMaximumChassisAngularVelocity();
+            chassisSpeeds.omegaRadiansPerSecond = 0 * swerveDrive.getMaximumChassisAngularVelocity();
             swerveDrive.drive(chassisSpeeds, true, new Translation2d());
             // switch(orientation) {
             // case FIELD_CENTRIC -> swerveDrive.driveFieldOriented(chassisSpeeds);
@@ -142,15 +152,14 @@ public class DriveSubsystem extends SubsystemBase {
     /**
      * Drive the robot using translative values and heading as angular velocity.
      *
-     * @param power Multipliers on linear and angular velocity.
+     * @param power       Multipliers on linear and angular velocity.
      * @param orientation The type of orientation to use.
      */
     private void manualDrive(Twist2d power, DriveOrientation orientation) {
         ChassisSpeeds chassisSpeeds = new ChassisSpeeds();
         chassisSpeeds.vxMetersPerSecond = power.dx * swerveDrive.getMaximumChassisVelocity();
         chassisSpeeds.vyMetersPerSecond = power.dy * swerveDrive.getMaximumChassisVelocity();
-        chassisSpeeds.omegaRadiansPerSecond =
-                power.dtheta * swerveDrive.getMaximumChassisAngularVelocity();
+        chassisSpeeds.omegaRadiansPerSecond = power.dtheta * swerveDrive.getMaximumChassisAngularVelocity();
         switch (orientation) {
             case FIELD_CENTRIC -> {
                 // TODO: Figure out whether YAGSL flips yaw based on alliance color
@@ -186,8 +195,8 @@ public class DriveSubsystem extends SubsystemBase {
                 swerveDrive.getPose().getRotation().getDegrees(), 0, 0, 0, 0, 0);
         if (LimelightHelpers.getTV("limelight") == true) {
             // Add vision measurement
-            LimelightHelpers.PoseEstimate poseEstimate =
-                    LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
+            LimelightHelpers.PoseEstimate poseEstimate = LimelightHelpers
+                    .getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
             swerveDrive.setVisionMeasurementStdDevs(VecBuilder.fill(0.7, 0.7, 9999999.0));
             swerveDrive.addVisionMeasurement(poseEstimate.pose, Timer.getFPGATimestamp());
             trustPose = true;
@@ -225,7 +234,8 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     /**
-     * Whether the reported pose can be trusted to be reasonably accurate, e.g. we have seen an
+     * Whether the reported pose can be trusted to be reasonably accurate, e.g. we
+     * have seen an
      * AprilTag or have run a PathPlanner command with a known pose.
      * 
      * @return whether the pose returned from {@link #getPose()} can be trusted
@@ -239,6 +249,109 @@ public class DriveSubsystem extends SubsystemBase {
         switch (alliance) {
             case Red -> resetPoseUntrusted(new Pose2d(0.0, 0.0, new Rotation2d(Degrees.of(180))));
             case Blue -> resetPoseUntrusted(new Pose2d(0.0, 0.0, new Rotation2d(Degrees.zero())));
+        }
+    }
+
+    public class SysId {
+        private final MutVoltage appliedVoltage = Volts.mutable(0);
+        private final MutDistance distance = Meters.mutable(0);
+        private final MutLinearVelocity velocity = MetersPerSecond.mutable(0);
+        private final SysIdRoutine sysIdRoutine = new SysIdRoutine(
+                new SysIdRoutine.Config(),
+                new SysIdRoutine.Mechanism(
+                        // Drive motor controllers
+                        voltage -> {
+                            swerveDrive.getModules()[0].getDriveMotor().setVoltage(voltage.baseUnitMagnitude());
+                            swerveDrive.getModules()[1].getDriveMotor().setVoltage(voltage.baseUnitMagnitude());
+                            swerveDrive.getModules()[2].getDriveMotor().setVoltage(voltage.baseUnitMagnitude());
+                            swerveDrive.getModules()[3].getDriveMotor().setVoltage(voltage.baseUnitMagnitude());
+                        },
+                        // Tell SysId how to record a frame of data for each motor on the mechanism
+                        // being characterized.
+                        log -> {
+                            log.motor("drive-front-left")
+                                    .voltage(
+                                            appliedVoltage.mut_replace(
+                                                    swerveDrive.getModules()[0].getDriveMotor().getVoltage()
+                                                            * RobotController.getBatteryVoltage(),
+                                                    Volts))
+                                    .linearPosition(distance.mut_replace(
+                                            swerveDrive.getModules()[0].getDriveMotor().getPosition(), Meters))
+                                    .linearVelocity(
+                                            velocity.mut_replace(
+                                                    swerveDrive.getModules()[0].getDriveMotor().getVelocity(),
+                                                    MetersPerSecond));
+                            
+                            log.motor("drive-front-right")
+                                    .voltage(
+                                            appliedVoltage.mut_replace(
+                                                    swerveDrive.getModules()[1].getDriveMotor().getVoltage()
+                                                            * RobotController.getBatteryVoltage(),
+                                                    Volts))
+                                    .linearPosition(distance.mut_replace(
+                                            swerveDrive.getModules()[1].getDriveMotor().getPosition(), Meters))
+                                    .linearVelocity(
+                                            velocity.mut_replace(
+                                                    swerveDrive.getModules()[1].getDriveMotor().getVelocity(),
+                                                    MetersPerSecond));
+
+                            log.motor("drive-back-left")
+                                    .voltage(
+                                            appliedVoltage.mut_replace(
+                                                    swerveDrive.getModules()[2].getDriveMotor().getVoltage()
+                                                            * RobotController.getBatteryVoltage(),
+                                                    Volts))
+                                    .linearPosition(distance.mut_replace(
+                                            swerveDrive.getModules()[2].getDriveMotor().getPosition(), Meters))
+                                    .linearVelocity(
+                                            velocity.mut_replace(
+                                                    swerveDrive.getModules()[2].getDriveMotor().getVelocity(),
+                                                    MetersPerSecond));
+
+                            log.motor("drive-back-right")
+                                    .voltage(
+                                            appliedVoltage.mut_replace(
+                                                    swerveDrive.getModules()[3].getDriveMotor().getVoltage()
+                                                            * RobotController.getBatteryVoltage(),
+                                                    Volts))
+                                    .linearPosition(distance.mut_replace(
+                                            swerveDrive.getModules()[3].getDriveMotor().getPosition(), Meters))
+                                    .linearVelocity(
+                                            velocity.mut_replace(
+                                                    swerveDrive.getModules()[3].getDriveMotor().getVelocity(),
+                                                    MetersPerSecond));
+                        },
+                        // Tell SysId to make generated commands require this subsystem.
+                        DriveSubsystem.this));
+
+        /**
+         * Returns a command that will execute a quasistatic test in the given
+         * direction.
+         *
+         * @param direction The direction (forward or reverse) to run the test in
+         */
+        public Command quasistatic(SysIdRoutine.Direction direction) {
+            return sysIdRoutine.quasistatic(direction);
+        }
+
+        /**
+         * Returns a command that will execute a dynamic test in the given direction.
+         *
+         * @param direction The direction (forward or reverse) to run the test in
+         */
+        public Command dynamic(SysIdRoutine.Direction direction) {
+            return sysIdRoutine.dynamic(direction);
+        }
+
+        /**
+         * Adds system identification commands to the dashboard. Only needs to be called once.
+         */
+        public void configureSendables() {
+            var name = DriveSubsystem.this.getName();
+            SmartDashboard.putData("SysId/"+name+"/Quasistatic Forward", quasistatic(SysIdRoutine.Direction.kForward));
+            SmartDashboard.putData("SysId/"+name+"/Quasistatic Reverse", quasistatic(SysIdRoutine.Direction.kReverse));
+            SmartDashboard.putData("SysId/"+name+"/Dynamic Forward", dynamic(SysIdRoutine.Direction.kForward));
+            SmartDashboard.putData("SysId/"+name+"/Dynamic Reverse", dynamic(SysIdRoutine.Direction.kReverse));
         }
     }
 }
