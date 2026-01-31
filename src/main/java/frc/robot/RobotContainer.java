@@ -11,6 +11,7 @@ import frc.robot.subsystems.AgitatorSubsystem;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.DriveSubsystem.DriveOrientation;
+import frc.robot.subsystems.FuelAimingSubsystem;
 import frc.robot.subsystems.FuelIntakeSubsystem;
 //import frc.robot.subsystems.FuelIntakeSubsystem;
 import frc.robot.subsystems.FuelShooterSubsystem;
@@ -18,6 +19,7 @@ import frc.robot.subsystems.FuelShooterSubsystem;
 public class RobotContainer {
     private final DriveSubsystem swerveDriveTrain;
     private final FuelIntakeSubsystem fuelIntake = new FuelIntakeSubsystem();
+    private final FuelAimingSubsystem fuelAiming = new FuelAimingSubsystem();
     private final FuelShooterSubsystem fuelShooter = new FuelShooterSubsystem();
     private final AgitatorSubsystem agitator = new AgitatorSubsystem();
     private final ClimberSubsystem climber = new ClimberSubsystem();
@@ -27,6 +29,7 @@ public class RobotContainer {
         swerveDriveTrain = new DriveSubsystem();
 
         swerveDriveTrain.setDefaultCommand(swerveDriveTrain.teleopDrive(DriveOrientation.FIELD_CENTRIC));
+        fuelAiming.setDefaultCommand(fuelAiming.manualControl());
         autoChooser = AutoBuilder.buildAutoChooser();
 
         configureBindings();
