@@ -8,6 +8,8 @@ import static edu.wpi.first.units.Units.Volts;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Optional;
+
 import org.json.simple.parser.ParseException;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
@@ -35,6 +37,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.Constants;
 import frc.robot.ControlInputs;
 import frc.robot.LimelightHelpers;
 import frc.robot.Constants.DriveConstants;
@@ -49,14 +52,16 @@ public class DriveSubsystem extends SubsystemBase {
     private boolean trustPose = false;
     private boolean isPathRunning = false;
     private final LinearVelocity maximumSpeed = MetersPerSecond.of(3.31);
-    public final SysId sysId = new SysId();
+    public final Optional<SysId> sysId;
 
     static final Trigger slowSpeed = ControlInputs.driveController.button(1);
 
     public DriveSubsystem() throws IOException, ParseException {
-        if (DriverStation.getMatchType() == MatchType.None) {
+        if (Constants.DEBUG_ENABLED) {
+            sysId = Optional.of(new SysId());
             SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
         } else {
+            sysId = Optional.empty();
             SwerveDriveTelemetry.verbosity = TelemetryVerbosity.LOW;
         }
 
