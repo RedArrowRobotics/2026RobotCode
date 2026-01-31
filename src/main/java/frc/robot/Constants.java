@@ -12,6 +12,6 @@ public final class Constants {
         public static final String SWERVE_CONFIG = "swerve-practice";
     }
     public final class FuelShooterConstants {
-        public static final double THROWER_POWER = 0.5;
+        public static final double SHOOTER_POWER = 0.5;
     }
 }
