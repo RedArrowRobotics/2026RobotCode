@@ -29,12 +29,16 @@ public class Robot extends TimedRobot {
     private PowerDistribution powerDistribution;
 
     private static final Alert robotInitAlert = new Alert("An uncaught exception occured while setting up the robot. Check logs for more info.", AlertType.kError);
-    
+    private static final Alert debugAlert = new Alert("Debug features are enabled, which may introduce lag and higher memory usage.", AlertType.kInfo);
+
     /**
      * This function is run when the robot is first started up and should be used for any
      * initialization code.
      */
     public Robot() {
+        if (Constants.DEBUG_ENABLED) {
+            debugAlert.set(true);
+        }
         try {
             robotContainer = Optional.of(new RobotContainer());
         } catch (Exception e) {
@@ -42,6 +46,7 @@ public class Robot extends TimedRobot {
             e.printStackTrace();
         }
         powerDistribution = new PowerDistribution(20, ModuleType.kRev);
+        SmartDashboard.putData(powerDistribution);
     }
 
     @Override
@@ -52,9 +57,7 @@ public class Robot extends TimedRobot {
         // block in order for anything in the Command-based framework to work.
         CommandScheduler.getInstance().run();
         {
-            robotContainer.ifPresent(RobotContainer::putDashboardData);
             SmartDashboard.putNumber("Match Time", DriverStation.getMatchTime());
-            SmartDashboard.putData(powerDistribution);
             ControlInputs.updateAlerts();
         }
     }
