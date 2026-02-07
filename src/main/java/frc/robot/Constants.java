@@ -17,7 +17,25 @@ public final class Constants {
     public final class FuelShooterConstants {
         public static final double SHOOTER_POWER = 0.5;
     }
+    public final class FuelAimingConstants {
+        public static final double ROTATOR_MANUAL_POWER = 0.5;
+    }
     public final class FeedforwardConstants {
+        //Shooter Constants
+        public static final double SHOOTER_kP_NO_FUEL = 0.0;
+        public static final double SHOOTER_kI_NO_FUEL = 0.0;
+        public static final double SHOOTER_kD_NO_FUEL = 0.0;
+        public static final double SHOOTER_kP_FUEL = 0.0;
+        public static final double SHOOTER_kI_FUEL = 0.0;
+        public static final double SHOOTER_kD_FUEL = 0.0;
+        public static final double SHOOTER_kV = 0.0;
+        public static final double SHOOTER_kS = 0.0;
+        public static final double SHOOTER_kA = 0.0;
+        public static final double SHOOTER_MAX_VELOCTIY = 0.0; //RPM
+        public static final double SHOOTER_MAX_ACCELERATION = 0.0; //RPM/s
+        public static final double SHOOTER_MAX_ERROR = 0.0;
+
+        //Rotator Constants
         public static final double ROTATOR_kP = 0.0;
         public static final double ROTATOR_kI = 0.0;
         public static final double ROTATOR_kD = 0.0;

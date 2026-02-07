@@ -7,6 +7,7 @@ import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.subsystems.AgitatorSubsystem;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
@@ -29,18 +30,19 @@ public class RobotContainer {
         swerveDriveTrain = new DriveSubsystem();
 
         swerveDriveTrain.setDefaultCommand(swerveDriveTrain.teleopDrive(DriveOrientation.FIELD_CENTRIC));
-        fuelAiming.setDefaultCommand(fuelAiming.manualControl());
+        fuelAiming.setDefaultCommand(fuelAiming.stopRotating());
+        fuelShooter.setDefaultCommand(fuelShooter.shooterDeactivate());
         autoChooser = AutoBuilder.buildAutoChooser();
 
         configureBindings();
     }
 
     private void configureBindings() {
-        ControlInputs.componentsBoard.button(0).onTrue(fuelShooter.shootFuel());
-        ControlInputs.componentsBoard.button(1).onTrue(fuelIntake.intakeIn());
-        ControlInputs.componentsBoard.button(2).onTrue(fuelIntake.intakeOut());
-
-        NamedCommands.registerCommand("Shoot Fuel", fuelShooter.shootFuel());
+        ControlInputs.componentsBoard.button(1).onTrue(fuelShooter.shootFuel());
+        ControlInputs.componentsBoard.button(2).onTrue(fuelIntake.intakeIn());
+        ControlInputs.componentsBoard.button(3).onTrue(fuelIntake.intakeOut());
+        ControlInputs.componentsBoard.axisGreaterThan(1, 0.5).onTrue(fuelAiming.manualControlCW());
+        ControlInputs.componentsBoard.axisLessThan(1, -0.5).onTrue(fuelAiming.manualControlCCW());
     }
 
     public void putDashboardData() {
