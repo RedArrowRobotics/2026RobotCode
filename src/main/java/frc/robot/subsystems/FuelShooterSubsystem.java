@@ -7,6 +7,8 @@ import com.revrobotics.spark.config.SparkFlexConfig;
 
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.Rotations;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.Volts;
 
 import com.revrobotics.PersistMode;
@@ -15,13 +17,19 @@ import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.SparkClosedLoopController;
 
+import edu.wpi.first.units.measure.MutAngle;
+import edu.wpi.first.units.measure.MutAngularVelocity;
 import edu.wpi.first.units.measure.MutDistance;
 import edu.wpi.first.units.measure.MutLinearVelocity;
 import edu.wpi.first.units.measure.MutVoltage;
+import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Constants.DeviceConstants;
 import frc.robot.Constants.FeedforwardConstants;
 import frc.robot.Constants.FuelShooterConstants;
@@ -85,9 +93,9 @@ public class FuelShooterSubsystem extends SubsystemBase {
   // Mutable holder for unit-safe voltage values, persisted to avoid reallocation.
   private final MutVoltage m_appliedVoltage = Volts.mutable(0);
   // Mutable holder for unit-safe linear distance values, persisted to avoid reallocation.
-  private final MutDistance m_distance = Meters.mutable(0);
+  private final MutAngle m_distance = Rotations.mutable(0);
   // Mutable holder for unit-safe linear velocity values, persisted to avoid reallocation.
-  private final MutLinearVelocity m_velocity = MetersPerSecond.mutable(0);
+  private final MutAngularVelocity m_velocity = RotationsPerSecond.mutable(0);
 
 
 		// Creates a SysIdRoutine
@@ -104,18 +112,27 @@ public class FuelShooterSubsystem extends SubsystemBase {
 					log.motor("shooter-1")
 						.voltage(
 							m_appliedVoltage.mut_replace(
-								shooterMotor1.getBusVoltage() * RobotController.getBatteryVoltage(), Volts))
-						.linearPosition(m_distance.mut_replace(shooterMotor1.getEncoder().getPosition(), Meters))
-						.linearVelocity(
-							m_velocity.mut_replace(shooterMotor1.getEncoder().getVelocity(), MetersPerSecond));
+								shooterMotor1.getAppliedOutput() * RobotController.getBatteryVoltage(), Volts))
+						.angularPosition(m_distance.mut_replace(shooterMotor1.getEncoder().getPosition(), Rotations))
+						.angularVelocity(
+							m_velocity.mut_replace(shooterMotor1.getEncoder().getVelocity(), RotationsPerSecond));
 						}, this)
 	);
 
 	public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
-	return routine.quasistatic(direction);
+		return routine.quasistatic(direction);
 	}
 
 	public Command sysIdDynamic(SysIdRoutine.Direction direction) {
-	return routine.dynamic(direction);
+		return routine.dynamic(direction);
+	}
+
+	@Override
+	public void initSendable(SendableBuilder builder) {
+		super.initSendable(builder);
+		SmartDashboard.putData("Shooter - Run Forward Dynamic", sysIdDynamic(Direction.kForward));
+		SmartDashboard.putData("Shooter - Run Reverse Dynamic", sysIdDynamic(Direction.kReverse));
+		SmartDashboard.putData("Shooter - Run Forward Quasistatic", sysIdQuasistatic(Direction.kForward));
+		SmartDashboard.putData("Shooter - Run Reverse Quasistatic", sysIdQuasistatic(Direction.kReverse));
 	}
 }

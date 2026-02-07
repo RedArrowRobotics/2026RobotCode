@@ -47,6 +47,8 @@ public class RobotContainer {
 
     public void putDashboardData() {
         SmartDashboard.putData(SensorInputs.navxAhrs);
+        SmartDashboard.putData(fuelShooter);
+        SmartDashboard.putData(fuelAiming);
     }
 
     public Optional<Command> getAutonomousCommand() {
