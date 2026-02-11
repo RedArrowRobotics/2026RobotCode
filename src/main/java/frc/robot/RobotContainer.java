@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.util.Optional;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+
+import edu.wpi.first.wpilibj.Alert;
+import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -22,7 +25,7 @@ public class RobotContainer {
     private final AgitatorSubsystem agitator = new AgitatorSubsystem();
     private final ClimberSubsystem climber = new ClimberSubsystem();
     private final SendableChooser<Command> autoChooser;
-
+    
     public RobotContainer() throws IOException, Exception {
         swerveDriveTrain = new DriveSubsystem();
 
@@ -30,18 +33,25 @@ public class RobotContainer {
         autoChooser = AutoBuilder.buildAutoChooser();
 
         configureBindings();
+        configureSendables();
     }
 
     private void configureBindings() {
-        ControlInputs.componentsBoard.button(0).onTrue(fuelShooter.shootFuel());
-        ControlInputs.componentsBoard.button(1).onTrue(fuelIntake.intakeIn());
-        ControlInputs.componentsBoard.button(2).onTrue(fuelIntake.intakeOut());
+        ControlInputs.componentsBoard.button(1).onTrue(fuelShooter.shootFuel());
+        ControlInputs.componentsBoard.button(2).onTrue(fuelIntake.intakeIn());
+        ControlInputs.componentsBoard.button(3).onTrue(fuelIntake.intakeOut());
 
         NamedCommands.registerCommand("Shoot Fuel", fuelShooter.shootFuel());
     }
 
-    public void putDashboardData() {
+    /**
+     * Adds sendable data to the dashboard. Sendable data will automatically update
+     * each iteration of the robot loop, so this function only needs to be called
+     * once.
+     */
+    private void configureSendables() {
         SmartDashboard.putData(SensorInputs.navxAhrs);
+        swerveDriveTrain.sysId.ifPresent(sysid -> sysid.configureSendables());
     }
 
     public Optional<Command> getAutonomousCommand() {
@@ -49,9 +59,8 @@ public class RobotContainer {
         // Optional
         return Optional.ofNullable(autoChooser.getSelected());
     }
-    
+
     public void resetGyro() {
         swerveDriveTrain.resetGyro();
     }
 }
-
