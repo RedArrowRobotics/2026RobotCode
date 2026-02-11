@@ -30,7 +30,6 @@ public class RobotContainer {
         swerveDriveTrain = new DriveSubsystem();
 
         swerveDriveTrain.setDefaultCommand(swerveDriveTrain.teleopDrive(DriveOrientation.FIELD_CENTRIC));
-        fuelAiming.setDefaultCommand(fuelAiming.stopRotating());
         fuelShooter.setDefaultCommand(fuelShooter.shooterDeactivate());
         autoChooser = AutoBuilder.buildAutoChooser();
 
@@ -41,8 +40,8 @@ public class RobotContainer {
         ControlInputs.componentsBoard.button(1).onTrue(fuelShooter.shootFuel());
         ControlInputs.componentsBoard.button(2).onTrue(fuelIntake.intakeIn());
         ControlInputs.componentsBoard.button(3).onTrue(fuelIntake.intakeOut());
-        ControlInputs.componentsBoard.axisGreaterThan(1, 0.5).onTrue(fuelAiming.manualControlCW());
-        ControlInputs.componentsBoard.axisLessThan(1, -0.5).onTrue(fuelAiming.manualControlCCW());
+        ControlInputs.componentsBoard.axisGreaterThan(1, 0.5).onTrue(fuelAiming.manualTurretControlCW());
+        ControlInputs.componentsBoard.axisLessThan(1, -0.5).onTrue(fuelAiming.manualTurretControlCCW());
     }
 
     public void putDashboardData() {

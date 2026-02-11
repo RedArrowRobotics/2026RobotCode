@@ -35,47 +35,91 @@ import frc.robot.Constants.FuelAimingConstants;
 
 public class FuelAimingSubsystem extends SubsystemBase {
 	private final SparkMax turretRotator = new SparkMax(DeviceConstants.TURRET_ROTATOR, MotorType.kBrushless);
+	private final SparkMax hoodRotator = new SparkMax(0, MotorType.kBrushless);
 
 	public FuelAimingSubsystem() {
-		SparkClosedLoopController controller = turretRotator.getClosedLoopController();
-		SparkMaxConfig config = new SparkMaxConfig();
+		//Turret
+		SparkClosedLoopController turretController = turretRotator.getClosedLoopController();
+		SparkMaxConfig turretConfig = new SparkMaxConfig();
 
-		turretRotator.configure(config, ResetMode.kResetSafeParameters,
+		turretRotator.configure(turretConfig, ResetMode.kResetSafeParameters,
 		PersistMode.kPersistParameters);
 
-		config.closedLoop
-		.p(FeedforwardConstants.ROTATOR_kP)
-		.i(FeedforwardConstants.ROTATOR_kI)
-		.d(FeedforwardConstants.ROTATOR_kD);
+		turretConfig.closedLoop
+		.p(FeedforwardConstants.TURRET_ROTATOR_kP)
+		.i(FeedforwardConstants.TURRET_ROTATOR_kI)
+		.d(FeedforwardConstants.TURRET_ROTATOR_kD);
 		
-		config.closedLoop.feedForward
-		.kV(FeedforwardConstants.ROTATOR_kV)
-		.kS(FeedforwardConstants.ROTATOR_kS)
-		.kA(FeedforwardConstants.ROTATOR_kA);
+		turretConfig.closedLoop.feedForward
+		.kV(FeedforwardConstants.TURRET_ROTATOR_kV)
+		.kS(FeedforwardConstants.TURRET_ROTATOR_kS)
+		.kA(FeedforwardConstants.TURRET_ROTATOR_kA);
 
-		config.closedLoop.maxMotion
-		.cruiseVelocity(FeedforwardConstants.ROTATOR_MAX_VELOCITY)
-		.maxAcceleration(FeedforwardConstants.ROTATOR_MAX_ACCELERATION)
-		.allowedProfileError(FeedforwardConstants.ROTATOR_MAX_ERROR);
+		turretConfig.closedLoop.maxMotion
+		.cruiseVelocity(FeedforwardConstants.TURRET_ROTATOR_MAX_VELOCITY)
+		.maxAcceleration(FeedforwardConstants.TURRET_ROTATOR_MAX_ACCELERATION)
+		.allowedProfileError(FeedforwardConstants.TURRET_ROTATOR_MAX_ERROR);
 
-		controller.setSetpoint(0.0, ControlType.kVelocity);
+		turretController.setSetpoint(0.0, ControlType.kVelocity);
+
+		//Hood
+		SparkClosedLoopController hoodController = hoodRotator.getClosedLoopController();
+		SparkMaxConfig hoodConfig = new SparkMaxConfig();
+
+		hoodRotator.configure(hoodConfig, ResetMode.kResetSafeParameters,
+		PersistMode.kPersistParameters);
+
+		hoodConfig.closedLoop
+		.p(FeedforwardConstants.HOOD_ROTATOR_kP)
+		.i(FeedforwardConstants.HOOD_ROTATOR_kI)
+		.d(FeedforwardConstants.HOOD_ROTATOR_kD);
+
+		hoodConfig.closedLoop.feedForward
+		.kV(FeedforwardConstants.HOOD_ROTATOR_kV)
+		.kS(FeedforwardConstants.HOOD_ROTATOR_kS)
+		.kA(FeedforwardConstants.HOOD_ROTATOR_kA);
+
+		hoodConfig.closedLoop.maxMotion
+		.cruiseVelocity(FeedforwardConstants.HOOD_ROTATOR_MAX_VELOCITY)
+		.maxAcceleration(FeedforwardConstants.HOOD_ROTATOR_MAX_ACCELERATION)
+		.allowedProfileError(FeedforwardConstants.HOOD_ROTATOR_MAX_ERROR);
+
+		hoodController.setSetpoint(0.0, ControlType.kVelocity);
 	}
 
-	public Command manualControlCW() {
+	public Command manualTurretControlCW() {
 		return runOnce(() -> {
-			turretRotator.set(FuelAimingConstants.ROTATOR_MANUAL_POWER * -1);
+			turretRotator.set(FuelAimingConstants.TURRET_ROTATOR_MANUAL_POWER * -1);
 		});
 	}
 
-	public Command manualControlCCW() {
+	public Command manualTurretControlCCW() {
 		return runOnce(() -> {
-			turretRotator.set(FuelAimingConstants.ROTATOR_MANUAL_POWER);
+			turretRotator.set(FuelAimingConstants.TURRET_ROTATOR_MANUAL_POWER);
 		});
 	}
 
-	public Command stopRotating() {
+	public Command manualTurretControlStop() {
 		return runOnce(() -> {
-			turretRotator.set(0.0);
+			turretRotator.set(FuelAimingConstants.STOPPED_SPEED);
+		});
+	}
+
+	public Command manualHoodControlUp() {
+		return runOnce(() -> {
+			hoodRotator.set(FuelAimingConstants.HOOD_ROTATOR_MANUAL_POWER);
+		});
+	}
+
+	public Command manualHoodControlDown() {
+		return runOnce(() -> {
+			hoodRotator.set(FuelAimingConstants.HOOD_ROTATOR_MANUAL_POWER * -1);
+		});
+	}
+
+	public Command manualHoodControlStop() {
+		return runOnce(() -> {
+			hoodRotator.set(FuelAimingConstants.STOPPED_SPEED);
 		});
 	}
 
@@ -87,6 +131,8 @@ public class FuelAimingSubsystem extends SubsystemBase {
 		});
 	}
 
+	//Todo: Add sprinkler routine to turret :l
+
 	// Mutable holder for unit-safe voltage values, persisted to avoid reallocation.
   private final MutVoltage m_appliedVoltage = Volts.mutable(0);
   // Mutable holder for unit-safe linear distance values, persisted to avoid reallocation.
@@ -96,9 +142,9 @@ public class FuelAimingSubsystem extends SubsystemBase {
 
 
 		// Creates a SysIdRoutine
-	SysIdRoutine routine = new SysIdRoutine(
+	SysIdRoutine turretRoutine = new SysIdRoutine(
 		new SysIdRoutine.Config(),
-		new SysIdRoutine.Mechanism( voltage -> {
+		new SysIdRoutine.Mechanism(voltage -> {
 				turretRotator.setVoltage(voltage.baseUnitMagnitude());
 				},
 				// Tell SysId how to record a frame of data for each motor on the mechanism being
@@ -106,7 +152,7 @@ public class FuelAimingSubsystem extends SubsystemBase {
 				log -> {
 					// Record a frame for the left motors.  Since these share an encoder, we consider
 					// the entire group to be one motor.
-					log.motor("shooter-1")
+					log.motor("turret-rotator")
 						.voltage(
 							m_appliedVoltage.mut_replace(
 								turretRotator.getAppliedOutput() * RobotController.getBatteryVoltage(), Volts))
@@ -116,20 +162,61 @@ public class FuelAimingSubsystem extends SubsystemBase {
 						}, this)
 	);
 
-	public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
-  		return routine.quasistatic(direction);
+	public Command sysIdQuasistaticTurret(SysIdRoutine.Direction direction) {
+  		return turretRoutine.quasistatic(direction);
 	}
 
-	public Command sysIdDynamic(SysIdRoutine.Direction direction) {
-  		return routine.dynamic(direction);
+	public Command sysIdDynamicTurret(SysIdRoutine.Direction direction) {
+  		return turretRoutine.dynamic(direction);
+	}
+
+	SysIdRoutine hoodRoutine = new SysIdRoutine(
+		new SysIdRoutine.Config(),
+		new SysIdRoutine.Mechanism(voltage -> {
+				hoodRotator.setVoltage(voltage.baseUnitMagnitude());
+				},
+				// Tell SysId how to record a frame of data for each motor on the mechanism being
+				// characterized.
+				log -> {
+					// Record a frame for the left motors.  Since these share an encoder, we consider
+					// the entire group to be one motor.
+					log.motor("hood-rotator")
+						.voltage(
+							m_appliedVoltage.mut_replace(
+								hoodRotator.getAppliedOutput() * RobotController.getBatteryVoltage(), Volts))
+						.angularPosition(m_distance.mut_replace(hoodRotator.getEncoder().getPosition(), Rotations))
+						.angularVelocity(
+							m_velocity.mut_replace(hoodRotator.getEncoder().getVelocity(), RotationsPerSecond));
+						}, this)
+	);
+
+	public Command sysIdQuasistaticHood(SysIdRoutine.Direction direction) {
+  		return hoodRoutine.quasistatic(direction);
+	}
+
+	public Command sysIdDynamicHood(SysIdRoutine.Direction direction) {
+  		return hoodRoutine.dynamic(direction);
 	}
 
 	@Override
 	public void initSendable(SendableBuilder builder) {
 		super.initSendable(builder);
-		SmartDashboard.putData("Rotator - Run Forward Dynamic", sysIdDynamic(Direction.kForward));
-		SmartDashboard.putData("Rotator - Run Reverse Dynamic", sysIdDynamic(Direction.kReverse));
-		SmartDashboard.putData("Rotator - Run Forward Quasistatic", sysIdQuasistatic(Direction.kForward));
-		SmartDashboard.putData("Rotator - Run Reverse Quasistatic", sysIdQuasistatic(Direction.kReverse));
+		//Sys ID
+		SmartDashboard.putData("Turret - Run Forward Dynamic", sysIdDynamicTurret(Direction.kForward));
+		SmartDashboard.putData("Turret - Run Reverse Dynamic", sysIdDynamicTurret(Direction.kReverse));
+		SmartDashboard.putData("Turret - Run Forward Quasistatic", sysIdQuasistaticTurret(Direction.kForward));
+		SmartDashboard.putData("Turret - Run Reverse Quasistatic", sysIdQuasistaticTurret(Direction.kReverse));
+		SmartDashboard.putData("Hood - Run Forward Dynamic", sysIdDynamicHood(Direction.kForward));
+		SmartDashboard.putData("Hood - Run Reverse Dynamic", sysIdDynamicHood(Direction.kReverse));
+		SmartDashboard.putData("Hood - Run Forward Quasistatic", sysIdQuasistaticHood(Direction.kForward));
+		SmartDashboard.putData("Hood - Run Reverse Quasistatic", sysIdQuasistaticHood(Direction.kReverse));
+
+		//Testing
+		SmartDashboard.putData("Manual Turret CW", manualTurretControlCW());
+		SmartDashboard.putData("Manual Turret CCW", manualTurretControlCCW());
+		SmartDashboard.putData("Manual Turret Stop", manualTurretControlStop());
+		SmartDashboard.putData("Manual Hood Up", manualHoodControlUp());
+		SmartDashboard.putData("Manual Hood Down", manualHoodControlDown());
+		SmartDashboard.putData("Manual Hood Stop", manualHoodControlStop());
 	}
 }

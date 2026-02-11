@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 
 public class ControlInputs {
@@ -35,6 +36,12 @@ public class ControlInputs {
         driveControllerAlert.set(driveController.isConnected());
         componentsBoardAlert.set(componentsBoard.isConnected());
     }
+
+     // For later
+    public final void setRumble(double value) {
+        driveController.setRumble(RumbleType.kBothRumble, value);
+    }
+    
     /*public class Triggers {
         public Triggers() {
             componentsBoard.getHID().setOutput(1, false);

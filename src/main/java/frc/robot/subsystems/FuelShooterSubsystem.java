@@ -130,9 +130,14 @@ public class FuelShooterSubsystem extends SubsystemBase {
 	@Override
 	public void initSendable(SendableBuilder builder) {
 		super.initSendable(builder);
+		//Sys ID
 		SmartDashboard.putData("Shooter - Run Forward Dynamic", sysIdDynamic(Direction.kForward));
 		SmartDashboard.putData("Shooter - Run Reverse Dynamic", sysIdDynamic(Direction.kReverse));
 		SmartDashboard.putData("Shooter - Run Forward Quasistatic", sysIdQuasistatic(Direction.kForward));
 		SmartDashboard.putData("Shooter - Run Reverse Quasistatic", sysIdQuasistatic(Direction.kReverse));
+
+		//Testing
+		SmartDashboard.putData("Shoot Fuel", shootFuel());
+		SmartDashboard.putData("Shooter Deactivate", shooterDeactivate());
 	}
 }
