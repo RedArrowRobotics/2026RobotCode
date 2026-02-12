@@ -28,12 +28,12 @@ public class ControlInputs {
         var rotation = (driveController.getZ() * Math.abs(driveController.getZ()))
                 * driveControllerRotationMultiplier;
         // Compose the seperate components into a state record
-        return new Twist2d(-x, y, -rotation);
+        return new Twist2d(x, y, -rotation);
     }
 
     public static void updateAlerts() {
-        driveControllerAlert.set(driveController.isConnected());
-        componentsBoardAlert.set(componentsBoard.isConnected());
+        driveControllerAlert.set(!driveController.isConnected());
+        componentsBoardAlert.set(!componentsBoard.isConnected());
     }
     public class Triggers {
         public Triggers() {
