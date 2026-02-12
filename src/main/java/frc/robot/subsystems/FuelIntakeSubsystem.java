@@ -5,13 +5,13 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class FuelIntakeSubsystem extends SubsystemBase {
 
-	public Command intakeIn() {
+	public Command intakeFuelIn() {
 		return runOnce(() -> {
 
 		});
 	}
 
-	public Command intakeOut() {
+	public Command intakeFuelOut() {
 		return runOnce(() -> {
 			
 		});
