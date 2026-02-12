@@ -1,10 +1,14 @@
 package frc.robot;
 
 public final class Constants {
+    /** If set to true, enables SysId and more verbose logging. */
+    public static final boolean DEBUG_ENABLED = true;
+    
     public final class OperatorConstants {
         public static final int DRIVE_JOYSTICK_PORT = 0;
         public static final int COMPONENTS_BOARD_PORT = 1;
     }
+
     public final class DeviceConstants {
         public static final int FUEL_SHOOTER_MOTOR_1_ID = 15;
         public static final int FUEL_SHOOTER_MOTOR_2_ID = 16;
@@ -12,9 +16,11 @@ public final class Constants {
         public static final int HOOD_ROTATOR = 18;
 
     }
+
     public final class DriveConstants {
         public static final String SWERVE_CONFIG = "swerve-practice";
     }
+    
     public final class FuelShooterConstants {
         public static final double SHOOTER_POWER = 0.5;
     }
