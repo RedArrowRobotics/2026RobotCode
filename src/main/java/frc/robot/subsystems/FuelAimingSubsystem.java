@@ -9,6 +9,8 @@ import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.Volts;
 
+import java.util.List;
+
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkBase;
@@ -22,6 +24,8 @@ import edu.wpi.first.units.measure.MutDistance;
 import edu.wpi.first.units.measure.MutLinearVelocity;
 import edu.wpi.first.units.measure.MutVoltage;
 import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -29,6 +33,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.ControlInputs;
+import frc.robot.LimelightHelpers;
+import frc.robot.Constants.AprilTagIDs;
 import frc.robot.Constants.DeviceConstants;
 import frc.robot.Constants.FeedforwardConstants;
 import frc.robot.Constants.FuelAimingConstants;
@@ -36,12 +42,13 @@ import frc.robot.Constants.FuelAimingConstants;
 public class FuelAimingSubsystem extends SubsystemBase {
 	private final SparkMax turretRotator = new SparkMax(DeviceConstants.TURRET_ROTATOR, MotorType.kBrushless);
 	private final SparkMax hoodRotator = new SparkMax(0, MotorType.kBrushless);
+	SparkClosedLoopController turretController = turretRotator.getClosedLoopController();
+	SparkMaxConfig turretConfig = new SparkMaxConfig();
+	SparkClosedLoopController hoodController = hoodRotator.getClosedLoopController();
+	SparkMaxConfig hoodConfig = new SparkMaxConfig();
 
 	public FuelAimingSubsystem() {
 		//Turret
-		SparkClosedLoopController turretController = turretRotator.getClosedLoopController();
-		SparkMaxConfig turretConfig = new SparkMaxConfig();
-
 		turretRotator.configure(turretConfig, ResetMode.kResetSafeParameters,
 		PersistMode.kPersistParameters);
 
@@ -63,9 +70,6 @@ public class FuelAimingSubsystem extends SubsystemBase {
 		turretController.setSetpoint(0.0, ControlType.kVelocity);
 
 		//Hood
-		SparkClosedLoopController hoodController = hoodRotator.getClosedLoopController();
-		SparkMaxConfig hoodConfig = new SparkMaxConfig();
-
 		hoodRotator.configure(hoodConfig, ResetMode.kResetSafeParameters,
 		PersistMode.kPersistParameters);
 
@@ -124,10 +128,16 @@ public class FuelAimingSubsystem extends SubsystemBase {
 	}
 
 	public Command automaticAimTowardsHub() {
-		return runEnd(() -> {
-
+		return startRun(() -> {
+			int[] hubIDs = switch(DriverStation.getAlliance().orElse(Alliance.Red)) {
+                case Blue -> AprilTagIDs.BLUE_HUB_IDS;
+                case Red -> AprilTagIDs.RED_HUB_IDS;
+            };
+			LimelightHelpers.SetFiducialIDFiltersOverride(getName(), hubIDs);
 		}, () -> {
-			
+			if(LimelightHelpers.getTV(getName())) {
+				turretController.setSetpoint(LimelightHelpers.getTX(getName()), ControlType.kVelocity);
+			}
 		});
 	}
 
