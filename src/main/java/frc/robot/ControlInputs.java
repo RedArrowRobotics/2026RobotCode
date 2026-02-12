@@ -2,6 +2,7 @@ package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
@@ -29,22 +30,16 @@ public class ControlInputs {
         var rotation = (driveController.getZ() * Math.abs(driveController.getZ()))
                 * driveControllerRotationMultiplier;
         // Compose the seperate components into a state record
-        return new Twist2d(-x, y, -rotation);
+        return new Twist2d(x, y, -rotation);
     }
 
     public static void updateAlerts() {
-        driveControllerAlert.set(driveController.isConnected());
-        componentsBoardAlert.set(componentsBoard.isConnected());
+        driveControllerAlert.set(!driveController.isConnected());
+        componentsBoardAlert.set(!componentsBoard.isConnected());
     }
 
      // For later
     public final void setRumble(double value) {
         driveController.setRumble(RumbleType.kBothRumble, value);
     }
-    
-    /*public class Triggers {
-        public Triggers() {
-            componentsBoard.getHID().setOutput(1, false);
-        }
-    }*/
 }

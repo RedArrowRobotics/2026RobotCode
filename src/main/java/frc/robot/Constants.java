@@ -3,6 +3,9 @@ package frc.robot;
 import java.util.List;
 
 public final class Constants {
+    /** If set to true, enables SysId and more verbose logging. */
+    public static final boolean DEBUG_ENABLED = true;
+    
     public final class OperatorConstants {
         public static final int DRIVE_JOYSTICK_PORT = 0;
         public static final int COMPONENTS_BOARD_PORT = 1;
@@ -32,6 +35,7 @@ public final class Constants {
         public static final String SWERVE_CONFIG = "swerve-practice";
     }
 
+    
     public final class FuelShooterConstants {
         public static final double SHOOTER_POWER = 0.5;
     }
