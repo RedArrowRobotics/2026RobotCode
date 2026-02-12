@@ -40,7 +40,6 @@ public class ControlInputs {
             componentsBoard.getHID().setOutput(1, false);
         }
         public final Trigger climberAscend = new Trigger(() -> componentsBoard.getRawButton(1));
-        public final Trigger climberStop = new Trigger(() -> componentsBoard.getRawButton(2));
         public final Trigger climberDescend = new Trigger(() -> componentsBoard.getRawButton(3));
     }
 }
