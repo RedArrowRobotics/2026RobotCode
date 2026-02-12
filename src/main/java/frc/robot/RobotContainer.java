@@ -42,6 +42,8 @@ public class RobotContainer {
         ControlInputs.componentsBoard.button(0).whileTrue(fuelShooter.shootFuel());
         ControlInputs.componentsBoard.button(1).onTrue(fuelIntake.intakeFuelIn());
         ControlInputs.componentsBoard.button(2).onTrue(fuelIntake.intakeFuelOut());
+        ControlInputs.componentsBoard.button(3).whileTrue(climber.climberAscend());
+        ControlInputs.componentsBoard.button(4).whileTrue(climber.climberDescend());
         ControlInputs.componentsBoard.button(5).whileTrue(agitator.startAgitating());
 
         NamedCommands.registerCommand("Shoot Fuel", fuelShooter.shootFuel());
