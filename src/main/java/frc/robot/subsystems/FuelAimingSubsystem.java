@@ -18,6 +18,7 @@ import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.ControlType;
 
+import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.MutAngle;
 import edu.wpi.first.units.measure.MutAngularVelocity;
 import edu.wpi.first.units.measure.MutDistance;
@@ -127,7 +128,7 @@ public class FuelAimingSubsystem extends SubsystemBase {
 		});
 	}
 
-	public Command automaticAimTowardsHub() {
+	public Command automaticAimRoutine() {
 		return startRun(() -> {
 			int[] hubIDs = switch(DriverStation.getAlliance().orElse(Alliance.Red)) {
                 case Blue -> AprilTagIDs.BLUE_HUB_IDS;
@@ -136,7 +137,14 @@ public class FuelAimingSubsystem extends SubsystemBase {
 			LimelightHelpers.SetFiducialIDFiltersOverride(getName(), hubIDs);
 		}, () -> {
 			if(LimelightHelpers.getTV(getName())) {
-				turretController.setSetpoint(LimelightHelpers.getTX(getName()), ControlType.kVelocity);
+				//Turret Control
+				turretController.setSetpoint(LimelightHelpers.getTX(getName()) / 360, ControlType.kPosition);
+
+				//Hood Control
+				double x = LimelightHelpers.getBotPose3d_TargetSpace("").toPose2d().getX();
+				double y = LimelightHelpers.getBotPose3d_TargetSpace("").toPose2d().getY();
+				double distance = Math.hypot(x, y) + 0.844 /*Distance from April Tag to center of hub*/;
+				//Do math to figure out optimal hood angle as a function of distance
 			}
 		});
 	}
