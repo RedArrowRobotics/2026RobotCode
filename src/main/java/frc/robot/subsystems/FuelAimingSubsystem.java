@@ -143,8 +143,11 @@ public class FuelAimingSubsystem extends SubsystemBase {
 				//Hood Control
 				double x = LimelightHelpers.getBotPose3d_TargetSpace("").toPose2d().getX();
 				double y = LimelightHelpers.getBotPose3d_TargetSpace("").toPose2d().getY();
-				double distance = Math.hypot(x, y) + 0.844 /*Distance from April Tag to center of hub*/;
+				double distance = Math.hypot(x, y);
 				//Do math to figure out optimal hood angle as a function of distance
+				//Min Distance: 30 in     Max Distance: 224.47 in
+				//Min Angle: 60 deg       Max Distance: 80 deg
+				//Min RPM: 2200 rpm       Max RPM: 3100 rpm
 			}
 		});
 	}
