@@ -35,11 +35,4 @@ public class ControlInputs {
         driveControllerAlert.set(!driveController.isConnected());
         componentsBoardAlert.set(!componentsBoard.isConnected());
     }
-    public class Triggers {
-        public Triggers() {
-            componentsBoard.getHID().setOutput(1, false);
-        }
-        public final Trigger climberAscend = new Trigger(() -> componentsBoard.getRawButton(1));
-        public final Trigger climberDescend = new Trigger(() -> componentsBoard.getRawButton(3));
-    }
 }
