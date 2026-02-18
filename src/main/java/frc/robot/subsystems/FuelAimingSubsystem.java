@@ -148,6 +148,8 @@ public class FuelAimingSubsystem extends SubsystemBase {
 				//Min Distance: 30 in     Max Distance: 224.47 in
 				//Min Angle: 60 deg       Max Distance: 80 deg
 				//Min RPM: 2200 rpm       Max RPM: 3100 rpm
+				double hoodAngle = -0.10284(distance - 30) + 80;
+				//Convert angle to encoder counts
 			}
 		});
 	}

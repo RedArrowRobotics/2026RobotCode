@@ -32,6 +32,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Constants.DeviceConstants;
 import frc.robot.Constants.FeedforwardConstants;
+import frc.robot.Constants.FuelAimingConstants;
 import frc.robot.Constants.FuelShooterConstants;
 
 public class FuelShooterSubsystem extends SubsystemBase {
@@ -86,7 +87,7 @@ public class FuelShooterSubsystem extends SubsystemBase {
 
 	public Command shooterDeactivate() {
 		return runOnce(() -> {
-			controller.setSetpoint(0.0, ControlType.kVelocity);
+			controller.setSetpoint(FuelShooterConstants.STOPPED_SPEED, ControlType.kVelocity);
 		});
 	}
 

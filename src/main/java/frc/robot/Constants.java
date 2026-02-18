@@ -38,6 +38,7 @@ public final class Constants {
     
     public final class FuelShooterConstants {
         public static final double SHOOTER_POWER = 0.5;
+        public static final double STOPPED_SPEED = 0.000;
     }
 
     public final class FuelAimingConstants {
