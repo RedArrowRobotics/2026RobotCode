@@ -52,6 +52,9 @@ public class RobotContainer {
         ControlInputs.componentsBoard.button(4).whileTrue(climber.climberDescend());
         ControlInputs.componentsBoard.button(5).whileTrue(agitator.startAgitating());
 
+        //ControlInputs.componentsBoard.button(6).whileTrue(fuelAiming.automaticAimRoutine(() -> swerveDriveTrain.getPose()));
+        //ControlInputs.componentsBoard.button(7).whileTrue(fuelShooter.shootFuelVarSpeed(() -> swerveDriveTrain.getPose()));
+
         NamedCommands.registerCommand("Shoot Fuel", fuelShooter.shootFuel());
     }
 

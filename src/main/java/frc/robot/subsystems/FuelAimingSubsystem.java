@@ -10,6 +10,7 @@ import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.Volts;
 
 import java.util.List;
+import java.util.function.Supplier;
 
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
@@ -18,6 +19,9 @@ import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.ControlType;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.MutAngle;
 import edu.wpi.first.units.measure.MutAngularVelocity;
@@ -35,10 +39,13 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.ControlInputs;
 import frc.robot.LimelightHelpers;
+import frc.robot.SensorInputs;
 import frc.robot.Constants.AprilTagIDs;
 import frc.robot.Constants.DeviceConstants;
 import frc.robot.Constants.FeedforwardConstants;
+import frc.robot.Constants.FieldPoses;
 import frc.robot.Constants.FuelAimingConstants;
+import frc.robot.subsystems.DriveSubsystem;
 
 public class FuelAimingSubsystem extends SubsystemBase {
 	private final SparkMax turretRotator = new SparkMax(DeviceConstants.TURRET_ROTATOR, MotorType.kBrushless);
@@ -47,6 +54,11 @@ public class FuelAimingSubsystem extends SubsystemBase {
 	SparkMaxConfig turretConfig = new SparkMaxConfig();
 	SparkClosedLoopController hoodController = hoodRotator.getClosedLoopController();
 	SparkMaxConfig hoodConfig = new SparkMaxConfig();
+
+	Translation2d hubPosition = switch(DriverStation.getAlliance().orElse(Alliance.Red)) {
+                case Blue -> FieldPoses.BLUE_HUB;
+                case Red -> FieldPoses.RED_HUB;
+            };
 
 	public FuelAimingSubsystem() {
 		//Turret
@@ -128,29 +140,25 @@ public class FuelAimingSubsystem extends SubsystemBase {
 		});
 	}
 
-	public Command automaticAimRoutine() {
-		return startRun(() -> {
-			int[] hubIDs = switch(DriverStation.getAlliance().orElse(Alliance.Red)) {
-                case Blue -> AprilTagIDs.BLUE_HUB_IDS;
-                case Red -> AprilTagIDs.RED_HUB_IDS;
-            };
-			LimelightHelpers.SetFiducialIDFiltersOverride(getName(), hubIDs);
-		}, () -> {
-			if(LimelightHelpers.getTV(getName())) {
+	public Command automaticAimRoutine(Supplier<Pose2d> robotPose) {
+		return run(() -> {
+				double distance = hubPosition.getDistance(robotPose.get().getTranslation());
 				//Turret Control
-				turretController.setSetpoint(LimelightHelpers.getTX(getName()) / 360, ControlType.kPosition);
-
+				double theta = Math.atan((hubPosition.getY() - robotPose.get().getY()) /
+										 (hubPosition.getX() - robotPose.get().getX()));
+				double degreeRelativeToRobot = (theta * (180/Math.PI)) - robotPose.get().getRotation().getDegrees(); /*Convert from radians to degrees and subtract yaw of the robot*/
+				//Todo: restrain degreeRelativeToRobot to bounds that the turret can physically reach
+				turretController.setSetpoint(degreeRelativeToRobot * (190/48) /*times (or divide) the gear ratio (190:48)*/, ControlType.kPosition);
+							
 				//Hood Control
-				double x = LimelightHelpers.getBotPose3d_TargetSpace("").toPose2d().getX();
-				double y = LimelightHelpers.getBotPose3d_TargetSpace("").toPose2d().getY();
-				double distance = Math.hypot(x, y);
+				
 				//Do math to figure out optimal hood angle as a function of distance
-				//Min Distance: 30 in     Max Distance: 224.47 in
+				//Min Distance: 30 in -> 1.359m     Max Distance: 241.7 in -> 6.139m
 				//Min Angle: 60 deg       Max Angle: 80 deg
 				//Min RPM: 2200 rpm       Max RPM: 3100 rpm
-				double hoodAngle = 80 - 0.10284 * (distance - 30);
-				//Convert angle to encoder counts
-			}
+				//-4.184 is slope
+				double hoodAngle = 80 - 4.184 * (distance - 1.359);
+				//Convert angle to encoder counts (gear ratio of 420:25)
 		});
 	}
 
@@ -224,6 +232,8 @@ public class FuelAimingSubsystem extends SubsystemBase {
 	@Override
 	public void initSendable(SendableBuilder builder) {
 		super.initSendable(builder);
+		//Telemetry
+
 		//Sys ID
 		SmartDashboard.putData("Turret - Run Forward Dynamic", sysIdDynamicTurret(Direction.kForward));
 		SmartDashboard.putData("Turret - Run Reverse Dynamic", sysIdDynamicTurret(Direction.kReverse));

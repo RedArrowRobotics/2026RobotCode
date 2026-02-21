@@ -1,6 +1,12 @@
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Meters;
+
 import java.util.List;
+
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Translation2d;
 
 public final class Constants {
     /** If set to true, enables SysId and more verbose logging. */
@@ -23,12 +29,18 @@ public final class Constants {
         public static final int[] BLUE_TOWER_IDS = {31,32};
     }
 
+    public final class FieldPoses {
+        public static final Translation2d RED_HUB = new Translation2d(11.905, 4.075);
+        public static final Translation2d BLUE_HUB = new Translation2d(4.645, 4.075);
+    }
+
     public final class DeviceConstants {
         public static final int FUEL_SHOOTER_MOTOR_1_ID = 15;
         public static final int FUEL_SHOOTER_MOTOR_2_ID = 16;
         public static final int TURRET_ROTATOR = 17;
         public static final int HOOD_ROTATOR = 18;
-
+        public static final String LIMELIGHT_FRONT = "limelight-front";
+        public static final String LIMELIGHT_BACK = "limelight-back";
     }
 
     public final class DriveConstants {

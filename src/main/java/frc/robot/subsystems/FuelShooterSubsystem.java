@@ -11,12 +11,16 @@ import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.Volts;
 
+import java.util.function.Supplier;
+
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.SparkClosedLoopController;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.units.measure.MutAngle;
 import edu.wpi.first.units.measure.MutAngularVelocity;
 import edu.wpi.first.units.measure.MutDistance;
@@ -24,6 +28,7 @@ import edu.wpi.first.units.measure.MutLinearVelocity;
 import edu.wpi.first.units.measure.MutVoltage;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -32,6 +37,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Constants.DeviceConstants;
 import frc.robot.Constants.FeedforwardConstants;
+import frc.robot.Constants.FieldPoses;
 import frc.robot.Constants.FuelAimingConstants;
 import frc.robot.Constants.FuelShooterConstants;
 import frc.robot.LimelightHelpers;
@@ -43,6 +49,11 @@ public class FuelShooterSubsystem extends SubsystemBase {
 	private final SparkFlexConfig motor1Config = new SparkFlexConfig();
 	private final SparkFlexConfig motor2Config = new SparkFlexConfig();
 	private ShooterStates state = ShooterStates.AT_SPEED;
+
+	private final Translation2d hubPosition = switch(DriverStation.getAlliance().orElse(Alliance.Red)) {
+                case Blue -> FieldPoses.BLUE_HUB;
+                case Red -> FieldPoses.RED_HUB;
+            };
 	
 	public FuelShooterSubsystem () {
 		motor2Config.follow(DeviceConstants.FUEL_SHOOTER_MOTOR_1_ID, true);
@@ -80,17 +91,22 @@ public class FuelShooterSubsystem extends SubsystemBase {
 		AT_SPEED;
 	}
 
-	public Command shootFuel() {
+	public Command shootFuelVarSpeed(Supplier<Pose2d> robotPose) {
 		return run(() -> {
-			double x = LimelightHelpers.getBotPose3d_TargetSpace("").toPose2d().getX();
-			double y = LimelightHelpers.getBotPose3d_TargetSpace("").toPose2d().getY();
-			double distance = Math.hypot(x, y);
+			double distance = hubPosition.getDistance(robotPose.get().getTranslation());
 			//Do math to figure out optimal motor speed as a function of distance
-			//Min Distance: 30 in     Max Distance: 224.47 in
+			//Min Distance: 30 in -> 1.359m     Max Distance: 241.7 in -> 6.139
 			//Min Angle: 60 deg       Max Angle: 80 deg
 			//Min RPM: 2200 rpm       Max RPM: 3100 rpm
-			double speed = 4.62796 * (distance - 30) + 2200;
+			//slope is 188.285
+			double speed = 2200 + 188.285 * (distance - 1.359);
 			controller.setSetpoint(speed, ControlType.kVelocity, ClosedLoopSlot.kSlot0);
+		});
+	}
+
+	public Command shootFuel() {
+		return runOnce(() -> {
+			controller.setSetpoint(FuelShooterConstants.SHOOTER_POWER, ControlType.kVelocity, ClosedLoopSlot.kSlot0);
 		});
 	}
 

@@ -40,6 +40,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
 import frc.robot.ControlInputs;
 import frc.robot.LimelightHelpers;
+import frc.robot.Constants.DeviceConstants;
 import frc.robot.Constants.DriveConstants;
 import swervelib.SwerveDrive;
 import swervelib.parser.SwerveParser;
@@ -196,12 +197,12 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     public void updatePosition() {
-        LimelightHelpers.SetRobotOrientation("limelight",
+        LimelightHelpers.SetRobotOrientation(DeviceConstants.LIMELIGHT_FRONT,
                 swerveDrive.getPose().getRotation().getDegrees(), 0, 0, 0, 0, 0);
-        if (LimelightHelpers.getTV("limelight") == true) {
+        if (LimelightHelpers.getTV(DeviceConstants.LIMELIGHT_FRONT) == true) {
             // Add vision measurement
             LimelightHelpers.PoseEstimate poseEstimate = LimelightHelpers
-                    .getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
+                    .getBotPoseEstimate_wpiBlue_MegaTag2(DeviceConstants.LIMELIGHT_FRONT);
             swerveDrive.setVisionMeasurementStdDevs(VecBuilder.fill(0.7, 0.7, 9999999.0));
             swerveDrive.addVisionMeasurement(poseEstimate.pose, Timer.getFPGATimestamp());
             trustPose = true;
