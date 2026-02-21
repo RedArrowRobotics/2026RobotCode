@@ -5,13 +5,13 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class FuelIntakeSubsystem extends SubsystemBase {
 
-	public Command intakeIn() {
+	public Command intakeFuelIn() {
 		return runOnce(() -> {
 
 		});
 	}
 
-	public Command intakeOut() {
+	public Command intakeFuelOut() {
 		return runOnce(() -> {
 			
 		});
@@ -33,11 +33,6 @@ public class FuelIntakeSubsystem extends SubsystemBase {
 		return runOnce(() -> {
 			
 		});
-	}
-
-	public boolean genericSensor() {
-		// Query some boolean state, such as a digital sensor.
-		return false;
 	}
 
 }

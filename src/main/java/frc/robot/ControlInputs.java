@@ -28,16 +28,18 @@ public class ControlInputs {
         var rotation = (driveController.getZ() * Math.abs(driveController.getZ()))
                 * driveControllerRotationMultiplier;
         // Compose the seperate components into a state record
-        return new Twist2d(-x, y, -rotation);
+        return new Twist2d(x, y, -rotation);
     }
 
     public static void updateAlerts() {
-        driveControllerAlert.set(driveController.isConnected());
-        componentsBoardAlert.set(componentsBoard.isConnected());
+        driveControllerAlert.set(!driveController.isConnected());
+        componentsBoardAlert.set(!componentsBoard.isConnected());
     }
-    /*public class Triggers {
+    public class Triggers {
         public Triggers() {
             componentsBoard.getHID().setOutput(1, false);
         }
-    }*/
+        public final Trigger climberAscend = new Trigger(() -> componentsBoard.getRawButton(1));
+        public final Trigger climberDescend = new Trigger(() -> componentsBoard.getRawButton(3));
+    }
 }
