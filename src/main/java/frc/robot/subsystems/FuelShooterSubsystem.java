@@ -92,7 +92,6 @@ public class FuelShooterSubsystem extends SubsystemBase {
 			double distance = hubPosition.getDistance(robotPose.get().getTranslation());
 			//Do math to figure out optimal motor speed as a function of distance
 			//Min Distance: 30 in -> 1.359m     Max Distance: 241.7 in -> 6.139
-			//Min Angle: 60 deg       Max Angle: 80 deg
 			//Min RPM: 2200 rpm       Max RPM: 3100 rpm
 			//slope is 188.285
 			double speed = 2200 + 188.285 * (distance - 1.359);
