@@ -50,9 +50,9 @@ public class FuelShooterSubsystem extends SubsystemBase {
 	private final SparkFlexConfig motor2Config = new SparkFlexConfig();
 	private ShooterStates state = ShooterStates.AT_SPEED;
 	private final Translation2d hubPosition = switch(DriverStation.getAlliance().orElse(Alliance.Red)) {
-                case Blue -> FieldPoses.BLUE_HUB;
-                case Red -> FieldPoses.RED_HUB;
-            };
+        case Blue -> FieldPoses.BLUE_HUB;
+        case Red -> FieldPoses.RED_HUB;
+    };
 	
 	public FuelShooterSubsystem () {
 		motor2Config.follow(DeviceConstants.FUEL_SHOOTER_MOTOR_1_ID, true);
@@ -112,15 +112,15 @@ public class FuelShooterSubsystem extends SubsystemBase {
 		});
 	}
 
-  // Mutable holder for unit-safe voltage values, persisted to avoid reallocation.
-  private final MutVoltage m_appliedVoltage = Volts.mutable(0);
-  // Mutable holder for unit-safe linear distance values, persisted to avoid reallocation.
-  private final MutAngle m_distance = Rotations.mutable(0);
-  // Mutable holder for unit-safe linear velocity values, persisted to avoid reallocation.
-  private final MutAngularVelocity m_velocity = RotationsPerSecond.mutable(0);
+	// Mutable holder for unit-safe voltage values, persisted to avoid reallocation.
+	private final MutVoltage m_appliedVoltage = Volts.mutable(0);
+	 // Mutable holder for unit-safe linear distance values, persisted to avoid reallocation.
+	private final MutAngle m_distance = Rotations.mutable(0);
+	// Mutable holder for unit-safe linear velocity values, persisted to avoid reallocation.
+	private final MutAngularVelocity m_velocity = RotationsPerSecond.mutable(0);
 
 
-		// Creates a SysIdRoutine
+	// Creates a SysIdRoutine
 	SysIdRoutine routine = new SysIdRoutine(
 		new SysIdRoutine.Config(),
 		new SysIdRoutine.Mechanism( voltage -> {
