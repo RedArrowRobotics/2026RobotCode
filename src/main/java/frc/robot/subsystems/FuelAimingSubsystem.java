@@ -50,10 +50,10 @@ import frc.robot.subsystems.DriveSubsystem;
 public class FuelAimingSubsystem extends SubsystemBase {
 	private final SparkMax turretRotator = new SparkMax(DeviceConstants.TURRET_ROTATOR, MotorType.kBrushless);
 	private final SparkMax hoodRotator = new SparkMax(DeviceConstants.HOOD_ROTATOR, MotorType.kBrushed);
-	SparkClosedLoopController turretController = turretRotator.getClosedLoopController();
-	SparkMaxConfig turretConfig = new SparkMaxConfig();
-	SparkClosedLoopController hoodController = hoodRotator.getClosedLoopController();
-	SparkMaxConfig hoodConfig = new SparkMaxConfig();
+	private final SparkClosedLoopController turretController = turretRotator.getClosedLoopController();
+	private final SparkMaxConfig turretConfig = new SparkMaxConfig();
+	private final SparkClosedLoopController hoodController = hoodRotator.getClosedLoopController();
+	private final SparkMaxConfig hoodConfig = new SparkMaxConfig();
 	private final Translation2d hubPosition = switch(DriverStation.getAlliance().orElse(Alliance.Red)) {
         case Blue -> FieldPoses.BLUE_HUB;
         case Red -> FieldPoses.RED_HUB;
