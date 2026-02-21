@@ -26,9 +26,9 @@ public class ControlInputs {
         var y = (driveController.getY() * Math.abs(driveController.getY()))
                 * driveControllerLinearMultiplier;
         var rotation = (driveController.getZ() * Math.abs(driveController.getZ()))
-                * driveControllerRotationMultiplier;
+                * driveControllerRotationMultiplier * -1;
         // Compose the seperate components into a state record
-        return new Twist2d(x, y, -rotation);
+        return new Twist2d(x, y, rotation);
     }
 
     public static void updateAlerts() {
