@@ -42,7 +42,7 @@ import frc.robot.Constants.FuelAimingConstants;
 
 public class FuelAimingSubsystem extends SubsystemBase {
 	private final SparkMax turretRotator = new SparkMax(DeviceConstants.TURRET_ROTATOR, MotorType.kBrushless);
-	private final SparkMax hoodRotator = new SparkMax(0, MotorType.kBrushless);
+	private final SparkMax hoodRotator = new SparkMax(DeviceConstants.HOOD_ROTATOR, MotorType.kBrushed);
 	SparkClosedLoopController turretController = turretRotator.getClosedLoopController();
 	SparkMaxConfig turretConfig = new SparkMaxConfig();
 	SparkClosedLoopController hoodController = hoodRotator.getClosedLoopController();
@@ -146,9 +146,9 @@ public class FuelAimingSubsystem extends SubsystemBase {
 				double distance = Math.hypot(x, y);
 				//Do math to figure out optimal hood angle as a function of distance
 				//Min Distance: 30 in     Max Distance: 224.47 in
-				//Min Angle: 60 deg       Max Distance: 80 deg
+				//Min Angle: 60 deg       Max Angle: 80 deg
 				//Min RPM: 2200 rpm       Max RPM: 3100 rpm
-				double hoodAngle = -0.10284(distance - 30) + 80;
+				double hoodAngle = 80 - 0.10284 * (distance - 30);
 				//Convert angle to encoder counts
 			}
 		});

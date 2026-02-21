@@ -34,6 +34,7 @@ import frc.robot.Constants.DeviceConstants;
 import frc.robot.Constants.FeedforwardConstants;
 import frc.robot.Constants.FuelAimingConstants;
 import frc.robot.Constants.FuelShooterConstants;
+import frc.robot.LimelightHelpers;
 
 public class FuelShooterSubsystem extends SubsystemBase {
 	private final SparkFlex shooterMotor1 = new SparkFlex(DeviceConstants.FUEL_SHOOTER_MOTOR_1_ID, MotorType.kBrushless);
@@ -80,8 +81,16 @@ public class FuelShooterSubsystem extends SubsystemBase {
 	}
 
 	public Command shootFuel() {
-		return runOnce(() -> {
-			controller.setSetpoint(FuelShooterConstants.SHOOTER_POWER, ControlType.kVelocity, ClosedLoopSlot.kSlot0);
+		return run(() -> {
+			double x = LimelightHelpers.getBotPose3d_TargetSpace("").toPose2d().getX();
+			double y = LimelightHelpers.getBotPose3d_TargetSpace("").toPose2d().getY();
+			double distance = Math.hypot(x, y);
+			//Do math to figure out optimal motor speed as a function of distance
+			//Min Distance: 30 in     Max Distance: 224.47 in
+			//Min Angle: 60 deg       Max Angle: 80 deg
+			//Min RPM: 2200 rpm       Max RPM: 3100 rpm
+			double speed = 4.62796 * (distance - 30) + 2200;
+			controller.setSetpoint(speed, ControlType.kVelocity, ClosedLoopSlot.kSlot0);
 		});
 	}
 
