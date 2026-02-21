@@ -157,17 +157,17 @@ public class FuelAimingSubsystem extends SubsystemBase {
 		});
 	}
 
-	//Todo: Add sprinkler routine to turret :l
+    //Todo: Add sprinkler routine to turret :l
 
-	// Mutable holder for unit-safe voltage values, persisted to avoid reallocation.
-  private final MutVoltage m_appliedVoltage = Volts.mutable(0);
-  // Mutable holder for unit-safe linear distance values, persisted to avoid reallocation.
-  private final MutAngle m_distance = Rotations.mutable(0);
-  // Mutable holder for unit-safe linear velocity values, persisted to avoid reallocation.
-  private final MutAngularVelocity m_velocity = RotationsPerSecond.mutable(0);
+    // Mutable holder for unit-safe voltage values, persisted to avoid reallocation.
+    private final MutVoltage m_appliedVoltage = Volts.mutable(0);
+    // Mutable holder for unit-safe linear distance values, persisted to avoid reallocation.
+    private final MutAngle m_distance = Rotations.mutable(0);
+    // Mutable holder for unit-safe linear velocity values, persisted to avoid reallocation.
+    private final MutAngularVelocity m_velocity = RotationsPerSecond.mutable(0);
 
 
-		// Creates a SysIdRoutine
+	// Creates a SysIdRoutine
 	SysIdRoutine turretRoutine = new SysIdRoutine(
 		new SysIdRoutine.Config(),
 		new SysIdRoutine.Mechanism(voltage -> {
