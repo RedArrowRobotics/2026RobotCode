@@ -55,9 +55,9 @@ public class FuelAimingSubsystem extends SubsystemBase {
 	SparkClosedLoopController hoodController = hoodRotator.getClosedLoopController();
 	SparkMaxConfig hoodConfig = new SparkMaxConfig();
 	private final Translation2d hubPosition = switch(DriverStation.getAlliance().orElse(Alliance.Red)) {
-                case Blue -> FieldPoses.BLUE_HUB;
-                case Red -> FieldPoses.RED_HUB;
-            };
+        case Blue -> FieldPoses.BLUE_HUB;
+        case Red -> FieldPoses.RED_HUB;
+    };
 
 	public FuelAimingSubsystem() {
 		//Turret
