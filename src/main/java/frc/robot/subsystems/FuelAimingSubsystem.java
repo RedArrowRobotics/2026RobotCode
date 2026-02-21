@@ -137,7 +137,6 @@ public class FuelAimingSubsystem extends SubsystemBase {
 
 	public Command automaticAimRoutine(Supplier<Pose2d> robotPose) {
 		return run(() -> {
-				double distance = hubPosition.getDistance(robotPose.get().getTranslation());
 				//Turret Control
 				double theta = Math.atan((hubPosition.getY() - robotPose.get().getY()) /
 										 (hubPosition.getX() - robotPose.get().getX()));
@@ -146,14 +145,15 @@ public class FuelAimingSubsystem extends SubsystemBase {
 				turretController.setSetpoint(degreeRelativeToRobot * (190/48) /*times (or divide) the gear ratio (190:48)*/, ControlType.kPosition);
 							
 				//Hood Control
-				
+				double distance = hubPosition.getDistance(robotPose.get().getTranslation());
 				//Do math to figure out optimal hood angle as a function of distance
 				//Min Distance: 30 in -> 1.359m     Max Distance: 241.7 in -> 6.139m
 				//Min Angle: 60 deg       Max Angle: 80 deg
 				//Min RPM: 2200 rpm       Max RPM: 3100 rpm
 				//-4.184 is slope
 				double hoodAngle = 80 - 4.184 * (distance - 1.359);
-				//Convert angle to encoder counts (gear ratio of 420:25)
+				//Convert angle to encoder counts (gear ratio of 420:25 = 16.8)
+				hoodController.setSetpoint((hoodAngle * 16.8) / 360, ControlType.kPosition);
 		});
 	}
 
