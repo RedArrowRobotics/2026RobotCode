@@ -14,4 +14,11 @@ public final class Constants {
     public final class FuelShooterConstants {
         public static final double THROWER_POWER = 0.5;
     }
+    public final class AgitatorConstants {
+        public static final int BELT_MOTOR_1_ID = 20;
+        public static final int BELT_MOTOR_2_ID = 21;
+        public static final int KICKER_MOTOR_ID = 22;
+        public static final double BELT_SPEED = 0.5;
+        public static final double KICK_SPEED = 0.5;
+    }
 }
