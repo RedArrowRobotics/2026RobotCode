@@ -44,12 +44,11 @@ import frc.robot.LimelightHelpers;
 
 public class FuelShooterSubsystem extends SubsystemBase {
 	private final SparkFlex shooterMotor1 = new SparkFlex(DeviceConstants.FUEL_SHOOTER_MOTOR_1_ID, MotorType.kBrushless);
-	//private final SparkFlex shooterMotor2 = new SparkFlex(DeviceConstants.FUEL_SHOOTER_MOTOR_2_ID, MotorType.kBrushless);
+	private final SparkFlex shooterMotor2 = new SparkFlex(DeviceConstants.FUEL_SHOOTER_MOTOR_2_ID, MotorType.kBrushless);
 	private final SparkClosedLoopController controller = shooterMotor1.getClosedLoopController();
 	private final SparkFlexConfig motor1Config = new SparkFlexConfig();
 	private final SparkFlexConfig motor2Config = new SparkFlexConfig();
 	private ShooterStates state = ShooterStates.AT_SPEED;
-
 	private final Translation2d hubPosition = switch(DriverStation.getAlliance().orElse(Alliance.Red)) {
                 case Blue -> FieldPoses.BLUE_HUB;
                 case Red -> FieldPoses.RED_HUB;
@@ -60,24 +59,21 @@ public class FuelShooterSubsystem extends SubsystemBase {
 
 		shooterMotor1.configure(motor1Config, ResetMode.kResetSafeParameters,
 		PersistMode.kPersistParameters);
-
-		//shooterMotor2.configure(motor2Config, ResetMode.kResetSafeParameters,
-        //PersistMode.kPersistParameters);
+		shooterMotor2.configure(motor2Config, ResetMode.kResetSafeParameters,
+        PersistMode.kPersistParameters);
 
 		motor1Config.closedLoop
 		.p(FeedforwardConstants.SHOOTER_kP_NO_FUEL)
 		.i(FeedforwardConstants.SHOOTER_kI_NO_FUEL)
 		.d(FeedforwardConstants.SHOOTER_kD_NO_FUEL)
-
+		//Secondary Values
 		.p(FeedforwardConstants.SHOOTER_kP_FUEL, ClosedLoopSlot.kSlot1)
 		.i(FeedforwardConstants.SHOOTER_kI_FUEL, ClosedLoopSlot.kSlot1)
 		.d(FeedforwardConstants.SHOOTER_kD_FUEL, ClosedLoopSlot.kSlot1);
-
 		motor1Config.closedLoop.feedForward
 		.kV(FeedforwardConstants.SHOOTER_kV)
 		.kS(FeedforwardConstants.SHOOTER_kS)
 		.kA(FeedforwardConstants.SHOOTER_kA);
-
 		motor1Config.closedLoop.maxMotion
 		.cruiseVelocity(FeedforwardConstants.SHOOTER_MAX_VELOCTIY)
 		.maxAcceleration(FeedforwardConstants.SHOOTER_MAX_ACCELERATION)

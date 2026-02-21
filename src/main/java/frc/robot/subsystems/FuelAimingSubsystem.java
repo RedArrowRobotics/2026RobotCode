@@ -54,8 +54,7 @@ public class FuelAimingSubsystem extends SubsystemBase {
 	SparkMaxConfig turretConfig = new SparkMaxConfig();
 	SparkClosedLoopController hoodController = hoodRotator.getClosedLoopController();
 	SparkMaxConfig hoodConfig = new SparkMaxConfig();
-
-	Translation2d hubPosition = switch(DriverStation.getAlliance().orElse(Alliance.Red)) {
+	private final Translation2d hubPosition = switch(DriverStation.getAlliance().orElse(Alliance.Red)) {
                 case Blue -> FieldPoses.BLUE_HUB;
                 case Red -> FieldPoses.RED_HUB;
             };
@@ -69,12 +68,10 @@ public class FuelAimingSubsystem extends SubsystemBase {
 		.p(FeedforwardConstants.TURRET_ROTATOR_kP)
 		.i(FeedforwardConstants.TURRET_ROTATOR_kI)
 		.d(FeedforwardConstants.TURRET_ROTATOR_kD);
-		
 		turretConfig.closedLoop.feedForward
 		.kV(FeedforwardConstants.TURRET_ROTATOR_kV)
 		.kS(FeedforwardConstants.TURRET_ROTATOR_kS)
 		.kA(FeedforwardConstants.TURRET_ROTATOR_kA);
-
 		turretConfig.closedLoop.maxMotion
 		.cruiseVelocity(FeedforwardConstants.TURRET_ROTATOR_MAX_VELOCITY)
 		.maxAcceleration(FeedforwardConstants.TURRET_ROTATOR_MAX_ACCELERATION)
@@ -90,12 +87,10 @@ public class FuelAimingSubsystem extends SubsystemBase {
 		.p(FeedforwardConstants.HOOD_ROTATOR_kP)
 		.i(FeedforwardConstants.HOOD_ROTATOR_kI)
 		.d(FeedforwardConstants.HOOD_ROTATOR_kD);
-
 		hoodConfig.closedLoop.feedForward
 		.kV(FeedforwardConstants.HOOD_ROTATOR_kV)
 		.kS(FeedforwardConstants.HOOD_ROTATOR_kS)
 		.kA(FeedforwardConstants.HOOD_ROTATOR_kA);
-
 		hoodConfig.closedLoop.maxMotion
 		.cruiseVelocity(FeedforwardConstants.HOOD_ROTATOR_MAX_VELOCITY)
 		.maxAcceleration(FeedforwardConstants.HOOD_ROTATOR_MAX_ACCELERATION)
