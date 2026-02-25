@@ -12,6 +12,7 @@ public final class Constants {
     public final class DeviceConstants {
         public static final int FUEL_SHOOTER_MOTOR_ID = 15;
         public static final int CLIMBER_MOTOR_ID = 19;
+        public static int climberEncoderChannel = 22;
     }
 
     public final class DriveConstants {
