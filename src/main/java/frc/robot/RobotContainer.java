@@ -1,77 +1,71 @@
 package frc.robot;
 
-import static edu.wpi.first.units.Units.DegreesPerSecondPerSecond;
-import static edu.wpi.first.units.Units.Inches;
-import static edu.wpi.first.units.Units.Meters;
-import static edu.wpi.first.units.Units.MetersPerSecond;
-import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
-import static edu.wpi.first.units.Units.Volts;
-
 import java.io.IOException;
 import java.util.Optional;
-import java.util.Set;
-
-import com.fasterxml.jackson.databind.util.Named;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-import com.pathplanner.lib.commands.PathfindingCommand;
-import com.pathplanner.lib.path.GoalEndState;
-import com.pathplanner.lib.path.PathConstraints;
-import com.pathplanner.lib.path.PathPlannerPath;
 
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.wpilibj.Alert;
+import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.subsystems.AgitatorSubsystem;
+import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.DriveSubsystem.DriveOrientation;
+import frc.robot.subsystems.FuelIntakeSubsystem;
+//import frc.robot.subsystems.FuelIntakeSubsystem;
+import frc.robot.subsystems.FuelShooterSubsystem;
 
 public class RobotContainer {
-  
-    private final ControlInputs controlInputs = new ControlInputs();
-    private final ControlInputs.Triggers controlTriggers = controlInputs.new Triggers();
     private final DriveSubsystem swerveDriveTrain;
-    private final SensorInputs sensorInputs = new SensorInputs();
+    private final FuelIntakeSubsystem fuelIntake = new FuelIntakeSubsystem();
+    private final FuelShooterSubsystem fuelShooter = new FuelShooterSubsystem();
+    private final AgitatorSubsystem agitator = new AgitatorSubsystem();
+    private final ClimberSubsystem climber = new ClimberSubsystem();
     private final SendableChooser<Command> autoChooser;
-
+    
     public RobotContainer() throws IOException, Exception {
         swerveDriveTrain = new DriveSubsystem();
 
-        swerveDriveTrain.setDefaultCommand( 
-                swerveDriveTrain.teleopDrive(
-                () -> {
-                    var power = controlInputs.getdriveController().toSwerve();
-                    if (controlTriggers.slowSpeed.getAsBoolean()) {
-                        power = power.times(0.5);
-                    }
-                    return power;
-                },
-                DriveOrientation.FIELD_CENTRIC)
-                );
-      
-         
+        swerveDriveTrain.setDefaultCommand(swerveDriveTrain.teleopDrive(DriveOrientation.FIELD_CENTRIC));
         autoChooser = AutoBuilder.buildAutoChooser();
+
+        configureBindings();
+        configureSendables();
     }
 
-    public void robotPeriodic() {
-        sensorInputs.readSensors();
+    private void configureBindings() {
+        ControlInputs.componentsBoard.button(6).onTrue(fuelIntake.extendIntake());
+        ControlInputs.componentsBoard.button(7).onTrue(fuelIntake.retractIntake());
+        ControlInputs.componentsBoard.button(0).whileTrue(fuelShooter.shootFuel());
+        ControlInputs.componentsBoard.button(1).onTrue(fuelIntake.intakeFuelIn());
+        ControlInputs.componentsBoard.button(2).onTrue(fuelIntake.intakeFuelOut());
+        ControlInputs.componentsBoard.button(3).whileTrue(climber.climberAscend());
+        ControlInputs.componentsBoard.button(4).whileTrue(climber.climberDescend());
+        ControlInputs.componentsBoard.button(5).whileTrue(agitator.startAgitating());
+
+        NamedCommands.registerCommand("Shoot Fuel", fuelShooter.shootFuel());
     }
 
-    public void teleopPeriodic() {
-    
+    /**
+     * Adds sendable data to the dashboard. Sendable data will automatically update
+     * each iteration of the robot loop, so this function only needs to be called
+     * once.
+     */
+    private void configureSendables() {
+        SmartDashboard.putData(SensorInputs.navxAhrs);
+        swerveDriveTrain.sysId.ifPresent(sysid -> sysid.configureSendables());
     }
 
-     public Optional<Command> getAutonomousCommand() {
+    public Optional<Command> getAutonomousCommand() {
         // Fetch the selected autonomous command from the dashoard and put it in an
         // Optional
         return Optional.ofNullable(autoChooser.getSelected());
     }
-    
+
     public void resetGyro() {
         swerveDriveTrain.resetGyro();
     }
 }
-
