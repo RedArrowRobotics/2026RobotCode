@@ -32,6 +32,15 @@ public final class Constants {
     public final class FieldPoses {
         public static final Translation2d RED_HUB = new Translation2d(11.905, 4.075);
         public static final Translation2d BLUE_HUB = new Translation2d(4.645, 4.075);
+
+        public static final Translation2d RED_ALLIANCE_LINE = new Translation2d(12.500, 0.000);
+        public static final Translation2d BLUE_ALLIANCE_LINE = new Translation2d(4.000, 0.000);
+
+        public static final Translation2d RED_ALLIANCE_TRENCH_DEPOT = new Translation2d(11.900, 0.650);
+        public static final Translation2d RED_ALLIANCE_TRENCH_OUTPOST = new Translation2d(11.900, 7.500);
+        public static final Translation2d BLUE_ALLIANCE_TRENCH_DEPOT = new Translation2d(4.700, 7.500);
+        public static final Translation2d BLUE_ALLIANCE_TRENCH_OUTPOST = new Translation2d(4.700, 0.650);
+
     }
 
     public final class DeviceConstants {
@@ -42,7 +51,7 @@ public final class Constants {
         public static final String LIMELIGHT_FRONT = "limelight-front";
         public static final String LIMELIGHT_BACK = "limelight-back";
         public static final int CLIMBER_MOTOR_ID = 19;
-        public static int climberEncoderChannel = 22;
+        public static final int CLIMBER_ENCODER_CHANNEL = 22;
     }
 
     public final class DriveConstants {
@@ -117,6 +126,7 @@ public final class Constants {
 
         public static final double HOPPER_EXTENDED_POSITION = 0.0;
         public static final double HOPPER_RETRACTED_POSITION = 0.0;
+    }
       
     public final class AgitatorConstants {
         public static final int BELT_MOTOR_1_ID = 20;
@@ -124,6 +134,7 @@ public final class Constants {
         public static final int KICKER_MOTOR_ID = 22;
         public static final double BELT_SPEED = 0.5;
         public static final double KICK_SPEED = 0.5;
+    }
 
     public final class ClimberConstants {
         public static final double CLIMBER_POWER = 0.5;

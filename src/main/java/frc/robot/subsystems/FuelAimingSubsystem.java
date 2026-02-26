@@ -54,9 +54,22 @@ public class FuelAimingSubsystem extends SubsystemBase {
 	private final SparkMaxConfig turretConfig = new SparkMaxConfig();
 	private final SparkClosedLoopController hoodController = hoodRotator.getClosedLoopController();
 	private final SparkMaxConfig hoodConfig = new SparkMaxConfig();
+	//Important Coordinates
 	private final Translation2d hubPosition = switch(DriverStation.getAlliance().orElse(Alliance.Red)) {
         case Blue -> FieldPoses.BLUE_HUB;
         case Red -> FieldPoses.RED_HUB;
+    };
+	private final Translation2d depotTrench = switch(DriverStation.getAlliance().orElse(Alliance.Red)) {
+        case Blue -> FieldPoses.BLUE_ALLIANCE_TRENCH_DEPOT;
+        case Red -> FieldPoses.RED_ALLIANCE_TRENCH_DEPOT;
+    };
+	private final Translation2d outpostTrench = switch(DriverStation.getAlliance().orElse(Alliance.Red)) {
+        case Blue -> FieldPoses.BLUE_ALLIANCE_TRENCH_OUTPOST;
+        case Red -> FieldPoses.RED_ALLIANCE_TRENCH_OUTPOST;
+    };
+	private final Translation2d allianceZoneLine = switch(DriverStation.getAlliance().orElse(Alliance.Red)) {
+        case Blue -> FieldPoses.BLUE_ALLIANCE_LINE;
+        case Red -> FieldPoses.RED_ALLIANCE_LINE;
     };
 
 	public FuelAimingSubsystem() {
@@ -152,7 +165,13 @@ public class FuelAimingSubsystem extends SubsystemBase {
 				//-4.184 is slope
 				double hoodAngle = 80 - 4.184 * (distance - 1.359);
 				//Convert angle to encoder counts (gear ratio of 420:25 = 16.8)
-				hoodController.setSetpoint((hoodAngle * 16.8) / 360, ControlType.kPosition);
+				if(robotPose.get().getTranslation().getDistance(outpostTrench) > Math.abs(allianceZoneLine.getX() - outpostTrench.getX()) ||
+				   robotPose.get().getTranslation().getDistance(depotTrench) > Math.abs(allianceZoneLine.getX() - outpostTrench.getX()) ) {
+					hoodController.setSetpoint((hoodAngle * 16.8) / 360, ControlType.kPosition);
+				   } else {
+					hoodController.setSetpoint(0.0, ControlType.kPosition);
+				   }
+				
 		});
 	}
 
