@@ -12,7 +12,7 @@ public final class Constants {
     public final class DeviceConstants {
         public static final int FUEL_SHOOTER_MOTOR_ID = 15;
         public static final int CLIMBER_MOTOR_ID = 19;
-        public static int climberEncoderChannel = 22;
+        public static final int CLIMBER_ENCODER_CHANNEL = 22;
     }
 
     public final class DriveConstants {
@@ -41,6 +41,7 @@ public final class Constants {
 
         public static final double HOPPER_EXTENDED_POSITION = 0.0;
         public static final double HOPPER_RETRACTED_POSITION = 0.0;
+    }
       
     public final class AgitatorConstants {
         public static final int BELT_MOTOR_1_ID = 20;
@@ -48,8 +49,22 @@ public final class Constants {
         public static final int KICKER_MOTOR_ID = 22;
         public static final double BELT_SPEED = 0.5;
         public static final double KICK_SPEED = 0.5;
-
+    }
     public final class ClimberConstants {
         public static final double CLIMBER_POWER = 0.5;
+
+        public static final double CLIMBER_kP = 0.0;
+        public static final double CLIMBER_kI = 0.0;
+        public static final double CLIMBER_kD = 0.0;
+        public static final double CLIMBER_kV = 0.0;
+        public static final double CLIMBER_kS = 0.0;
+        public static final double CLIMBER_kA = 0.0;
+        public static final double CLIMBER_kG = 0.0;
+        public static final double CLIMBER_MAX_VELOCITY = 0.0;
+        public static final double CLIMBER_MAX_ACCELERATION = 0.0;
+        public static final double CLIMBER_MAX_ERROR = 0.0;
+
+        public static final double CLIMBER_DOWN_POSITION = 0.0;
+        public static final double CLIMBER_UP_POSITION = 0.0;
     }
 }

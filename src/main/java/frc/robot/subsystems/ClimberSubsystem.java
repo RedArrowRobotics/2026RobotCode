@@ -1,5 +1,16 @@
 package frc.robot.subsystems;
 
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.PersistMode;
+import com.revrobotics.ResetMode;
+import com.revrobotics.spark.SparkClosedLoopController;
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkBase.ControlType;
+
+import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -8,11 +19,31 @@ import frc.robot.Constants.DeviceConstants;
 
 public class ClimberSubsystem extends SubsystemBase {
     private final SparkMax climberMotor = new SparkMax(DeviceConstants.CLIMBER_MOTOR_ID, MotorType.kBrushless);
-    private DigitalInput climberEncoder = new DigitalInput(Constants.climberEncoderChannel);
+    private final SparkMaxConfig climberConfig = new SparkMaxConfig();
+    private final SparkClosedLoopController climberController = climberMotor.getClosedLoopController();
+    private DigitalInput climberEncoder = new DigitalInput(DeviceConstants.CLIMBER_ENCODER_CHANNEL);
 
-    public Command climberAscend() {
+    public ClimberSubsystem() {
+        climberMotor.configure(climberConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+        climberConfig.closedLoop
+        .p(ClimberConstants.CLIMBER_kP)
+        .i(ClimberConstants.CLIMBER_kI)
+        .d(ClimberConstants.CLIMBER_kD);
+        climberConfig.closedLoop.feedForward
+        .kV(ClimberConstants.CLIMBER_kV)
+        .kS(ClimberConstants.CLIMBER_kS)
+        .kA(ClimberConstants.CLIMBER_kA)
+        .kG(ClimberConstants.CLIMBER_kG);
+        climberConfig.closedLoop.maxMotion
+        .cruiseVelocity(ClimberConstants.CLIMBER_MAX_VELOCITY)
+        .maxAcceleration(ClimberConstants.CLIMBER_MAX_ACCELERATION)
+        .allowedProfileError(ClimberConstants.CLIMBER_MAX_ERROR);
+    }
+
+    public Command climberUp() {
         return runOnce(() -> {
-            climberMotor.set(ClimberConstants.CLIMBER_POWER);
+            climberController.setSetpoint(ClimberConstants.CLIMBER_UP_POSITION, ControlType.kPosition);
         });
     }
 
@@ -22,9 +53,9 @@ public class ClimberSubsystem extends SubsystemBase {
         });
     }
 
-    public Command climberDescend() {
+    public Command climberDown() {
         return runOnce(() -> {
-            climberMotor.set(-1 * ClimberConstants.CLIMBER_POWER);
+            climberController.setSetpoint(ClimberConstants.CLIMBER_DOWN_POSITION, ControlType.kPosition);
         });
     }
 
@@ -33,7 +64,7 @@ public class ClimberSubsystem extends SubsystemBase {
         super.initSendable(builder);
 
         //Testing
-        SmartDashboard.putData("Climb Up", climberAscend());
-        SmartDashboard.putData("Climb Down", climberDescend());
+        SmartDashboard.putData("Climb Up", climberUp());
+        SmartDashboard.putData("Climb Down", climberDown());
     }
 }
