@@ -46,7 +46,7 @@ public final class Constants {
     public final class DeviceConstants {
         public static final int FUEL_SHOOTER_MOTOR_1_ID = 15;
         public static final int FUEL_SHOOTER_MOTOR_2_ID = 16;
-        public static final int TURRET_ROTATOR = 17;
+        public static final int TURRET_ROTATOR = 10;
         public static final int HOOD_ROTATOR = 18;
         public static final String LIMELIGHT_FRONT = "limelight-front";
         public static final String LIMELIGHT_BACK = "limelight-back";
@@ -65,7 +65,7 @@ public final class Constants {
     }
 
     public final class FuelAimingConstants {
-        public static final double TURRET_ROTATOR_MANUAL_POWER = 0.5;
+        public static final double TURRET_ROTATOR_MANUAL_POWER = 0.1;
         public static final double HOOD_ROTATOR_MANUAL_POWER = 0.5;
         public static final double STOPPED_SPEED = 0.000;
     }
@@ -86,15 +86,15 @@ public final class Constants {
         public static final double SHOOTER_MAX_ERROR = 0.0;
 
         //Turret Constants
-        public static final double TURRET_ROTATOR_kP = 0.0;
+        public static final double TURRET_ROTATOR_kP = 0.00086715;
         public static final double TURRET_ROTATOR_kI = 0.0;
         public static final double TURRET_ROTATOR_kD = 0.0;
-        public static final double TURRET_ROTATOR_kV = 0.0;
-        public static final double TURRET_ROTATOR_kS = 0.0;
-        public static final double TURRET_ROTATOR_kA = 0.0;
-        public static final double TURRET_ROTATOR_MAX_VELOCITY = 0.0; //RPM
-        public static final double TURRET_ROTATOR_MAX_ACCELERATION = 0.0; //RPM/s
-        public static final double TURRET_ROTATOR_MAX_ERROR = 0.0;
+        public static final double TURRET_ROTATOR_kV = 0.021812;
+        public static final double TURRET_ROTATOR_kS = 0.11622;
+        public static final double TURRET_ROTATOR_kA = 0.00094242;
+        public static final double TURRET_ROTATOR_MAX_VELOCITY = 320 * 60; //RPM
+        public static final double TURRET_ROTATOR_MAX_ACCELERATION = 104 * 60; //RPM/s
+        public static final double TURRET_ROTATOR_MAX_ERROR = 136.21 * 60; //RPM
 
         //Hood Constants
         public static final double HOOD_ROTATOR_kP = 0.0;

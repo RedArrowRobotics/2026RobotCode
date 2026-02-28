@@ -20,20 +20,20 @@ import frc.robot.subsystems.FuelIntakeSubsystem;
 import frc.robot.subsystems.FuelShooterSubsystem;
 
 public class RobotContainer {
-    private final DriveSubsystem swerveDriveTrain;
-    private final FuelIntakeSubsystem fuelIntake = new FuelIntakeSubsystem();
+    //private final DriveSubsystem swerveDriveTrain;
+    //private final FuelIntakeSubsystem fuelIntake = new FuelIntakeSubsystem();
     private final FuelAimingSubsystem fuelAiming = new FuelAimingSubsystem();
-    private final FuelShooterSubsystem fuelShooter = new FuelShooterSubsystem();
-    private final AgitatorSubsystem agitator = new AgitatorSubsystem();
-    private final ClimberSubsystem climber = new ClimberSubsystem();
-    private final SendableChooser<Command> autoChooser;
+    //private final FuelShooterSubsystem fuelShooter = new FuelShooterSubsystem();
+    //private final AgitatorSubsystem agitator = new AgitatorSubsystem();
+    //private final ClimberSubsystem climber = new ClimberSubsystem();
+    //private final SendableChooser<Command> autoChooser;
     
     public RobotContainer() throws IOException, Exception {
-        swerveDriveTrain = new DriveSubsystem();
+        //swerveDriveTrain = new DriveSubsystem();
 
-        swerveDriveTrain.setDefaultCommand(swerveDriveTrain.teleopDrive(DriveOrientation.FIELD_CENTRIC));
-        fuelShooter.setDefaultCommand(fuelShooter.shooterDeactivate());
-        autoChooser = AutoBuilder.buildAutoChooser();
+        //swerveDriveTrain.setDefaultCommand(swerveDriveTrain.teleopDrive(DriveOrientation.FIELD_CENTRIC));
+        //fuelShooter.setDefaultCommand(fuelShooter.shooterDeactivate());
+        //autoChooser = AutoBuilder.buildAutoChooser();
 
         configureBindings();
         configureSendables();
@@ -42,19 +42,19 @@ public class RobotContainer {
     private void configureBindings() {
         ControlInputs.componentsBoard.axisGreaterThan(1, 0.5).onTrue(fuelAiming.manualTurretControlCW());
         ControlInputs.componentsBoard.axisLessThan(1, -0.5).onTrue(fuelAiming.manualTurretControlCCW());
-        ControlInputs.componentsBoard.button(6).onTrue(fuelIntake.extendIntake());
-        ControlInputs.componentsBoard.button(7).onTrue(fuelIntake.retractIntake());
-        ControlInputs.componentsBoard.button(0).whileTrue(fuelShooter.shootFuel());
-        ControlInputs.componentsBoard.button(1).onTrue(fuelIntake.intakeFuelIn());
-        ControlInputs.componentsBoard.button(2).onTrue(fuelIntake.intakeFuelOut());
-        ControlInputs.componentsBoard.button(3).whileTrue(climber.climberAscend());
-        ControlInputs.componentsBoard.button(4).whileTrue(climber.climberDescend());
-        ControlInputs.componentsBoard.button(5).whileTrue(agitator.startAgitating());
+        // ControlInputs.componentsBoard.button(6).onTrue(fuelIntake.extendIntake());
+        // ControlInputs.componentsBoard.button(7).onTrue(fuelIntake.retractIntake());
+        // ControlInputs.componentsBoard.button(0).whileTrue(fuelShooter.shootFuel());
+        // ControlInputs.componentsBoard.button(1).onTrue(fuelIntake.intakeFuelIn());
+        // ControlInputs.componentsBoard.button(2).onTrue(fuelIntake.intakeFuelOut());
+        // ControlInputs.componentsBoard.button(3).whileTrue(climber.climberAscend());
+        // ControlInputs.componentsBoard.button(4).whileTrue(climber.climberDescend());
+        // ControlInputs.componentsBoard.button(5).whileTrue(agitator.startAgitating());
 
         //ControlInputs.componentsBoard.button(6).whileTrue(fuelAiming.automaticAimRoutine(() -> swerveDriveTrain.getPose()));
         //ControlInputs.componentsBoard.button(7).whileTrue(fuelShooter.shootFuelVarSpeed(() -> swerveDriveTrain.getPose()));
 
-        NamedCommands.registerCommand("Shoot Fuel", fuelShooter.shootFuel());
+        //NamedCommands.registerCommand("Shoot Fuel", fuelShooter.shootFuel());
     }
 
     /**
@@ -64,18 +64,22 @@ public class RobotContainer {
      */
     private void configureSendables() {
         SmartDashboard.putData(SensorInputs.navxAhrs);
-        SmartDashboard.putData(fuelShooter);
+        //SmartDashboard.putData(fuelShooter);
         SmartDashboard.putData(fuelAiming);
-        swerveDriveTrain.sysId.ifPresent(sysid -> sysid.configureSendables());
+        //swerveDriveTrain.sysId.ifPresent(sysid -> sysid.configureSendables());
     }
 
-    public Optional<Command> getAutonomousCommand() {
-        // Fetch the selected autonomous command from the dashoard and put it in an
-        // Optional
-        return Optional.ofNullable(autoChooser.getSelected());
-    }
+    // public Optional<Command> getAutonomousCommand() {
+    //     // Fetch the selected autonomous command from the dashoard and put it in an
+    //     // Optional
+    //     return Optional.ofNullable(autoChooser.getSelected());
+    // }
 
     public void resetGyro() {
-        swerveDriveTrain.resetGyro();
+        //swerveDriveTrain.resetGyro();
+    }
+
+    public void robotPeriodic() {
+        SmartDashboard.putData(fuelAiming);
     }
 }
