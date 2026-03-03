@@ -52,7 +52,6 @@ public class FuelAimingSubsystem extends SubsystemBase {
 	private final SparkMax turretRotator = new SparkMax(DeviceConstants.TURRET_ROTATOR, MotorType.kBrushless);
 	private final SparkClosedLoopController turretController = turretRotator.getClosedLoopController();
 	private final SparkMaxConfig turretConfig = new SparkMaxConfig();
-	private final AlternateEncoderConfig turretEncoderConfig = new AlternateEncoderConfig();
 
 	//private final SparkMax hoodRotator = new SparkMax(DeviceConstants.HOOD_ROTATOR, MotorType.kBrushed);
 	//private final SparkClosedLoopController hoodController = hoodRotator.getClosedLoopController();
@@ -77,8 +76,6 @@ public class FuelAimingSubsystem extends SubsystemBase {
 
 	public FuelAimingSubsystem() {
 		//Turret
-		turretEncoderConfig.countsPerRevolution(8192);
-		turretConfig.apply(turretEncoderConfig);
 		turretRotator.configure(turretConfig, ResetMode.kResetSafeParameters,
 		PersistMode.kPersistParameters);
 
@@ -95,7 +92,7 @@ public class FuelAimingSubsystem extends SubsystemBase {
 		.maxAcceleration(FeedforwardConstants.TURRET_ROTATOR_MAX_ACCELERATION)
 		.allowedProfileError(FeedforwardConstants.TURRET_ROTATOR_MAX_ERROR);
 
-		turretController.setSetpoint(0.0, ControlType.kVelocity);
+		turretController.setSetpoint(0.0, ControlType.kMAXMotionPositionControl);
 
 		//Hood
 		//hoodRotator.configure(hoodConfig, ResetMode.kResetSafeParameters,
@@ -222,9 +219,9 @@ public class FuelAimingSubsystem extends SubsystemBase {
 						.voltage(
 							m_appliedVoltage.mut_replace(
 								turretRotator.getAppliedOutput() * RobotController.getBatteryVoltage(), Volts))
-						.angularPosition(m_distance.mut_replace(turretRotator.getAlternateEncoder().getPosition(), Rotations))
+						.angularPosition(m_distance.mut_replace(turretRotator.getEncoder().getPosition(), Rotations))
 						.angularVelocity(
-							m_velocity.mut_replace(turretRotator.getAlternateEncoder().getVelocity(), RotationsPerSecond));
+							m_velocity.mut_replace(turretRotator.getEncoder().getVelocity(), RotationsPerSecond));
 						}, this)
 	);
 
@@ -268,7 +265,7 @@ public class FuelAimingSubsystem extends SubsystemBase {
 	public void initSendable(SendableBuilder builder) {
 		super.initSendable(builder);
 		//Telemetry
-		builder.addDoubleProperty("Turret Encoder", () -> turretRotator.getAlternateEncoder().getPosition(), null);
+		builder.addDoubleProperty("Turret Encoder", () -> turretRotator.getEncoder().getPosition(), null);
 		builder.addDoubleProperty("Turret Power", () -> turretRotator.get(), null);
 		builder.addDoubleProperty("Turret Voltage", () -> turretRotator.getAppliedOutput(), null);
 		builder.addDoubleProperty("Turret Setpoint", () -> turretController.getSetpoint(), null);
