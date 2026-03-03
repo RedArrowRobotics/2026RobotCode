@@ -126,8 +126,8 @@ public final class Constants {
 
         public static final double HOPPER_EXTENDED_POSITION = 0.0;
         public static final double HOPPER_RETRACTED_POSITION = 0.0;
-    }
-      
+    }      
+
     public final class AgitatorConstants {
         public static final int BELT_MOTOR_1_ID = 20;
         public static final int BELT_MOTOR_2_ID = 21;
@@ -135,7 +135,7 @@ public final class Constants {
         public static final double BELT_SPEED = 0.5;
         public static final double KICK_SPEED = 0.5;
     }
-
+        
     public final class ClimberConstants {
         public static final double CLIMBER_POWER = 0.5;
     }
