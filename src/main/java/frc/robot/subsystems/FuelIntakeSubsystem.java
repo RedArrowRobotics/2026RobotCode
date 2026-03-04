@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import frc.robot.Constants.FeedforwardConstants;
 import frc.robot.Constants.IntakeConstants;
 
 public class FuelIntakeSubsystem extends SubsystemBase {
@@ -36,17 +37,17 @@ public class FuelIntakeSubsystem extends SubsystemBase {
 
 	public FuelIntakeSubsystem() {
 		hopperConfig.closedLoop
-		.p(IntakeConstants.HOPPER_kP)
-		.i(IntakeConstants.HOPPER_kI)
-		.d(IntakeConstants.HOPPER_kD);
+		.p(FeedforwardConstants.HOPPER_kP)
+		.i(FeedforwardConstants.HOPPER_kI)
+		.d(FeedforwardConstants.HOPPER_kD);
 		hopperConfig.closedLoop.feedForward
-		.kV(IntakeConstants.HOPPER_kV)
-		.kS(IntakeConstants.HOPPER_kS)
-		.kA(IntakeConstants.HOPPER_kA);
+		.kV(FeedforwardConstants.HOPPER_kV)
+		.kS(FeedforwardConstants.HOPPER_kS)
+		.kA(FeedforwardConstants.HOPPER_kA);
 		hopperConfig.closedLoop.maxMotion
-		.cruiseVelocity(IntakeConstants.HOPPER_MAX_VELOCITY)
-		.maxAcceleration(IntakeConstants.HOPPER_MAX_ACCELERATION)
-		.allowedProfileError(IntakeConstants.HOPPER_MAX_ERROR);
+		.cruiseVelocity(FeedforwardConstants.HOPPER_MAX_VELOCITY)
+		.maxAcceleration(FeedforwardConstants.HOPPER_MAX_ACCELERATION)
+		.allowedProfileError(FeedforwardConstants.HOPPER_MAX_ERROR);
 
 		hopperExtender.configure(hopperConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 	}
