@@ -106,14 +106,8 @@ public final class Constants {
         public static final double HOOD_ROTATOR_MAX_VELOCITY = 0.0; //RPM
         public static final double HOOD_ROTATOR_MAX_ACCELERATION = 0.0; //RPM/s
         public static final double HOOD_ROTATOR_MAX_ERROR = 0.0;
-    }
 
-    public final class IntakeConstants {
-        public static final int INTAKE_MOTOR_ID = 23;
-        public static final int HOPPER_EXTENDER_MOTOR_ID = 24;
-        public static final double INTAKE_SPEED = 0.5;
-        public static final double HOPPER_MANUAL_SPEED = 0.5;
-
+        //Hopper Constants
         public static final double HOPPER_kP = 0.0;
         public static final double HOPPER_kI = 0.0;
         public static final double HOPPER_kD = 0.0;
@@ -123,6 +117,13 @@ public final class Constants {
         public static final double HOPPER_MAX_VELOCITY = 0.0;
         public static final double HOPPER_MAX_ACCELERATION = 0.0;
         public static final double HOPPER_MAX_ERROR = 0.0;
+    }
+
+    public final class IntakeConstants {
+        public static final int INTAKE_MOTOR_ID = 23;
+        public static final int HOPPER_EXTENDER_MOTOR_ID = 24;
+        public static final double INTAKE_SPEED = 0.5;
+        public static final double HOPPER_MANUAL_SPEED = 0.5;
 
         public static final double HOPPER_EXTENDED_POSITION = 0.0;
         public static final double HOPPER_RETRACTED_POSITION = 0.0;
