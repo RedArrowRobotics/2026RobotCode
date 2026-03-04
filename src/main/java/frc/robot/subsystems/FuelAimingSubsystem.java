@@ -76,9 +76,6 @@ public class FuelAimingSubsystem extends SubsystemBase {
 
 	public FuelAimingSubsystem() {
 		//Turret
-		turretRotator.configure(turretConfig, ResetMode.kResetSafeParameters,
-		PersistMode.kPersistParameters);
-
 		turretConfig.closedLoop
 		.p(FeedforwardConstants.TURRET_ROTATOR_kP)
 		.i(FeedforwardConstants.TURRET_ROTATOR_kI)
@@ -92,12 +89,12 @@ public class FuelAimingSubsystem extends SubsystemBase {
 		.maxAcceleration(FeedforwardConstants.TURRET_ROTATOR_MAX_ACCELERATION)
 		.allowedProfileError(FeedforwardConstants.TURRET_ROTATOR_MAX_ERROR);
 
+		turretRotator.configure(turretConfig, ResetMode.kResetSafeParameters,
+		PersistMode.kPersistParameters);
+
 		turretController.setSetpoint(0.0, ControlType.kMAXMotionPositionControl);
 
 		//Hood
-		//hoodRotator.configure(hoodConfig, ResetMode.kResetSafeParameters,
-		//PersistMode.kPersistParameters);
-
 		hoodConfig.closedLoop
 		.p(FeedforwardConstants.HOOD_ROTATOR_kP)
 		.i(FeedforwardConstants.HOOD_ROTATOR_kI)
@@ -110,6 +107,9 @@ public class FuelAimingSubsystem extends SubsystemBase {
 		.cruiseVelocity(FeedforwardConstants.HOOD_ROTATOR_MAX_VELOCITY)
 		.maxAcceleration(FeedforwardConstants.HOOD_ROTATOR_MAX_ACCELERATION)
 		.allowedProfileError(FeedforwardConstants.HOOD_ROTATOR_MAX_ERROR);
+
+		//hoodRotator.configure(hoodConfig, ResetMode.kResetSafeParameters,
+		//PersistMode.kPersistParameters);
 
 		//hoodController.setSetpoint(0.0, ControlType.kVelocity);
 	}
