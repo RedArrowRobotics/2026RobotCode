@@ -21,11 +21,10 @@ public class ClimberSubsystem extends SubsystemBase {
     private final SparkMax climberMotor = new SparkMax(DeviceConstants.CLIMBER_MOTOR_ID, MotorType.kBrushless);
     private final SparkMaxConfig climberConfig = new SparkMaxConfig();
     private final SparkClosedLoopController climberController = climberMotor.getClosedLoopController();
-    private DigitalInput climberEncoder = new DigitalInput(DeviceConstants.CLIMBER_ENCODER_CHANNEL);
+    private final DigitalInput climberEncoder = new DigitalInput(DeviceConstants.CLIMBER_ENCODER_CHANNEL);
+    public ClimberState climberState = ClimberState.HOME;
 
     public ClimberSubsystem() {
-        climberMotor.configure(climberConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-
         climberConfig.closedLoop
         .p(ClimberConstants.CLIMBER_kP)
         .i(ClimberConstants.CLIMBER_kI)
@@ -39,32 +38,66 @@ public class ClimberSubsystem extends SubsystemBase {
         .cruiseVelocity(ClimberConstants.CLIMBER_MAX_VELOCITY)
         .maxAcceleration(ClimberConstants.CLIMBER_MAX_ACCELERATION)
         .allowedProfileError(ClimberConstants.CLIMBER_MAX_ERROR);
+
+        climberMotor.configure(climberConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
 
-    public Command climberUp() {
+    public enum ClimberState {
+        HOME,
+        MOVING,
+        EXTENDED;
+    }
+
+    public Command climberUpManual() {
         return runOnce(() -> {
-            climberController.setSetpoint(ClimberConstants.CLIMBER_UP_POSITION, ControlType.kPosition);
+            climberMotor.set(ClimberConstants.CLIMBER_POWER);
+            climberState = ClimberState.MOVING;
+        });
+    }
+
+    public Command climberDownManual() {
+        return runOnce(() -> {
+            climberMotor.set(ClimberConstants.CLIMBER_POWER * -1);
+            climberState = ClimberState.MOVING;
         });
     }
 
     public Command climberStop() {
         return runOnce(() -> {
             climberMotor.set(0.00000000);
+            climberState = ClimberState.HOME;
         });
     }
 
-    public Command climberDown() {
-        return runOnce(() -> {
-            climberController.setSetpoint(ClimberConstants.CLIMBER_DOWN_POSITION, ControlType.kPosition);
+    public Command climberUpPID() {
+        return startEnd(() -> {
+            climberController.setSetpoint(ClimberConstants.CLIMBER_UP_POSITION, ControlType.kMAXMotionPositionControl);
+            climberState = ClimberState.MOVING;
+        }, () -> {
+            climberState = ClimberState.EXTENDED;
+        });
+    }
+
+    public Command climberDownPID() {
+         return startEnd(() -> {
+            climberController.setSetpoint(ClimberConstants.CLIMBER_DOWN_POSITION, ControlType.kMAXMotionPositionControl);
+            climberState = ClimberState.MOVING;
+        }, () -> {
+            climberState = ClimberState.HOME;
         });
     }
 
     @Override
     public void initSendable(SendableBuilder builder) {
         super.initSendable(builder);
+        //Telemetry
+        builder.addStringProperty("Climber State", () -> climberState.toString(), null);
 
         //Testing
-        SmartDashboard.putData("Climb Up", climberUp());
-        SmartDashboard.putData("Climb Down", climberDown());
+        SmartDashboard.putData("Climber Up Manual", climberUpManual());
+        SmartDashboard.putData("Climber Down Manual", climberDownManual());
+        SmartDashboard.putData("Climber Stop", climberStop());
+        SmartDashboard.putData("Climb Up PID", climberUpPID());
+        SmartDashboard.putData("Climb Down PID", climberDownPID());
     }
 }
