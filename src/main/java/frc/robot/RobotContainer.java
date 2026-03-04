@@ -37,8 +37,8 @@ public class RobotContainer {
     }
 
     private void configureBindings() {
-        ControlInputs.componentsBoard.button(6).onTrue(fuelIntake.extendIntake());
-        ControlInputs.componentsBoard.button(7).onTrue(fuelIntake.retractIntake());
+        ControlInputs.componentsBoard.button(6).onTrue(fuelIntake.extendIntakeManual());
+        ControlInputs.componentsBoard.button(7).onTrue(fuelIntake.retractIntakeManual());
         ControlInputs.componentsBoard.button(0).whileTrue(fuelShooter.shootFuel());
         ControlInputs.componentsBoard.button(1).onTrue(fuelIntake.intakeFuelIn());
         ControlInputs.componentsBoard.button(2).onTrue(fuelIntake.intakeFuelOut());

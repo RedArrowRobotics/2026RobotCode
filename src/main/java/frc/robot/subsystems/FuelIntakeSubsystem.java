@@ -32,6 +32,7 @@ public class FuelIntakeSubsystem extends SubsystemBase {
 	private final SparkMax hopperExtender = new SparkMax(IntakeConstants.HOPPER_EXTENDER_MOTOR_ID, MotorType.kBrushless);
 	private final SparkClosedLoopController hopperController = hopperExtender.getClosedLoopController();
 	private final SparkMaxConfig hopperConfig = new SparkMaxConfig();
+	public HopperState hopperState = HopperState.HOME;
 
 	public FuelIntakeSubsystem() {
 		hopperConfig.closedLoop
@@ -48,6 +49,12 @@ public class FuelIntakeSubsystem extends SubsystemBase {
 		.allowedProfileError(IntakeConstants.HOPPER_MAX_ERROR);
 
 		hopperExtender.configure(hopperConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+	}
+
+	public enum HopperState {
+		HOME,
+		MOVING,
+		EXTENDED;
 	}
 
 	public Command intakeFuelIn() {
@@ -68,33 +75,42 @@ public class FuelIntakeSubsystem extends SubsystemBase {
 		});
 	}
 
-	public Command extendIntake() {
+	public Command extendIntakeManual() {
 		return runOnce(() -> {
 			hopperExtender.set(IntakeConstants.HOPPER_MANUAL_SPEED);
+			hopperState = HopperState.MOVING;
 		});
 	}
 
-	public Command retractIntake() {
+	public Command retractIntakeManual() {
 		return runOnce(() -> {
 			hopperExtender.set(IntakeConstants.HOPPER_MANUAL_SPEED * -1);
+			hopperState = HopperState.MOVING;
 		});
 	}
 
 	public Command stopHopperExtension() {
 		return runOnce(() -> {
 			hopperExtender.set(0.0);
+			hopperState = HopperState.HOME;
 		});
 	}
 
 	public Command extendIntakePIDF() {
-		return runOnce(() -> {
-			hopperController.setSetpoint(IntakeConstants.HOPPER_EXTENDED_POSITION, ControlType.kPosition);
+		return startEnd(() -> {
+			hopperController.setSetpoint(IntakeConstants.HOPPER_EXTENDED_POSITION, ControlType.kMAXMotionPositionControl);
+			hopperState = HopperState.MOVING;
+		}, () -> {
+			hopperState = HopperState.EXTENDED;
 		});
 	}
 
 	public Command retractIntakePIDF() {
-		return runOnce(() -> {
-			hopperController.setSetpoint(IntakeConstants.HOPPER_RETRACTED_POSITION, ControlType.kPosition);
+		return startEnd(() -> {
+			hopperController.setSetpoint(IntakeConstants.HOPPER_RETRACTED_POSITION, ControlType.kMAXMotionPositionControl);
+			hopperState = HopperState.MOVING;
+		}, () -> {
+			hopperState = HopperState.HOME;
 		});
 	}
 
@@ -148,8 +164,8 @@ public class FuelIntakeSubsystem extends SubsystemBase {
 		//Testing
 		SmartDashboard.putData("Intake Fuel In", intakeFuelIn());
 		SmartDashboard.putData("Intake Fuel Out", intakeFuelOut());
-		SmartDashboard.putData("Extend Intake Manual", extendIntake());
-		SmartDashboard.putData("Retract Intake Manual", retractIntake());
+		SmartDashboard.putData("Extend Intake Manual", extendIntakeManual());
+		SmartDashboard.putData("Retract Intake Manual", retractIntakeManual());
 		SmartDashboard.putData("Extend Intake PIDF", extendIntakePIDF());
 		SmartDashboard.putData("Retract Intake PIDF", retractIntakePIDF());
 	}
