@@ -57,11 +57,6 @@ public class FuelShooterSubsystem extends SubsystemBase {
 	public FuelShooterSubsystem () {
 		motor2Config.follow(DeviceConstants.FUEL_SHOOTER_MOTOR_1_ID, true);
 
-		shooterMotor1.configure(motor1Config, ResetMode.kResetSafeParameters,
-		PersistMode.kPersistParameters);
-		shooterMotor2.configure(motor2Config, ResetMode.kResetSafeParameters,
-        PersistMode.kPersistParameters);
-
 		motor1Config.closedLoop
 		.p(FeedforwardConstants.SHOOTER_kP_NO_FUEL)
 		.i(FeedforwardConstants.SHOOTER_kI_NO_FUEL)
@@ -78,6 +73,11 @@ public class FuelShooterSubsystem extends SubsystemBase {
 		.cruiseVelocity(FeedforwardConstants.SHOOTER_MAX_VELOCTIY)
 		.maxAcceleration(FeedforwardConstants.SHOOTER_MAX_ACCELERATION)
 		.allowedProfileError(FeedforwardConstants.SHOOTER_MAX_ERROR);
+
+		shooterMotor1.configure(motor1Config, ResetMode.kResetSafeParameters,
+		PersistMode.kPersistParameters);
+		shooterMotor2.configure(motor2Config, ResetMode.kResetSafeParameters,
+        PersistMode.kPersistParameters);
 
 		controller.setSetpoint(0.0, ControlType.kVelocity, ClosedLoopSlot.kSlot0);
 	}

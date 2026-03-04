@@ -77,11 +77,6 @@ public class FuelAimingSubsystem extends SubsystemBase {
 
 	public FuelAimingSubsystem() {
 		//Turret
-		turretEncoderConfig.countsPerRevolution(8192);
-		turretConfig.apply(turretEncoderConfig);
-		turretRotator.configure(turretConfig, ResetMode.kResetSafeParameters,
-		PersistMode.kPersistParameters);
-
 		turretConfig.closedLoop
 		.p(FeedforwardConstants.TURRET_ROTATOR_kP)
 		.i(FeedforwardConstants.TURRET_ROTATOR_kI)
@@ -94,6 +89,9 @@ public class FuelAimingSubsystem extends SubsystemBase {
 		.cruiseVelocity(FeedforwardConstants.TURRET_ROTATOR_MAX_VELOCITY)
 		.maxAcceleration(FeedforwardConstants.TURRET_ROTATOR_MAX_ACCELERATION)
 		.allowedProfileError(FeedforwardConstants.TURRET_ROTATOR_MAX_ERROR);
+
+		turretRotator.configure(turretConfig, ResetMode.kResetSafeParameters,
+		PersistMode.kPersistParameters);
 
 		turretController.setSetpoint(0.0, ControlType.kVelocity);
 
