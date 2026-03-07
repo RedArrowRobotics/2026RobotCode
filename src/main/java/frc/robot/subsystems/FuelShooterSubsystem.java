@@ -38,7 +38,7 @@ import frc.robot.Constants.FuelShooterConstants;
 public class FuelShooterSubsystem extends SubsystemBase {
 	private final SparkFlex shooterMotor1 = new SparkFlex(DeviceConstants.FUEL_SHOOTER_MOTOR_1_ID, MotorType.kBrushless);
 	private final SparkFlex shooterMotor2 = new SparkFlex(DeviceConstants.FUEL_SHOOTER_MOTOR_2_ID, MotorType.kBrushless);
-	private final SparkClosedLoopController controller = shooterMotor1.getClosedLoopController();
+	private final SparkClosedLoopController shooterController = shooterMotor1.getClosedLoopController();
 	private final SparkFlexConfig motor1Config = new SparkFlexConfig();
 	private final SparkFlexConfig motor2Config = new SparkFlexConfig();
 	private ShooterStates state = ShooterStates.AT_SPEED;
@@ -71,8 +71,6 @@ public class FuelShooterSubsystem extends SubsystemBase {
 		PersistMode.kPersistParameters);
 		shooterMotor2.configure(motor2Config, ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
-
-		controller.setSetpoint(0.0, ControlType.kVelocity, ClosedLoopSlot.kSlot0);
 	}
 
 	public enum ShooterStates {
@@ -88,19 +86,19 @@ public class FuelShooterSubsystem extends SubsystemBase {
 			//Min RPM: 2200 rpm       Max RPM: 3100 rpm
 			//slope is 188.285
 			double speed = 2200 + 188.285 * (distance - 1.359);
-			controller.setSetpoint(speed, ControlType.kVelocity, ClosedLoopSlot.kSlot0);
+			shooterController.setSetpoint(speed, ControlType.kVelocity, ClosedLoopSlot.kSlot0);
 		});
 	}
 
 	public Command shootFuel() {
 		return runOnce(() -> {
-			controller.setSetpoint(FuelShooterConstants.SHOOTER_POWER, ControlType.kVelocity, ClosedLoopSlot.kSlot0);
+			shooterController.setSetpoint(FuelShooterConstants.SHOOTER_RPM, ControlType.kVelocity, ClosedLoopSlot.kSlot0);
 		});
 	}
 
 	public Command shooterDeactivate() {
 		return runOnce(() -> {
-			controller.setSetpoint(FuelShooterConstants.STOPPED_SPEED, ControlType.kVelocity);
+			shooterController.setSetpoint(FuelShooterConstants.STOPPED_SPEED, ControlType.kVelocity);
 		});
 	}
 
@@ -144,6 +142,12 @@ public class FuelShooterSubsystem extends SubsystemBase {
 	@Override
 	public void initSendable(SendableBuilder builder) {
 		super.initSendable(builder);
+		//Telemetry
+		builder.addDoubleProperty("Shooter Power", () -> shooterMotor1.get(), null);
+		builder.addDoubleProperty("Shooter Voltage", () -> shooterMotor1.getAppliedOutput(), null);
+		builder.addDoubleProperty("Shooter Setpoint", () -> shooterController.getSetpoint(), null);
+		builder.addDoubleProperty("Shooter Position", () -> shooterMotor1.getEncoder().getPosition(), null);
+
 		//Sys ID
 		SmartDashboard.putData("Shooter - Run Forward Dynamic", sysIdDynamic(Direction.kForward));
 		SmartDashboard.putData("Shooter - Run Reverse Dynamic", sysIdDynamic(Direction.kReverse));

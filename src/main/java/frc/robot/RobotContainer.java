@@ -23,8 +23,8 @@ public class RobotContainer {
     //private final DriveSubsystem swerveDriveTrain;
     //private final FuelIntakeSubsystem fuelIntake = new FuelIntakeSubsystem();
     private final FuelAimingSubsystem fuelAiming = new FuelAimingSubsystem();
-    //private final FuelShooterSubsystem fuelShooter = new FuelShooterSubsystem();
-    //private final AgitatorSubsystem agitator = new AgitatorSubsystem();
+    private final FuelShooterSubsystem fuelShooter = new FuelShooterSubsystem();
+    private final AgitatorSubsystem agitator = new AgitatorSubsystem();
     //private final ClimberSubsystem climber = new ClimberSubsystem();
     //private final SendableChooser<Command> autoChooser;
     
@@ -64,8 +64,9 @@ public class RobotContainer {
      */
     private void configureSendables() {
         SmartDashboard.putData(SensorInputs.navxAhrs);
-        //SmartDashboard.putData(fuelShooter);
-        SmartDashboard.putData(fuelAiming);
+        SmartDashboard.putData(fuelShooter);
+        SmartDashboard.putData(agitator);
+        //SmartDashboard.putData(fuelAiming);
         //swerveDriveTrain.sysId.ifPresent(sysid -> sysid.configureSendables());
     }
 
