@@ -1,25 +1,59 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.SparkMax;
 
+import static edu.wpi.first.units.Units.Rotations;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
+import static edu.wpi.first.units.Units.Volts;
+
+import com.revrobotics.PersistMode;
+import com.revrobotics.ResetMode;
+import com.revrobotics.spark.SparkClosedLoopController;
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkBase.ControlType;
+import com.revrobotics.spark.config.SparkMaxConfig;
+
+import edu.wpi.first.units.measure.MutAngle;
+import edu.wpi.first.units.measure.MutAngularVelocity;
+import edu.wpi.first.units.measure.MutVoltage;
 import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.AgitatorConstants;
+import frc.robot.Constants.FeedforwardConstants;
 
 public class AgitatorSubsystem extends SubsystemBase {
     //private final SparkMax belt1 = new SparkMax(AgitatorConstants.BELT_MOTOR_1_ID, MotorType.kBrushless);
     //private final SparkMax belt2 = new SparkMax(AgitatorConstants.BELT_MOTOR_2_ID, MotorType.kBrushless);
     private final SparkMax kicker = new SparkMax(AgitatorConstants.KICKER_MOTOR_ID, MotorType.kBrushless);
+    private final SparkMaxConfig kickerConfig = new SparkMaxConfig();
+    private final SparkClosedLoopController kickerController = kicker.getClosedLoopController();
 
+    public AgitatorSubsystem() {
+        kickerConfig.closedLoop
+        .p(FeedforwardConstants.KICKER_kP)
+        .i(FeedforwardConstants.KICKER_kI)
+        .d(FeedforwardConstants.KICKER_kD);
+        kickerConfig.closedLoop.feedForward
+        .kV(FeedforwardConstants.KICKER_kV)
+        .kS(FeedforwardConstants.KICKER_kS)
+        .kA(FeedforwardConstants.KICKER_kA);
+        kickerConfig.closedLoop.maxMotion
+        .cruiseVelocity(FeedforwardConstants.HOOD_ROTATOR_MAX_VELOCITY)
+        .maxAcceleration(FeedforwardConstants.HOOD_ROTATOR_MAX_ACCELERATION)
+        .allowedProfileError(FeedforwardConstants.HOOD_ROTATOR_MAX_ERROR);
+
+        kicker.configure(kickerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    }
 
     public Command startAgitating() {
         return runOnce(() -> {
             //belt1.set(AgitatorConstants.BELT_SPEED);
             //belt2.set(AgitatorConstants.BELT_SPEED * -1);
-            kicker.set(AgitatorConstants.KICK_SPEED);
+            kickerController.setSetpoint(AgitatorConstants.KICK_RPM, ControlType.kVelocity);
         });
     }
 
@@ -27,9 +61,46 @@ public class AgitatorSubsystem extends SubsystemBase {
         return runOnce(() -> {
             //belt1.set(0.0);
             //belt2.set(0.0);
-            kicker.set(0.0);
+            kickerController.setSetpoint(0.0, ControlType.kVelocity);
         });
     }
+
+     // Mutable holder for unit-safe voltage values, persisted to avoid reallocation.
+    private final MutVoltage m_appliedVoltage = Volts.mutable(0);
+    // Mutable holder for unit-safe linear distance values, persisted to avoid reallocation.
+    private final MutAngle m_distance = Rotations.mutable(0);
+    // Mutable holder for unit-safe linear velocity values, persisted to avoid reallocation.
+    private final MutAngularVelocity m_velocity = RotationsPerSecond.mutable(0);
+
+
+	// Creates a SysIdRoutine
+	SysIdRoutine kickerRoutine = new SysIdRoutine(
+		new SysIdRoutine.Config(),
+		new SysIdRoutine.Mechanism(voltage -> {
+				kicker.setVoltage(voltage.baseUnitMagnitude());
+				},
+				// Tell SysId how to record a frame of data for each motor on the mechanism being
+				// characterized.
+				log -> {
+					// Record a frame for the left motors.  Since these share an encoder, we consider
+					// the entire group to be one motor.
+					log.motor("kicker")
+						.voltage(
+							m_appliedVoltage.mut_replace(
+								kicker.getAppliedOutput() * RobotController.getBatteryVoltage(), Volts))
+						.angularPosition(m_distance.mut_replace(kicker.getEncoder().getPosition(), Rotations))
+						.angularVelocity(
+							m_velocity.mut_replace(kicker.getEncoder().getVelocity(), RotationsPerSecond));
+						}, this)
+	);
+
+	public Command sysIdQuasistaticTurret(SysIdRoutine.Direction direction) {
+  		return kickerRoutine.quasistatic(direction);
+	}
+
+	public Command sysIdDynamicTurret(SysIdRoutine.Direction direction) {
+  		return kickerRoutine.dynamic(direction);
+	}
 
     @Override
     public void initSendable(SendableBuilder builder) {
