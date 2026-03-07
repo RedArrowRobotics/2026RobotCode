@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Constants.AgitatorConstants;
 import frc.robot.Constants.FeedforwardConstants;
 
@@ -94,17 +95,23 @@ public class AgitatorSubsystem extends SubsystemBase {
 						}, this)
 	);
 
-	public Command sysIdQuasistaticTurret(SysIdRoutine.Direction direction) {
+	public Command sysIdQuasistaticKicker(SysIdRoutine.Direction direction) {
   		return kickerRoutine.quasistatic(direction);
 	}
 
-	public Command sysIdDynamicTurret(SysIdRoutine.Direction direction) {
+	public Command sysIdDynamicKicker(SysIdRoutine.Direction direction) {
   		return kickerRoutine.dynamic(direction);
 	}
 
     @Override
     public void initSendable(SendableBuilder builder) {
         super.initSendable(builder);
+        //Sys ID
+        SmartDashboard.putData("Kicker - Run Forward Dynamic", sysIdDynamicKicker(Direction.kForward));
+        SmartDashboard.putData("Kicker - Run Reverse Dynamic", sysIdDynamicKicker(Direction.kReverse));
+        SmartDashboard.putData("Kicker - Run Forward Quasistatic", sysIdQuasistaticKicker(Direction.kForward));
+        SmartDashboard.putData("Kicker - Run Reverse Quasistatic", sysIdQuasistaticKicker(Direction.kReverse));
+
         //Testing
         SmartDashboard.putData("Agitate", startAgitating());
         SmartDashboard.putData("Stop Agitating", stopAgitating());
