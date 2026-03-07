@@ -106,6 +106,9 @@ public class AgitatorSubsystem extends SubsystemBase {
     @Override
     public void initSendable(SendableBuilder builder) {
         super.initSendable(builder);
+        //Telemetry
+        builder.addDoubleProperty("Kicker Position", () -> kicker.getEncoder().getPosition(), null);
+        
         //Sys ID
         SmartDashboard.putData("Kicker - Run Forward Dynamic", sysIdDynamicKicker(Direction.kForward));
         SmartDashboard.putData("Kicker - Run Reverse Dynamic", sysIdDynamicKicker(Direction.kReverse));

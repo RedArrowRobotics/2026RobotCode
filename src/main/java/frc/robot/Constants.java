@@ -119,15 +119,15 @@ public final class Constants {
         public static final double HOPPER_MAX_ERROR = 0.0;
 
         //Kicker Constants
-        public static final double KICKER_kP = 0.0;
+        public static final double KICKER_kP = 0.00014281;
         public static final double KICKER_kI = 0.0;
         public static final double KICKER_kD = 0.0;
-        public static final double KICKER_kV = 0.0;
-        public static final double KICKER_kS = 0.0;
-        public static final double KICKER_kA = 0.0;
-        public static final double KICKER_MAX_VELOCITY = 0.0;
-        public static final double KICKER_MAX_ACCELERATION = 0.0;
-        public static final double KICKER_MAX_ERROR = 0.0;
+        public static final double KICKER_kV = 0.0020888;
+        public static final double KICKER_kS = 0.34742;
+        public static final double KICKER_kA = 0.00020057;
+        public static final double KICKER_MAX_VELOCITY = 5000;
+        public static final double KICKER_MAX_ACCELERATION = 6335;
+        public static final double KICKER_MAX_ERROR = 75.0;
     }
 
     public final class IntakeConstants {
@@ -146,7 +146,7 @@ public final class Constants {
         public static final int KICKER_MOTOR_ID = 9;
 
         public static final double BELT_SPEED = 0.5;
-        public static final double KICK_RPM = 0.5;
+        public static final double KICK_RPM = 4000;
     }
         
     public final class ClimberConstants {
