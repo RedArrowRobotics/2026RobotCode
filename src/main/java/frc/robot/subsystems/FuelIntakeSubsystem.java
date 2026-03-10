@@ -34,8 +34,6 @@ public class FuelIntakeSubsystem extends SubsystemBase {
 	private final SparkMaxConfig hopperConfig = new SparkMaxConfig();
 
 	public FuelIntakeSubsystem() {
-		hopperExtender.configure(hopperConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-
 		hopperConfig.closedLoop
 		.p(IntakeConstants.HOPPER_kP)
 		.i(IntakeConstants.HOPPER_kI)
@@ -48,6 +46,8 @@ public class FuelIntakeSubsystem extends SubsystemBase {
 		.cruiseVelocity(IntakeConstants.HOPPER_MAX_VELOCITY)
 		.maxAcceleration(IntakeConstants.HOPPER_MAX_ACCELERATION)
 		.allowedProfileError(IntakeConstants.HOPPER_MAX_ERROR);
+
+		hopperExtender.configure(hopperConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 	}
 
 	public Command intakeFuelIn() {
