@@ -20,7 +20,7 @@ import frc.robot.subsystems.FuelIntakeSubsystem;
 import frc.robot.subsystems.FuelShooterSubsystem;
 
 public class RobotContainer {
-    //private final DriveSubsystem swerveDriveTrain;
+    private final DriveSubsystem swerveDriveTrain;
     //private final FuelIntakeSubsystem fuelIntake = new FuelIntakeSubsystem();
     private final FuelAimingSubsystem fuelAiming = new FuelAimingSubsystem();
     //private final FuelShooterSubsystem fuelShooter = new FuelShooterSubsystem();
@@ -29,9 +29,9 @@ public class RobotContainer {
     //private final SendableChooser<Command> autoChooser;
     
     public RobotContainer() throws IOException, Exception {
-        //swerveDriveTrain = new DriveSubsystem();
+        swerveDriveTrain = new DriveSubsystem();
 
-        //swerveDriveTrain.setDefaultCommand(swerveDriveTrain.teleopDrive(DriveOrientation.FIELD_CENTRIC));
+        swerveDriveTrain.setDefaultCommand(swerveDriveTrain.teleopDrive(DriveOrientation.FIELD_CENTRIC));
         //fuelShooter.setDefaultCommand(fuelShooter.shooterDeactivate());
         //autoChooser = AutoBuilder.buildAutoChooser();
 
@@ -76,7 +76,7 @@ public class RobotContainer {
     // }
 
     public void resetGyro() {
-        //swerveDriveTrain.resetGyro();
+        swerveDriveTrain.resetGyro();
     }
 
     public void robotPeriodic() {
