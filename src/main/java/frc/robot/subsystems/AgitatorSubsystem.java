@@ -15,11 +15,18 @@ public class AgitatorSubsystem extends SubsystemBase {
     private final SparkMax kicker = new SparkMax(AgitatorConstants.KICKER_MOTOR_ID, MotorType.kBrushless);
 
 
-    public Command startAgitating() {
+    public Command agitateIn() {
         return runOnce(() -> {
             belt1.set(AgitatorConstants.BELT_SPEED);
             belt2.set(AgitatorConstants.BELT_SPEED * -1);
             kicker.set(AgitatorConstants.KICK_SPEED);
+        });
+    }
+
+    public Command agitateOut() {
+        return runOnce(() -> {
+            belt1.set(AgitatorConstants.BELT_SPEED * -1);
+            belt2.set(AgitatorConstants.BELT_SPEED);
         });
     }
 
@@ -35,7 +42,7 @@ public class AgitatorSubsystem extends SubsystemBase {
     public void initSendable(SendableBuilder builder) {
         super.initSendable(builder);
         //Testing
-        SmartDashboard.putData("Agitate", startAgitating());
+        SmartDashboard.putData("Agitate", agitateIn());
         SmartDashboard.putData("Stop Agitating", stopAgitating());
     }
 }
