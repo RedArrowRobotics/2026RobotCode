@@ -200,7 +200,6 @@ public class DriveSubsystem extends SubsystemBase {
     public void updatePosition() {
         LimelightHelpers.SetRobotOrientation(Constants.DeviceConstants.LIMELIGHT_BACK,
                 swerveDrive.getPose().getRotation().getDegrees(), 0, 0, 0, 0, 0);
-        //double [] standardDeviationsBack = new double[12];
         double limelightBackDistance = 0;
         double limelightBackDeviaiton = 0;
         if (LimelightHelpers.getTV(Constants.DeviceConstants.LIMELIGHT_BACK) == true) {
@@ -212,12 +211,9 @@ public class DriveSubsystem extends SubsystemBase {
             swerveDrive.setVisionMeasurementStdDevs(VecBuilder.fill(limelightBackDeviaiton, limelightBackDeviaiton, 9999999.0));
             swerveDrive.addVisionMeasurement(poseEstimate.pose, Timer.getFPGATimestamp());
             trustPose = true;
-            //standardDeviationsBack = NetworkTableInstance.getDefault().getTable(Constants.DeviceConstants.LIMELIGHT_BACK).getEntry("stddevs").getDoubleArray(new double[12]);
         }
         SmartDashboard.putNumber("Limelight Back Distance", limelightBackDistance);
         SmartDashboard.putNumber("Limelight Back Deviaiton", limelightBackDeviaiton);
-        //SmartDashboard.putNumberArray("LimelightBackDeviationStatistics", standardDeviationsBack);
-        //double [] standardDeviationsFront = new double[12];
         double limelightFrontDistance = 0;
         double limelightFrontDeviaiton = 0;
         if (LimelightHelpers.getTV(Constants.DeviceConstants.LIMELIGHT_FRONT) == true) {
@@ -229,11 +225,9 @@ public class DriveSubsystem extends SubsystemBase {
             swerveDrive.setVisionMeasurementStdDevs(VecBuilder.fill(limelightFrontDeviaiton, limelightFrontDeviaiton, 9999999.0));
             swerveDrive.addVisionMeasurement(poseEstimate.pose, Timer.getFPGATimestamp());
             trustPose = true;
-            //standardDeviationsFront = NetworkTableInstance.getDefault().getTable(Constants.DeviceConstants.LIMELIGHT_FRONT).getEntry("stddevs").getDoubleArray(new double[12]);
         }
         SmartDashboard.putNumber("Limelight Front Distance", limelightFrontDistance);
         SmartDashboard.putNumber("Limelight Front Deviaiton", limelightFrontDeviaiton);
-        //SmartDashboard.putNumberArray("LimelightFrontDeviationStatistics", standardDeviationsFront);
     }
 
     public Pose2d getPose() {
