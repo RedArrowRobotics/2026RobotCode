@@ -11,23 +11,25 @@ import java.io.IOException;
 import java.util.Optional;
 
 import org.json.simple.parser.ParseException;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.MutDistance;
 import edu.wpi.first.units.measure.MutLinearVelocity;
 import edu.wpi.first.units.measure.MutVoltage;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.MatchType;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
@@ -38,10 +40,9 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
+import frc.robot.Constants.DriveConstants;
 import frc.robot.ControlInputs;
 import frc.robot.LimelightHelpers;
-import frc.robot.Constants.DeviceConstants;
-import frc.robot.Constants.DriveConstants;
 import swervelib.SwerveDrive;
 import swervelib.parser.SwerveParser;
 import swervelib.telemetry.SwerveDriveTelemetry;
@@ -197,16 +198,36 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     public void updatePosition() {
-        LimelightHelpers.SetRobotOrientation(DeviceConstants.LIMELIGHT_FRONT,
+        LimelightHelpers.SetRobotOrientation(Constants.DeviceConstants.LIMELIGHT_BACK,
                 swerveDrive.getPose().getRotation().getDegrees(), 0, 0, 0, 0, 0);
-        if (LimelightHelpers.getTV(DeviceConstants.LIMELIGHT_FRONT) == true) {
+        double limelightBackDistance = 0;
+        double limelightBackDeviaiton = 0;
+        if (LimelightHelpers.getTV(Constants.DeviceConstants.LIMELIGHT_BACK) == true) {
             // Add vision measurement
             LimelightHelpers.PoseEstimate poseEstimate = LimelightHelpers
-                    .getBotPoseEstimate_wpiBlue_MegaTag2(DeviceConstants.LIMELIGHT_FRONT);
-            swerveDrive.setVisionMeasurementStdDevs(VecBuilder.fill(0.7, 0.7, 9999999.0));
+                    .getBotPoseEstimate_wpiBlue_MegaTag2(Constants.DeviceConstants.LIMELIGHT_BACK);
+            limelightBackDistance = NetworkTableInstance.getDefault().getTable(Constants.DeviceConstants.LIMELIGHT_BACK).getEntry("botpose").getDoubleArray(new double[11])[9];
+            limelightBackDeviaiton = Math.max(0.1, 0.2 * limelightBackDistance - 0.1);
+            swerveDrive.setVisionMeasurementStdDevs(VecBuilder.fill(limelightBackDeviaiton, limelightBackDeviaiton, 9999999.0));
             swerveDrive.addVisionMeasurement(poseEstimate.pose, Timer.getFPGATimestamp());
             trustPose = true;
         }
+        SmartDashboard.putNumber("Limelight Back Distance", limelightBackDistance);
+        SmartDashboard.putNumber("Limelight Back Deviaiton", limelightBackDeviaiton);
+        double limelightFrontDistance = 0;
+        double limelightFrontDeviaiton = 0;
+        if (LimelightHelpers.getTV(Constants.DeviceConstants.LIMELIGHT_FRONT) == true) {
+            // Add vision measurement
+            LimelightHelpers.PoseEstimate poseEstimate = LimelightHelpers
+                    .getBotPoseEstimate_wpiBlue_MegaTag2(Constants.DeviceConstants.LIMELIGHT_FRONT);
+            limelightFrontDistance = NetworkTableInstance.getDefault().getTable(Constants.DeviceConstants.LIMELIGHT_FRONT).getEntry("botpose").getDoubleArray(new double[11])[9];
+            limelightFrontDeviaiton = Math.max(0.1, 0.2 * limelightFrontDistance - 0.1);
+            swerveDrive.setVisionMeasurementStdDevs(VecBuilder.fill(limelightFrontDeviaiton, limelightFrontDeviaiton, 9999999.0));
+            swerveDrive.addVisionMeasurement(poseEstimate.pose, Timer.getFPGATimestamp());
+            trustPose = true;
+        }
+        SmartDashboard.putNumber("Limelight Front Distance", limelightFrontDistance);
+        SmartDashboard.putNumber("Limelight Front Deviaiton", limelightFrontDeviaiton);
     }
 
     public Pose2d getPose() {
