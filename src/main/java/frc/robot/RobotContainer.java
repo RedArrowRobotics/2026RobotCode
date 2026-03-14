@@ -67,6 +67,7 @@ public class RobotContainer {
         SmartDashboard.putData(fuelShooter);
         SmartDashboard.putData(agitator);
         SmartDashboard.putData(fuelAiming);
+        SmartDashboard.putData(swerveDriveTrain);
         //swerveDriveTrain.sysId.ifPresent(sysid -> sysid.configureSendables());
     }
 

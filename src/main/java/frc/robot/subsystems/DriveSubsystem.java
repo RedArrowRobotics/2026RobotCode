@@ -26,6 +26,7 @@ import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.MutDistance;
 import edu.wpi.first.units.measure.MutLinearVelocity;
 import edu.wpi.first.units.measure.MutVoltage;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.MatchType;
 import edu.wpi.first.wpilibj.Filesystem;
@@ -359,5 +360,11 @@ public class DriveSubsystem extends SubsystemBase {
             SmartDashboard.putData("SysId/"+name+"/Dynamic Forward", dynamic(SysIdRoutine.Direction.kForward));
             SmartDashboard.putData("SysId/"+name+"/Dynamic Reverse", dynamic(SysIdRoutine.Direction.kReverse));
         }
+    }
+
+    @Override
+	public void initSendable(SendableBuilder builder) {
+		super.initSendable(builder);
+        builder.addDoubleProperty("Robot Rotation", () -> getPose().getRotation().getDegrees(), null);
     }
 }
