@@ -47,7 +47,7 @@ public final class Constants {
         public static final int TURRET_ROTATOR = 10;
         public static final int FUEL_SHOOTER_MOTOR_1_ID = 11;
         public static final int FUEL_SHOOTER_MOTOR_2_ID = 12;
-        public static final int HOOD_ROTATOR = 18;
+        public static final int HOOD_ROTATOR = 17;
         public static final int CLIMBER_MOTOR_ID = 19;
         public static final String LIMELIGHT_FRONT = "limelight-front";
         public static final String LIMELIGHT_BACK = "limelight-back";
@@ -66,8 +66,10 @@ public final class Constants {
 
     public final class FuelAimingConstants {
         public static final double TURRET_ROTATOR_MANUAL_POWER = 0.1;
-        public static final double HOOD_ROTATOR_MANUAL_POWER = 0.5;
+        public static final double HOOD_ROTATOR_MANUAL_POWER = 0.15;
         public static final double STOPPED_SPEED = 0.000;
+        public static final double HOOD_DOWN_POSITION = 0.0;
+        public static final double HOOD_UP_POSITION = 2.142;
     }
 
     public final class FeedforwardConstants {
