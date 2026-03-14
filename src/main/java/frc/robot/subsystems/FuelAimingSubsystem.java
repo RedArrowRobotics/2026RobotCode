@@ -49,6 +49,7 @@ public class FuelAimingSubsystem extends SubsystemBase {
 	private final SparkMax hoodRotator = new SparkMax(DeviceConstants.HOOD_ROTATOR, MotorType.kBrushed);
 	private final SparkClosedLoopController hoodController = hoodRotator.getClosedLoopController();
 	private final SparkMaxConfig hoodConfig = new SparkMaxConfig();
+
 	//Important Coordinates
 	private final Translation2d hubPosition = switch(DriverStation.getAlliance().orElse(Alliance.Red)) {
 		case Blue -> FieldPoses.BLUE_HUB;
@@ -66,6 +67,12 @@ public class FuelAimingSubsystem extends SubsystemBase {
 		case Blue -> FieldPoses.BLUE_ALLIANCE_LINE;
 		case Red -> FieldPoses.RED_ALLIANCE_LINE;
 	};
+	private boolean inAllianceZone;
+
+	private double thetaToHub;
+	private double degreeToHubRelativeToRobot;
+	private double distanceToHub;
+	private double hoodAngleToHub;
 
 	public FuelAimingSubsystem() {
 		//Turret
@@ -106,6 +113,8 @@ public class FuelAimingSubsystem extends SubsystemBase {
 
 		hoodRotator.configure(hoodConfig, ResetMode.kResetSafeParameters,
 		PersistMode.kPersistParameters);
+
+		hoodController.setSetpoint(0.0, ControlType.kMAXMotionPositionControl);
 	}
 
 	public Command manualTurretControlCW() {
@@ -124,7 +133,7 @@ public class FuelAimingSubsystem extends SubsystemBase {
 
 	public Command turretToPosition(double position) {
 		return runOnce(() -> {
-			turretController.setSetpoint(position, ControlType.kPosition);
+			turretController.setSetpoint(position, ControlType.kMAXMotionPositionControl);
 		});
 	}
 
@@ -147,6 +156,12 @@ public class FuelAimingSubsystem extends SubsystemBase {
 		});
 	}
 
+	public Command hoodToPosition(double position) {
+		return runOnce(() -> {
+			hoodController.setSetpoint(position, ControlType.kMAXMotionPositionControl);
+		});
+	}
+
 	public Command manualHoodControlStop() {
 		return runOnce(() -> {
 			hoodRotator.set(FuelAimingConstants.STOPPED_SPEED);
@@ -156,19 +171,25 @@ public class FuelAimingSubsystem extends SubsystemBase {
 	public Command automaticAimRoutine(Supplier<Pose2d> robotPose) {
 		return run(() -> {
 			//Turret Control
-			double theta = Math.atan((hubPosition.getY() - robotPose.get().getY()) /
+			thetaToHub = Math.atan((hubPosition.getY() - robotPose.get().getY()) /
 									 (hubPosition.getX() - robotPose.get().getX()));
-			double degreeRelativeToRobot = (theta * (180/Math.PI)) - robotPose.get().getRotation().getDegrees(); /*Convert from radians to degrees and subtract yaw of the robot*/
-			boolean inAllianceZone = switch(DriverStation.getAlliance().orElse(Alliance.Red)) {
+			degreeToHubRelativeToRobot = (thetaToHub * (180/Math.PI)) - robotPose.get().getRotation().getDegrees(); /*Convert from radians to degrees and subtract yaw of the robot*/
+			inAllianceZone = switch(DriverStation.getAlliance().orElse(Alliance.Red)) {
 				case Blue -> robotPose.get().getX() < allianceZoneLine.getX();
 				case Red -> robotPose.get().getX() > allianceZoneLine.getX();
 			};
+			if(degreeToHubRelativeToRobot > 90) {
+				degreeToHubRelativeToRobot  = 90;
+			} else if(degreeToHubRelativeToRobot < -90) {
+				degreeToHubRelativeToRobot = -90;
+			}
+			
 			//TODO: restrain degreeRelativeToRobot to bounds that the turret can physically reach
 			if(inAllianceZone) {
-				turretController.setSetpoint(degreeRelativeToRobot * (190/48) / 360, ControlType.kPosition);
+				turretController.setSetpoint(degreeToHubRelativeToRobot * (190/48) / 360, ControlType.kMAXMotionPositionControl);
 				 /*times (or divide) the gear ratio (190:48) and divide by 360 to get rotations*/
 			} else {
-				turretController.setSetpoint((180 - robotPose.get().getRotation().getDegrees()) * (190/48) / 360, ControlType.kPosition);
+				turretController.setSetpoint((0 - robotPose.get().getRotation().getDegrees()) * (190/48) / 360, ControlType.kMAXMotionPositionControl);
 			}
 						
 			//Hood Control
@@ -176,14 +197,14 @@ public class FuelAimingSubsystem extends SubsystemBase {
 			//Min Distance: 30 in -> 1.359m     Max Distance: 241.7 in -> 6.139m
 			//Min Angle: 60 deg       Max Angle: 80 deg
 			//-4.184 is slope
-			double distance = hubPosition.getDistance(robotPose.get().getTranslation());
-			double hoodAngle = 80 - 4.184 * (distance - 1.359);
+			distanceToHub = hubPosition.getDistance(robotPose.get().getTranslation());
+			hoodAngleToHub = 80 - 4.184 * (distanceToHub - 1.359);
 			//Convert angle to encoder counts (gear ratio of 420:25 = 16.8)
 			if(robotPose.get().getTranslation().getDistance(outpostTrench) > Math.abs(allianceZoneLine.getX() - outpostTrench.getX()) ||
 			   robotPose.get().getTranslation().getDistance(depotTrench) > Math.abs(allianceZoneLine.getX() - depotTrench.getX()) ) {
-				hoodController.setSetpoint((hoodAngle * 16.8) / 360, ControlType.kPosition);
+				//hoodController.setSetpoint((hoodAngle * 16.8) / 360, ControlType.kPosition);
 			   } else {
-				hoodController.setSetpoint(0.0, ControlType.kPosition);
+				//hoodController.setSetpoint(0.0, ControlType.kMAXMotionPositionControl);
 			   }
 		});
 	}
@@ -266,10 +287,18 @@ public class FuelAimingSubsystem extends SubsystemBase {
 		builder.addDoubleProperty("Turret Power", () -> turretRotator.get(), null);
 		builder.addDoubleProperty("Turret Voltage", () -> turretRotator.getAppliedOutput(), null);
 		builder.addDoubleProperty("Turret Setpoint", () -> turretController.getSetpoint(), null);
+		builder.addDoubleProperty("Turret Velocity", () -> turretRotator.getEncoder().getVelocity(), null);
+
 		builder.addDoubleProperty("Hood Power", () -> hoodRotator.get(), null);
 		builder.addDoubleProperty("Hood Voltage", () -> hoodRotator.getAppliedOutput(), null);
 		builder.addDoubleProperty("Hood Setpoint", () -> hoodController.getSetpoint(), null);
 		builder.addDoubleProperty("Hood Encoder", () -> hoodRotator.getEncoder().getPosition(), null);
+		builder.addDoubleProperty("Hood Velocity", () -> hoodRotator.getEncoder().getVelocity(), null);
+
+		builder.addDoubleProperty("Theta to Hub", () -> thetaToHub, null);
+		builder.addDoubleProperty("Degrees Relative to Robot", () -> degreeToHubRelativeToRobot, null);
+		builder.addBooleanProperty("In Alliance Zone", () -> inAllianceZone, null);
+		builder.addDoubleProperty("Distance from Hub", () -> distanceToHub, null);
 
 		//Sys ID
 		SmartDashboard.putData("Turret - Run Forward Dynamic", sysIdDynamicTurret(Direction.kForward));
@@ -285,9 +314,13 @@ public class FuelAimingSubsystem extends SubsystemBase {
 		SmartDashboard.putData("Manual Turret CW", manualTurretControlCW());
 		SmartDashboard.putData("Manual Turret CCW", manualTurretControlCCW());
 		SmartDashboard.putData("Manual Turret Stop", manualTurretControlStop());
-		SmartDashboard.putData("Manual Turret Run", turretToPosition(10.55));
+		SmartDashboard.putData("Manual Turret Run CCW", turretToPosition(100.0));
+		SmartDashboard.putData("Manual Turret Run CW", turretToPosition(0.0));
+
 		SmartDashboard.putData("Manual Hood Up", manualHoodControlUp());
 		SmartDashboard.putData("Manual Hood Down", manualHoodControlDown());
 		SmartDashboard.putData("Manual Hood Stop", manualHoodControlStop());
+		SmartDashboard.putData("Manual Hood Run Up", hoodToPosition(2.0));
+		SmartDashboard.putData("Manual Hood Run Down", hoodToPosition(0.0));
 	}
 }

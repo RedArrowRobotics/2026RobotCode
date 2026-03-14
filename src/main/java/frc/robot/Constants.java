@@ -88,26 +88,26 @@ public final class Constants {
         public static final double SHOOTER_MAX_ERROR = 50.0;
 
         //Turret Constants
-        public static final double TURRET_ROTATOR_kP = 0.00040686;
+        public static final double TURRET_ROTATOR_kP = 0.45558;
         public static final double TURRET_ROTATOR_kI = 0.0;
-        public static final double TURRET_ROTATOR_kD = 0.0;
-        public static final double TURRET_ROTATOR_kV = 0.0010238;
-        public static final double TURRET_ROTATOR_kS = 0.11956;
-        public static final double TURRET_ROTATOR_kA = 0.000079182;
-        public static final double TURRET_ROTATOR_MAX_VELOCITY = 6600 * 60; //RPM
-        public static final double TURRET_ROTATOR_MAX_ACCELERATION = 29661 * 60; //RPM/s
-        public static final double TURRET_ROTATOR_MAX_ERROR = 1000 * 60; //RPM
+        public static final double TURRET_ROTATOR_kD = 0.0080607;
+        public static final double TURRET_ROTATOR_kV = 0.001059;
+        public static final double TURRET_ROTATOR_kS = 0.23111;
+        public static final double TURRET_ROTATOR_kA = 8.407E-05;
+        public static final double TURRET_ROTATOR_MAX_VELOCITY = 8000; //RPM
+        public static final double TURRET_ROTATOR_MAX_ACCELERATION = 12000; //RPM/s
+        public static final double TURRET_ROTATOR_MAX_ERROR = 1000; //RPM
 
         //Hood Constants
-        public static final double HOOD_ROTATOR_kP = 0.0;
+        public static final double HOOD_ROTATOR_kP = 14.042;
         public static final double HOOD_ROTATOR_kI = 0.0;
-        public static final double HOOD_ROTATOR_kD = 0.0;
-        public static final double HOOD_ROTATOR_kV = 0.0;
-        public static final double HOOD_ROTATOR_kS = 0.0;
-        public static final double HOOD_ROTATOR_kA = 0.0;
-        public static final double HOOD_ROTATOR_MAX_VELOCITY = 0.0; //RPM
-        public static final double HOOD_ROTATOR_MAX_ACCELERATION = 0.0; //RPM/s
-        public static final double HOOD_ROTATOR_MAX_ERROR = 0.0;
+        public static final double HOOD_ROTATOR_kD = 0.13104;
+        public static final double HOOD_ROTATOR_kV = 0.033071;
+        public static final double HOOD_ROTATOR_kS = 0.85644;
+        public static final double HOOD_ROTATOR_kA = 0.0031839;
+        public static final double HOOD_ROTATOR_MAX_VELOCITY = 165.0; //RPM
+        public static final double HOOD_ROTATOR_MAX_ACCELERATION = 24.621 * 60; //RPM/s
+        public static final double HOOD_ROTATOR_MAX_ERROR = 84.241;
 
         //Hopper Constants
         public static final double HOPPER_kP = 0.0;
