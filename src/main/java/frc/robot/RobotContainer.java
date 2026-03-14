@@ -78,7 +78,7 @@ public class RobotContainer {
     // }
 
     public void resetGyro() {
-        //swerveDriveTrain.resetGyro();
+        swerveDriveTrain.resetGyro();
     }
 
     public void robotPeriodic() {
