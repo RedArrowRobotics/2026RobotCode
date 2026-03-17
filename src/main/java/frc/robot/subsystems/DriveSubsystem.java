@@ -386,6 +386,6 @@ public class DriveSubsystem extends SubsystemBase {
     @Override
 	public void initSendable(SendableBuilder builder) {
 		super.initSendable(builder);
-        builder.addDoubleProperty("Robot Rotation", () -> getPose().getRotation().getDegrees(), null);
+        builder.addBooleanProperty("Pose Trusted", () -> this.trustPose, null);
     }
 }

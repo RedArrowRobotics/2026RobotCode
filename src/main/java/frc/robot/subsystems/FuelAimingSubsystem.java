@@ -71,6 +71,7 @@ public class FuelAimingSubsystem extends SubsystemBase {
 
 	private double thetaToHub;
 	private double degreeToHubRelativeToRobot;
+	public boolean setpointWithinRange;
 	private double distanceToHub;
 	private double hoodAngleToHub;
 
@@ -180,16 +181,19 @@ public class FuelAimingSubsystem extends SubsystemBase {
 			};
 			if(degreeToHubRelativeToRobot > 90) {
 				degreeToHubRelativeToRobot  = 90;
+				setpointWithinRange = false;
 			} else if(degreeToHubRelativeToRobot < -90) {
 				degreeToHubRelativeToRobot = -90;
+				setpointWithinRange = false;
+			} else {
+				setpointWithinRange = true;
 			}
 			
 			//TODO: restrain degreeRelativeToRobot to bounds that the turret can physically reach
 			if(inAllianceZone) {
-				turretController.setSetpoint(degreeToHubRelativeToRobot * (190/48) / 360, ControlType.kMAXMotionPositionControl);
-				 /*times (or divide) the gear ratio (190:48) and divide by 360 to get rotations*/
+				turretController.setSetpoint(degreeToHubRelativeToRobot * -0.2132, ControlType.kMAXMotionPositionControl);
 			} else {
-				turretController.setSetpoint((0 - robotPose.get().getRotation().getDegrees()) * (190/48) / 360, ControlType.kMAXMotionPositionControl);
+				//turretController.setSetpoint(robotPose.get().getRotation().getDegrees() * 0.2132, ControlType.kMAXMotionPositionControl);
 			}
 						
 			//Hood Control
@@ -202,7 +206,7 @@ public class FuelAimingSubsystem extends SubsystemBase {
 			//Convert angle to encoder counts (gear ratio of 420:25 = 16.8)
 			if(robotPose.get().getTranslation().getDistance(outpostTrench) > Math.abs(allianceZoneLine.getX() - outpostTrench.getX()) ||
 			   robotPose.get().getTranslation().getDistance(depotTrench) > Math.abs(allianceZoneLine.getX() - depotTrench.getX()) ) {
-				//hoodController.setSetpoint((hoodAngle * 16.8) / 360, ControlType.kPosition);
+				//hoodController.setSetpoint((hoodAngleToHub * 16.8) / 360, ControlType.kMaxMotionPositionControl);
 			   } else {
 				//hoodController.setSetpoint(0.0, ControlType.kMAXMotionPositionControl);
 			   }

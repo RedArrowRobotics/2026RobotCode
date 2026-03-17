@@ -18,7 +18,7 @@ public final class Constants {
     }
 
     public final class AprilTagIDs {
-        public static final int[] RED_HUB_IDS = {2,3,4,5,8,9,10,11,12};
+        public static final int[] RED_HUB_IDS = {2,3,4,5,8,9,10,11};
         public static final int[] RED_TRENCH_IDS = {1,6,7,12};
         public static final int[] RED_OUTPOST_IDS = {13,14};
         public static final int[] RED_TOWER_IDS = {15,16};

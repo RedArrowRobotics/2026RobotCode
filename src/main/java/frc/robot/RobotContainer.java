@@ -44,7 +44,7 @@ public class RobotContainer {
         ControlInputs.componentsBoard.axisLessThan(1, -0.5).onTrue(fuelAiming.manualTurretControlCCW());
         // ControlInputs.componentsBoard.button(6).onTrue(fuelIntake.extendIntake());
         // ControlInputs.componentsBoard.button(7).onTrue(fuelIntake.retractIntake());
-        // ControlInputs.componentsBoard.button(0).whileTrue(fuelShooter.shootFuel());
+        ControlInputs.componentsBoard.button(0).and(() -> fuelAiming.setpointWithinRange).whileTrue(fuelShooter.shootFuel());
         // ControlInputs.componentsBoard.button(1).onTrue(fuelIntake.intakeFuelIn());
         // ControlInputs.componentsBoard.button(2).onTrue(fuelIntake.intakeFuelOut());
         // ControlInputs.componentsBoard.button(3).whileTrue(climber.climberAscend());
@@ -68,6 +68,7 @@ public class RobotContainer {
         SmartDashboard.putData(agitator);
         SmartDashboard.putData(fuelAiming);
         SmartDashboard.putData(swerveDriveTrain);
+        SmartDashboard.putData("Aim Routine", fuelAiming.automaticAimRoutine(() -> swerveDriveTrain.getPose()));
         //swerveDriveTrain.sysId.ifPresent(sysid -> sysid.configureSendables());
     }
 
@@ -82,7 +83,6 @@ public class RobotContainer {
     }
 
     public void robotPeriodic() {
-        SmartDashboard.putData(fuelAiming);
-        SmartDashboard.putData("Aim Routine", fuelAiming.automaticAimRoutine(() -> swerveDriveTrain.getPose()));
+        
     }
 }
