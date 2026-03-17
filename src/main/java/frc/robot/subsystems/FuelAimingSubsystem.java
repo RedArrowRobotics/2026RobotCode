@@ -192,7 +192,7 @@ public class FuelAimingSubsystem extends SubsystemBase {
 		return run(() -> {
 			//Turret Control
 			thetaToHub = Math.atan((hubPosition.getY() - robotPose.get().getY()) /
-									 (hubPosition.getX() - robotPose.get().getX()));
+								   (hubPosition.getX() - robotPose.get().getX()));
 			degreeToHubRelativeToRobot = (thetaToHub * (180/Math.PI)) - robotPose.get().getRotation().getDegrees(); /*Convert from radians to degrees and subtract yaw of the robot*/
 			inAllianceZone = switch(DriverStation.getAlliance().orElse(Alliance.Red)) {
 				case Blue -> robotPose.get().getX() < allianceZoneLine.getX();
@@ -323,11 +323,14 @@ public class FuelAimingSubsystem extends SubsystemBase {
 		builder.addBooleanProperty("In Alliance Zone", () -> inAllianceZone, null);
 		builder.addDoubleProperty("Distance from Hub", () -> distanceToHub, null);
 
+		builder.addDoubleProperty("Set Hood Position", () -> hoodController.getSetpoint(), (position) -> hoodController.setSetpoint(position, ControlType.kMAXMotionPositionControl));
+
 		//Sys ID
 		SmartDashboard.putData("Turret - Run Forward Dynamic", sysIdDynamicTurret(Direction.kForward));
 		SmartDashboard.putData("Turret - Run Reverse Dynamic", sysIdDynamicTurret(Direction.kReverse));
 		SmartDashboard.putData("Turret - Run Forward Quasistatic", sysIdQuasistaticTurret(Direction.kForward));
 		SmartDashboard.putData("Turret - Run Reverse Quasistatic", sysIdQuasistaticTurret(Direction.kReverse));
+
 		SmartDashboard.putData("Hood - Run Forward Dynamic", sysIdDynamicHood(Direction.kForward));
 		SmartDashboard.putData("Hood - Run Reverse Dynamic", sysIdDynamicHood(Direction.kReverse));
 		SmartDashboard.putData("Hood - Run Forward Quasistatic", sysIdQuasistaticHood(Direction.kForward));

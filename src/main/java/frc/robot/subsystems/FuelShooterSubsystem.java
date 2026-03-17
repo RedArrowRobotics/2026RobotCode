@@ -148,6 +148,8 @@ public class FuelShooterSubsystem extends SubsystemBase {
 		builder.addDoubleProperty("Shooter Setpoint", () -> shooterController.getSetpoint(), null);
 		builder.addDoubleProperty("Shooter Position", () -> shooterMotor1.getEncoder().getPosition(), null);
 
+		builder.addDoubleProperty("Set Shooter Setpoint", () -> shooterController.getMAXMotionSetpointVelocity(), (speed) -> shooterController.setSetpoint(speed, ControlType.kMAXMotionVelocityControl));
+
 		//Sys ID
 		SmartDashboard.putData("Shooter - Run Forward Dynamic", sysIdDynamic(Direction.kForward));
 		SmartDashboard.putData("Shooter - Run Reverse Dynamic", sysIdDynamic(Direction.kReverse));
