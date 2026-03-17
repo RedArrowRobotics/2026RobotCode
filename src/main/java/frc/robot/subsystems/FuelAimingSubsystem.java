@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.LimitSwitchConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import static edu.wpi.first.units.Units.Rotations;
@@ -9,6 +10,8 @@ import static edu.wpi.first.units.Units.Volts;
 
 import java.util.function.Supplier;
 
+import com.ctre.phoenix.motorcontrol.LimitSwitchNormal;
+import com.ctre.phoenix.motorcontrol.LimitSwitchSource;
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
@@ -21,6 +24,7 @@ import edu.wpi.first.units.measure.MutAngle;
 import edu.wpi.first.units.measure.MutAngularVelocity;
 import edu.wpi.first.units.measure.MutVoltage;
 import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.RobotController;
@@ -29,6 +33,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import frc.robot.Constants;
 import frc.robot.Constants.DeviceConstants;
 import frc.robot.Constants.FeedforwardConstants;
 import frc.robot.Constants.FieldPoses;
@@ -38,6 +43,9 @@ public class FuelAimingSubsystem extends SubsystemBase {
 	private final SparkMax turretRotator = new SparkMax(DeviceConstants.TURRET_ROTATOR, MotorType.kBrushless);
 	private final SparkClosedLoopController turretController = turretRotator.getClosedLoopController();
 	private final SparkMaxConfig turretConfig = new SparkMaxConfig();
+	private DigitalInput turretAimmerLimitSwitch = new DigitalInput(DeviceConstants.TURRET_AIMMER_LIMIT_SWITCH_CHANNEL);
+	private boolean turretSetZeroStart = false;
+
 
 	//private final SparkMax hoodRotator = new SparkMax(DeviceConstants.HOOD_ROTATOR, MotorType.kBrushed);
 	//private final SparkClosedLoopController hoodController = hoodRotator.getClosedLoopController();
@@ -98,6 +106,17 @@ public class FuelAimingSubsystem extends SubsystemBase {
 		//PersistMode.kPersistParameters);
 
 		//hoodController.setSetpoint(0.0, ControlType.kVelocity);
+	}
+
+	public void zeroTurret() {
+    	if (turretSetZeroStart == false) {
+        	while (turretAimmerLimitSwitch.get() == false) {
+				turretRotator.set(0.1);
+			}
+			turretRotator.set(0.0);
+			turretSetZeroStart = true;
+			turretRotator.getEncoder().setPosition(Constants.FuelAimingConstants.THROWER_ROTATION_SET);
+    	}
 	}
 
 	public Command manualTurretControlCW() {

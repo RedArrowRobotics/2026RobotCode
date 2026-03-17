@@ -52,6 +52,7 @@ public final class Constants {
         public static final String LIMELIGHT_FRONT = "limelight-front";
         public static final String LIMELIGHT_BACK = "limelight-back";
         public static final int CLIMBER_ENCODER_CHANNEL = 22;
+        public static final int TURRET_AIMMER_LIMIT_SWITCH_CHANNEL = 23;
     }
 
     public final class DriveConstants {
@@ -68,6 +69,7 @@ public final class Constants {
         public static final double TURRET_ROTATOR_MANUAL_POWER = 0.1;
         public static final double HOOD_ROTATOR_MANUAL_POWER = 0.5;
         public static final double STOPPED_SPEED = 0.000;
+        public static final double THROWER_ROTATION_SET = 0.000;
     }
 
     public final class FeedforwardConstants {
