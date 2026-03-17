@@ -72,6 +72,7 @@ public final class Constants {
         public static final double THROWER_ROTATION_SET = 0.000;
         public static final double HOOD_DOWN_POSITION = 0.0;
         public static final double HOOD_UP_POSITION = 2.142;
+        public static final double DEGREES_TO_ROTATIONS = 2.142;
     }
 
     public final class FeedforwardConstants {

@@ -133,7 +133,7 @@ public class FuelAimingSubsystem extends SubsystemBase {
 			}
 			turretRotator.set(0.0);
 			turretSetZeroStart = true;
-			turretRotator.getEncoder().setPosition(Constants.FuelAimingConstants.THROWER_ROTATION_SET * -0.2132);
+			turretRotator.getEncoder().setPosition(Constants.FuelAimingConstants.THROWER_ROTATION_SET * Constants.FuelAimingConstants.DEGREES_TO_ROTATIONS);
     	}
 	}
 
