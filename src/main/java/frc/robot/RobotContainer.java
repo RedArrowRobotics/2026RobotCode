@@ -31,7 +31,6 @@ public class RobotContainer {
     public RobotContainer() throws IOException, Exception {
         swerveDriveTrain = new DriveSubsystem();
 
-        swerveDriveTrain.setDefaultCommand(swerveDriveTrain.teleopDrive(DriveOrientation.FIELD_CENTRIC));
         //fuelShooter.setDefaultCommand(fuelShooter.shooterDeactivate());
         //autoChooser = AutoBuilder.buildAutoChooser();
 
@@ -40,6 +39,11 @@ public class RobotContainer {
     }
 
     private void configureBindings() {
+        //Driver Buttons
+        ControlInputs.componentsBoard.button(0).onTrue(swerveDriveTrain.teleopDrive(DriveOrientation.FIELD_CENTRIC));
+        ControlInputs.componentsBoard.button(1).onTrue(swerveDriveTrain.teleopDrive(DriveOrientation.ROBOT_CENTRIC));
+
+        //Components Board
         ControlInputs.componentsBoard.axisGreaterThan(1, 0.5).onTrue(fuelAiming.manualTurretControlCW());
         ControlInputs.componentsBoard.axisLessThan(1, -0.5).onTrue(fuelAiming.manualTurretControlCCW());
         // ControlInputs.componentsBoard.button(6).onTrue(fuelIntake.extendIntake());
