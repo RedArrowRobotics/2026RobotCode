@@ -34,6 +34,18 @@ public class ClimberSubsystem extends SubsystemBase {
         });
     }
 
+    public Command climberUpPID() {
+        return runOnce(() -> {
+
+        });
+    }
+
+    public Command climberDownPID() {
+        return runOnce(() -> {
+
+        });
+    }
+
     @Override
     public void initSendable(SendableBuilder builder) {
         super.initSendable(builder);

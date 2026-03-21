@@ -23,19 +23,19 @@ import frc.robot.subsystems.FuelShooterSubsystem;
 
 public class RobotContainer {
     private final DriveSubsystem swerveDriveTrain;
-    //private final FuelIntakeSubsystem fuelIntake = new FuelIntakeSubsystem();
+    private final FuelIntakeSubsystem fuelIntake = new FuelIntakeSubsystem();
     private final FuelAimingSubsystem fuelAiming = new FuelAimingSubsystem();
     private final FuelShooterSubsystem fuelShooter = new FuelShooterSubsystem();
     private final AgitatorSubsystem agitator = new AgitatorSubsystem();
-    //private final ClimberSubsystem climber = new ClimberSubsystem();
-    //private final SendableChooser<Command> autoChooser;
+    private final ClimberSubsystem climber = new ClimberSubsystem();
+    private final SendableChooser<Command> autoChooser;
     
     public RobotContainer() throws IOException, Exception {
         swerveDriveTrain = new DriveSubsystem();
 
         swerveDriveTrain.setDefaultCommand(swerveDriveTrain.teleopDrive(DriveOrientation.FIELD_CENTRIC));
         //fuelShooter.setDefaultCommand(fuelShooter.shooterDeactivate());
-        //autoChooser = AutoBuilder.buildAutoChooser();
+        autoChooser = AutoBuilder.buildAutoChooser();
 
         configureBindings();
         configureSendables();
@@ -59,6 +59,14 @@ public class RobotContainer {
         NamedCommands.registerCommand("Zero Turret", fuelAiming.zeroTurret());
         NamedCommands.registerCommand("Aim Routine", fuelAiming.automaticAimRoutine(() -> swerveDriveTrain.getPose()).until(() -> fuelAiming.turretAtSetpoint()));
         NamedCommands.registerCommand("Shoot Fuel Var Speed", fuelShooter.shootFuelVarSpeed(() -> swerveDriveTrain.getPose()).withTimeout(Seconds.of(5.0)));
+        NamedCommands.registerCommand("Agitate Fuel", agitator.startAgitating().withTimeout(Seconds.of(5.0)));
+        NamedCommands.registerCommand("Climber Up", climber.climberUpPID());
+        NamedCommands.registerCommand("Climber Down", climber.climberDownPID());
+        NamedCommands.registerCommand("Hopper In", fuelIntake.retractIntakePIDF());
+        NamedCommands.registerCommand("Hopper Out", fuelIntake.extendIntakePIDF());
+        NamedCommands.registerCommand("Intake Fuel", fuelIntake.intakeFuelIn());
+        NamedCommands.registerCommand("'Barf' Fuel", fuelIntake.intakeFuelOut());
+        NamedCommands.registerCommand("Stop Intake", fuelIntake.intakeStop());
     }
 
     /**
@@ -73,13 +81,14 @@ public class RobotContainer {
         SmartDashboard.putData(fuelAiming);
         SmartDashboard.putData(swerveDriveTrain);
         SmartDashboard.putData("Aim Routine", fuelAiming.automaticAimRoutine(() -> swerveDriveTrain.getPose()));
+        SmartDashboard.putData("Auto Chooser", autoChooser);
     }
 
-    // public Optional<Command> getAutonomousCommand() {
-    //     // Fetch the selected autonomous command from the dashoard and put it in an
-    //     // Optional
-    //     return Optional.ofNullable(autoChooser.getSelected());
-    // }
+    public Optional<Command> getAutonomousCommand() {
+         // Fetch the selected autonomous command from the dashoard and put it in an
+         // Optional
+         return Optional.ofNullable(autoChooser.getSelected());
+    }
 
     public void resetGyro() {
         swerveDriveTrain.resetGyro();

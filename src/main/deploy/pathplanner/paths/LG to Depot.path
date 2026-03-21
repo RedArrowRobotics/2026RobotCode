@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.735000000000001,
-        "y": 7.581602564102564
+        "x": 3.8,
+        "y": 7.5
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.5024841355008127,
-        "y": 7.441006355153225
+        "x": 2.097446359646005,
+        "y": 7.249842712820063
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.8,
-        "y": 6.5
+        "x": 0.5,
+        "y": 7.0
       },
       "prevControl": {
-        "x": 2.6495866657447626,
-        "y": 6.990509090167655
+        "x": 1.5305105757143678,
+        "y": 7.090816604356165
       },
       "nextControl": null,
       "isLocked": false,
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -42.5
+    "rotation": -90.0
   },
   "reversed": false,
-  "folder": "Left SSC Paths",
+  "folder": "Life-Goal Paths",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": -90.0
   },
   "useDefaultConstraints": true
 }

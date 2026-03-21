@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.735000000000001,
-        "y": 7.581602564102564
+        "x": 3.65,
+        "y": 5.0
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.5024841355008127,
-        "y": 7.441006355153225
+        "x": 2.6499999999999972,
+        "y": 5.0
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.8,
-        "y": 6.5
+        "x": 2.0,
+        "y": 4.0
       },
       "prevControl": {
-        "x": 2.6495866657447626,
-        "y": 6.990509090167655
+        "x": 3.0,
+        "y": 4.0
       },
       "nextControl": null,
       "isLocked": false,
@@ -42,10 +42,10 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -42.5
+    "rotation": 0.0
   },
   "reversed": false,
-  "folder": "Left SSC Paths",
+  "folder": "Center SSC Paths",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 0.0

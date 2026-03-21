@@ -17,7 +17,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Left Leave"
+                  "pathName": "Right Leave"
                 }
               }
             ]
@@ -34,9 +34,22 @@
                 }
               },
               {
-                "type": "named",
+                "type": "parallel",
                 "data": {
-                  "name": "Shoot Fuel Var Speed"
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Agitate Fuel"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Shoot Fuel Var Speed"
+                      }
+                    }
+                  ]
                 }
               }
             ]
@@ -49,7 +62,32 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Left Shoot to Climb"
+                  "pathName": "Right Shoot to Climb"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Climber Up"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sequential",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Right Climb"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Climber Down"
                 }
               }
             ]
