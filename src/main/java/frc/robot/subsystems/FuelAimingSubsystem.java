@@ -230,8 +230,8 @@ public class FuelAimingSubsystem extends SubsystemBase {
 			hoodEncoderPosition = 1.4 + 0.01052 * (distanceToHub - 241);
 			if(hoodEncoderPosition < 0) {
 				hoodEncoderPosition = 0;
-			} else if(hoodEncoderPosition > 2.1) {
-				hoodEncoderPosition = 2.1;
+			} else if(hoodEncoderPosition > 2.0) {
+				hoodEncoderPosition = 2.0;
 			}
 			//Convert angle to encoder counts (gear ratio of 420:25 = 16.8)
 			if(robotPose.get().getTranslation().getDistance(outpostTrench) > Math.abs(allianceZoneLine.getX() - outpostTrench.getX()) ||

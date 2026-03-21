@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import frc.robot.Constants.InputConstants;
 import frc.robot.subsystems.AgitatorSubsystem;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
@@ -35,6 +36,7 @@ public class RobotContainer {
 
         swerveDriveTrain.setDefaultCommand(swerveDriveTrain.teleopDrive(DriveOrientation.FIELD_CENTRIC));
         fuelShooter.setDefaultCommand(fuelShooter.shooterDeactivate());
+        agitator.setDefaultCommand(agitator.stopAgitating());
         autoChooser = AutoBuilder.buildAutoChooser();
 
         configureBindings();
@@ -42,20 +44,14 @@ public class RobotContainer {
     }
 
     private void configureBindings() {
-        ControlInputs.componentsBoard.axisGreaterThan(1, 0.5).onTrue(fuelAiming.manualTurretControlCW());
-        ControlInputs.componentsBoard.axisLessThan(1, -0.5).onTrue(fuelAiming.manualTurretControlCCW());
-        //ControlInputs.componentsBoard.button(6).onTrue(fuelIntake.extendIntake());
-        //ControlInputs.componentsBoard.button(7).onTrue(fuelIntake.retractIntake());
-        ControlInputs.componentsBoard.button(0).and(() -> fuelAiming.setpointWithinRange).whileTrue(fuelShooter.shootFuel());
-        //ControlInputs.componentsBoard.button(1).onTrue(fuelIntake.intakeFuelIn());
-        //ControlInputs.componentsBoard.button(2).onTrue(fuelIntake.intakeFuelOut());
-        //ControlInputs.componentsBoard.button(3).whileTrue(climber.climberAscend());
-        //ControlInputs.componentsBoard.button(4).whileTrue(climber.climberDescend());
-        //ControlInputs.componentsBoard.button(5).whileTrue(agitator.startAgitating());
-
-        //ControlInputs.componentsBoard.button(6).whileTrue(fuelAiming.automaticAimRoutine(() -> swerveDriveTrain.getPose()));
-        ControlInputs.componentsBoard.button(7).whileTrue(fuelShooter.shootFuelVarSpeed(() -> swerveDriveTrain.getPose()));
-
+        ControlInputs.componentsBoard.button(InputConstants.SHOOT_FUEL).whileTrue(fuelShooter.shootFuelVarSpeed(() -> swerveDriveTrain.getPose()).alongWith(agitator.startAgitating()));
+        ControlInputs.componentsBoard.button(InputConstants.INTAKE_IN).onTrue(fuelIntake.intakeFuelIn());
+        ControlInputs.componentsBoard.button(InputConstants.INTAKE_OUT).onTrue(fuelIntake.intakeFuelOut());
+        ControlInputs.componentsBoard.button(InputConstants.EXTEND_HOPPER).onTrue(fuelIntake.extendIntake());
+        ControlInputs.componentsBoard.button(InputConstants.EXTEND_HOPPER).onFalse(fuelIntake.retractIntake());
+        ControlInputs.componentsBoard.button(InputConstants.CLIMBER_UP).onTrue(climber.climberUpPID());
+        ControlInputs.componentsBoard.button(InputConstants.CLIMBER_DOWN).onTrue(climber.climberDownPID());
+        
         NamedCommands.registerCommand("Zero Turret", fuelAiming.zeroTurret());
         NamedCommands.registerCommand("Aim Routine", fuelAiming.automaticAimRoutine(() -> swerveDriveTrain.getPose()).until(() -> fuelAiming.turretAtSetpoint()));
         NamedCommands.registerCommand("Shoot Fuel Var Speed", fuelShooter.shootFuelVarSpeed(() -> swerveDriveTrain.getPose()).withTimeout(Seconds.of(5.0)));

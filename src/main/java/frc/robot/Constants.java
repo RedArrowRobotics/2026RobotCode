@@ -11,6 +11,20 @@ public final class Constants {
         public static final int COMPONENTS_BOARD_PORT = 1;
     }
 
+    public final class InputConstants {
+        public static final int SHOOT_FUEL = 1;
+        public static final int INTAKE_IN = 2;
+        public static final int INTAKE_OUT = 3;
+        public static final int EXTEND_HOPPER = 4;
+        public static final int CLIMBER_UP = 5;
+        public static final int CLIMBER_DOWN = 6;
+        public static final int MANUAL_HOOD_UP = 7;
+        public static final int MANUAL_HOOD_DOWN = 8;
+        public static final int MANUAL_SWITCH = 9;
+        public static final int MANUAL_TURRET_CCW = 10;
+        public static final int MANUAL_TURRET_CW = 11;
+    }
+
     public final class AprilTagIDs {
         public static final int[] RED_HUB_IDS = {2,3,4,5,8,9,10,11};
         public static final int[] RED_TRENCH_IDS = {1,6,7,12};
