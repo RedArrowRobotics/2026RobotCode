@@ -50,7 +50,7 @@ public class FuelAimingSubsystem extends SubsystemBase {
 	private final SparkMax turretRotator = new SparkMax(DeviceConstants.TURRET_ROTATOR, MotorType.kBrushless);
 	private final SparkClosedLoopController turretController = turretRotator.getClosedLoopController();
 	private final SparkMaxConfig turretConfig = new SparkMaxConfig();
-	private DigitalInput turretAimmerLimitSwitch = new DigitalInput(DeviceConstants.TURRET_AIMMER_LIMIT_SWITCH_CHANNEL);
+	private DigitalInput turretAimingLimitSwitch = new DigitalInput(DeviceConstants.TURRET_AIMMER_LIMIT_SWITCH_CHANNEL);
 	private boolean turretSetZeroStart = false;
 
 
@@ -126,15 +126,25 @@ public class FuelAimingSubsystem extends SubsystemBase {
 		hoodController.setSetpoint(0.0, ControlType.kMAXMotionPositionControl);
 	}
 
-	public void zeroTurret() {
+	/*public void zeroTurret() {
     	if (turretSetZeroStart == false) {
-        	while (turretAimmerLimitSwitch.get() == false) {
+        	while (turretAimingLimitSwitch.get() == false) {
 				turretRotator.set(0.1);
 			}
 			turretRotator.set(0.0);
 			turretSetZeroStart = true;
-			turretRotator.getEncoder().setPosition(Constants.FuelAimingConstants.THROWER_ROTATION_SET * Constants.FuelAimingConstants.DEGREES_TO_ROTATIONS);
+			turretRotator.getEncoder().setPosition(Constants.FuelAimingConstants.TURRET_ROTATION_ZERO * Constants.FuelAimingConstants.DEGREES_TO_ROTATIONS);
     	}
+	}*/
+
+	public Command zeroTurret() {
+		return runEnd(() -> {
+			turretRotator.set(0.1);
+		}, () -> {
+			turretRotator.set(0.0);
+			turretRotator.getEncoder().setPosition(Constants.FuelAimingConstants.TURRET_ROTATION_ZERO * Constants.FuelAimingConstants.DEGREES_TO_ROTATIONS);
+			turretSetZeroStart = true;
+		}).onlyWhile(() -> !turretAimingLimitSwitch.get()).onlyIf(() -> !turretSetZeroStart);
 	}
 
 	public Command manualTurretControlCW() {
