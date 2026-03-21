@@ -83,10 +83,9 @@ public class FuelShooterSubsystem extends SubsystemBase {
 			double distance = hubPosition.getDistance(robotPose.get().getTranslation());
 			//Do math to figure out optimal motor speed as a function of distance
 			//Min Distance: 30 in -> 1.359m     Max Distance: 241.7 in -> 6.139
-			//Min RPM: 2200 rpm       Max RPM: 3100 rpm
-			//slope is 188.285
-			double speed = 2200 + 188.285 * (distance - 1.359);
-			shooterController.setSetpoint(speed, ControlType.kVelocity, ClosedLoopSlot.kSlot0);
+			double speedParabolic = (.0544 * Math.pow(distance * 39.3701, 2)) - (2.33 * distance * 39.3701) + 2605.55;
+			//39.3701 converts from inches to meters
+			shooterController.setSetpoint(speedParabolic, ControlType.kVelocity, ClosedLoopSlot.kSlot0);
 		});
 	}
 
@@ -147,6 +146,7 @@ public class FuelShooterSubsystem extends SubsystemBase {
 		builder.addDoubleProperty("Shooter Voltage", () -> shooterMotor1.getAppliedOutput(), null);
 		builder.addDoubleProperty("Shooter Setpoint", () -> shooterController.getSetpoint(), null);
 		builder.addDoubleProperty("Shooter Position", () -> shooterMotor1.getEncoder().getPosition(), null);
+		builder.addDoubleProperty("Shooter Velocity", () -> shooterMotor1.getEncoder().getVelocity(), null);
 
 		builder.addDoubleProperty("Set Shooter Setpoint", () -> shooterController.getMAXMotionSetpointVelocity(), (speed) -> shooterController.setSetpoint(speed, ControlType.kMAXMotionVelocityControl));
 

@@ -67,7 +67,7 @@ public final class Constants {
 
     public final class FuelAimingConstants {
         public static final double TURRET_ROTATOR_MANUAL_POWER = 0.1;
-        public static final double HOOD_ROTATOR_MANUAL_POWER = 0.15;
+        public static final double HOOD_ROTATOR_MANUAL_POWER = 1.0;
         public static final double STOPPED_SPEED = 0.000;
         public static final double THROWER_ROTATION_SET = 0.000;
         public static final double HOOD_DOWN_POSITION = 0.0;

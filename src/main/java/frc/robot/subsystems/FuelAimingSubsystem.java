@@ -81,7 +81,7 @@ public class FuelAimingSubsystem extends SubsystemBase {
 	private double degreeToHubRelativeToRobot;
 	public boolean setpointWithinRange;
 	private double distanceToHub;
-	private double hoodAngleToHub;
+	private double hoodEncoderPosition;
 
 	public FuelAimingSubsystem() {
 		//Turret
@@ -221,13 +221,18 @@ public class FuelAimingSubsystem extends SubsystemBase {
 			//Min Angle: 60 deg       Max Angle: 80 deg
 			//-4.184 is slope
 			distanceToHub = hubPosition.getDistance(robotPose.get().getTranslation());
-			hoodAngleToHub = 80 - 4.184 * (distanceToHub - 1.359);
+			hoodEncoderPosition = 1.4 + 0.01052 * (distanceToHub - 241);
+			if(hoodEncoderPosition < 0) {
+				hoodEncoderPosition = 0;
+			} else if(hoodEncoderPosition > 2.1) {
+				hoodEncoderPosition = 2.1;
+			}
 			//Convert angle to encoder counts (gear ratio of 420:25 = 16.8)
 			if(robotPose.get().getTranslation().getDistance(outpostTrench) > Math.abs(allianceZoneLine.getX() - outpostTrench.getX()) ||
 			   robotPose.get().getTranslation().getDistance(depotTrench) > Math.abs(allianceZoneLine.getX() - depotTrench.getX()) ) {
-				//hoodController.setSetpoint((hoodAngleToHub * 16.8) / 360, ControlType.kMaxMotionPositionControl);
+				hoodController.setSetpoint(hoodEncoderPosition, ControlType.kMAXMotionPositionControl);
 			   } else {
-				//hoodController.setSetpoint(0.0, ControlType.kMAXMotionPositionControl);
+				hoodController.setSetpoint(0.0, ControlType.kMAXMotionPositionControl);
 			   }
 		});
 	}
@@ -272,10 +277,10 @@ public class FuelAimingSubsystem extends SubsystemBase {
 	}
 
 	private final VelocityUnit<VoltageUnit> voltsPerSeconds = Volts.per(Seconds);
-	private final Velocity<VoltageUnit> rampRate = voltsPerSeconds.of(1.0);
+	private final Velocity<VoltageUnit> rampRate = voltsPerSeconds.of(1.5);
 
 	SysIdRoutine hoodRoutine = new SysIdRoutine(
-	 	new SysIdRoutine.Config(rampRate, Volts.of(5.0), Seconds.of(10.0)),
+	 	new SysIdRoutine.Config(rampRate, Volts.of(10.0), Seconds.of(10.0)),
 	 	new SysIdRoutine.Mechanism(voltage -> {
 	 				hoodRotator.setVoltage(voltage.baseUnitMagnitude());
 	 			},
