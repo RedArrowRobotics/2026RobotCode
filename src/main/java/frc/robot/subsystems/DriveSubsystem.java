@@ -60,13 +60,13 @@ public class DriveSubsystem extends SubsystemBase {
     static final Trigger slowSpeed = ControlInputs.driveController.button(1);
 
     public DriveSubsystem() throws IOException, ParseException {
-        // if (Constants.DEBUG_ENABLED) {
+        if (Constants.DEBUG_ENABLED) {
             sysId = Optional.of(new SysId());
-        //     SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
-        // } else {
-        //     sysId = Optional.empty();
+            SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
+        } else {
+            sysId = Optional.empty();
             SwerveDriveTelemetry.verbosity = TelemetryVerbosity.LOW;
-        //}
+        }
 
         RobotConfig config;
 
@@ -387,5 +387,6 @@ public class DriveSubsystem extends SubsystemBase {
 	public void initSendable(SendableBuilder builder) {
 		super.initSendable(builder);
         builder.addBooleanProperty("Pose Trusted", () -> this.trustPose, null);
+        sysId.ifPresent(sysid -> sysid.configureSendables());
     }
 }

@@ -69,7 +69,6 @@ public class RobotContainer {
         SmartDashboard.putData(fuelAiming);
         SmartDashboard.putData(swerveDriveTrain);
         SmartDashboard.putData("Aim Routine", fuelAiming.automaticAimRoutine(() -> swerveDriveTrain.getPose()));
-        //swerveDriveTrain.sysId.ifPresent(sysid -> sysid.configureSendables());
     }
 
     // public Optional<Command> getAutonomousCommand() {

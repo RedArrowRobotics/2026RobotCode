@@ -8,7 +8,7 @@ import com.revrobotics.spark.config.SparkFlexConfig;
 import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.Volts;
-
+import java.util.Optional;
 import java.util.function.Supplier;
 
 import com.revrobotics.PersistMode;
@@ -30,6 +30,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import frc.robot.Constants;
 import frc.robot.Constants.DeviceConstants;
 import frc.robot.Constants.FeedforwardConstants;
 import frc.robot.Constants.FieldPoses;
@@ -46,8 +47,15 @@ public class FuelShooterSubsystem extends SubsystemBase {
         case Blue -> FieldPoses.BLUE_HUB;
         case Red -> FieldPoses.RED_HUB;
     };
+    public final Optional<SysId> sysId;
 	
 	public FuelShooterSubsystem () {
+		if (Constants.DEBUG_ENABLED) {
+            sysId = Optional.of(new SysId());
+		} else {
+            sysId = Optional.empty();
+		}
+
 		motor2Config.follow(DeviceConstants.FUEL_SHOOTER_MOTOR_1_ID, true);
 
 		motor1Config.closedLoop
@@ -101,42 +109,61 @@ public class FuelShooterSubsystem extends SubsystemBase {
 		});
 	}
 
-	// Mutable holder for unit-safe voltage values, persisted to avoid reallocation.
-	private final MutVoltage m_appliedVoltage = Volts.mutable(0);
-	 // Mutable holder for unit-safe linear distance values, persisted to avoid reallocation.
-	private final MutAngle m_distance = Rotations.mutable(0);
-	// Mutable holder for unit-safe linear velocity values, persisted to avoid reallocation.
-	private final MutAngularVelocity m_velocity = RotationsPerSecond.mutable(0);
+	public class SysId {
+        private final MutVoltage appliedVoltage = Volts.mutable(0);
+        private final MutAngle distance = Rotations.mutable(0);
+        private final MutAngularVelocity velocity = RotationsPerSecond.mutable(0);
+        private final SysIdRoutine sysIdRoutine = new SysIdRoutine(
+                new SysIdRoutine.Config(),
+                new SysIdRoutine.Mechanism(
+                        // Drive motor controllers
+                        voltage -> {
+                            shooterMotor1.setVoltage(voltage.baseUnitMagnitude());
+						},
+                        // Tell SysId how to record a frame of data for each motor on the mechanism
+                        // being characterized.
+                        log -> {
+							log.motor("shooter-1")
+									.voltage(
+											appliedVoltage.mut_replace(
+												shooterMotor1.getAppliedOutput() * RobotController.getBatteryVoltage(), Volts))
+									.angularPosition(distance.mut_replace(shooterMotor1.getEncoder().getPosition(), Rotations))
+									.angularVelocity(
+										velocity.mut_replace(shooterMotor1.getEncoder().getVelocity(), RotationsPerSecond));
+                        },
+                        // Tell SysId to make generated commands require this subsystem.
+                        FuelShooterSubsystem.this));
 
+        /**
+         * Returns a command that will execute a quasistatic test in the given
+         * direction.
+         *
+         * @param direction The direction (forward or reverse) to run the test in
+         */
+        public Command quasistatic(SysIdRoutine.Direction direction) {
+            return sysIdRoutine.quasistatic(direction);
+        }
 
-	// Creates a SysIdRoutine
-	SysIdRoutine routine = new SysIdRoutine(
-		new SysIdRoutine.Config(),
-		new SysIdRoutine.Mechanism( voltage -> {
-				shooterMotor1.setVoltage(voltage.baseUnitMagnitude());
-				},
-				// Tell SysId how to record a frame of data for each motor on the mechanism being
-				// characterized.
-				log -> {
-					// Record a frame for the left motors.  Since these share an encoder, we consider
-					// the entire group to be one motor.
-					log.motor("shooter-1")
-						.voltage(
-							m_appliedVoltage.mut_replace(
-								shooterMotor1.getAppliedOutput() * RobotController.getBatteryVoltage(), Volts))
-						.angularPosition(m_distance.mut_replace(shooterMotor1.getEncoder().getPosition(), Rotations))
-						.angularVelocity(
-							m_velocity.mut_replace(shooterMotor1.getEncoder().getVelocity(), RotationsPerSecond));
-						}, this)
-	);
+        /**
+         * Returns a command that will execute a dynamic test in the given direction.
+         *
+         * @param direction The direction (forward or reverse) to run the test in
+         */
+        public Command dynamic(SysIdRoutine.Direction direction) {
+            return sysIdRoutine.dynamic(direction);
+        }
 
-	public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
-		return routine.quasistatic(direction);
-	}
-
-	public Command sysIdDynamic(SysIdRoutine.Direction direction) {
-		return routine.dynamic(direction);
-	}
+        /**
+         * Adds system identification commands to the dashboard. Only needs to be called once.
+         */
+        public void configureSendables() {
+            var name = FuelShooterSubsystem.this.getName();
+            SmartDashboard.putData("SysId/"+name+"/Quasistatic Forward", quasistatic(SysIdRoutine.Direction.kForward));
+            SmartDashboard.putData("SysId/"+name+"/Quasistatic Reverse", quasistatic(SysIdRoutine.Direction.kReverse));
+            SmartDashboard.putData("SysId/"+name+"/Dynamic Forward", dynamic(SysIdRoutine.Direction.kForward));
+            SmartDashboard.putData("SysId/"+name+"/Dynamic Reverse", dynamic(SysIdRoutine.Direction.kReverse));
+        }
+    }
 
 	@Override
 	public void initSendable(SendableBuilder builder) {
@@ -150,11 +177,7 @@ public class FuelShooterSubsystem extends SubsystemBase {
 
 		builder.addDoubleProperty("Set Shooter Setpoint", () -> shooterController.getMAXMotionSetpointVelocity(), (speed) -> shooterController.setSetpoint(speed, ControlType.kMAXMotionVelocityControl));
 
-		//Sys ID
-		SmartDashboard.putData("Shooter - Run Forward Dynamic", sysIdDynamic(Direction.kForward));
-		SmartDashboard.putData("Shooter - Run Reverse Dynamic", sysIdDynamic(Direction.kReverse));
-		SmartDashboard.putData("Shooter - Run Forward Quasistatic", sysIdQuasistatic(Direction.kForward));
-		SmartDashboard.putData("Shooter - Run Reverse Quasistatic", sysIdQuasistatic(Direction.kReverse));
+        sysId.ifPresent(sysid -> sysid.configureSendables());
 
 		//Testing
 		SmartDashboard.putData("Shoot Fuel", shootFuel());

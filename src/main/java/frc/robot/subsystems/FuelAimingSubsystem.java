@@ -4,7 +4,7 @@ import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.units.Units.Volts;
-
+import java.util.Optional;
 import java.util.function.Supplier;
 
 import com.revrobotics.PersistMode;
@@ -21,6 +21,8 @@ import edu.wpi.first.units.VelocityUnit;
 import edu.wpi.first.units.VoltageUnit;
 import edu.wpi.first.units.measure.MutAngle;
 import edu.wpi.first.units.measure.MutAngularVelocity;
+import edu.wpi.first.units.measure.MutDistance;
+import edu.wpi.first.units.measure.MutLinearVelocity;
 import edu.wpi.first.units.measure.MutVoltage;
 import edu.wpi.first.units.measure.Velocity;
 import edu.wpi.first.util.sendable.SendableBuilder;
@@ -38,6 +40,9 @@ import frc.robot.Constants.DeviceConstants;
 import frc.robot.Constants.FeedforwardConstants;
 import frc.robot.Constants.FieldPoses;
 import frc.robot.Constants.FuelAimingConstants;
+import frc.robot.subsystems.DriveSubsystem.SysId;
+import swervelib.telemetry.SwerveDriveTelemetry;
+import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 
 public class FuelAimingSubsystem extends SubsystemBase {
 	private final SparkMax turretRotator = new SparkMax(DeviceConstants.TURRET_ROTATOR, MotorType.kBrushless);
@@ -45,11 +50,12 @@ public class FuelAimingSubsystem extends SubsystemBase {
 	private final SparkMaxConfig turretConfig = new SparkMaxConfig();
 	private DigitalInput turretAimingLimitSwitch = new DigitalInput(DeviceConstants.TURRET_AIMMER_LIMIT_SWITCH_CHANNEL);
 	private boolean turretSetZeroStart = false;
-
-
 	private final SparkMax hoodRotator = new SparkMax(DeviceConstants.HOOD_ROTATOR, MotorType.kBrushed);
 	private final SparkClosedLoopController hoodController = hoodRotator.getClosedLoopController();
 	private final SparkMaxConfig hoodConfig = new SparkMaxConfig();
+
+    public final Optional<SysIdTurret> sysIdTurret;
+    public final Optional<SysIdHood> sysIdHood;
 
 	//Important Coordinates
 	private final Translation2d hubPosition = switch(DriverStation.getAlliance().orElse(Alliance.Red)) {
@@ -77,6 +83,14 @@ public class FuelAimingSubsystem extends SubsystemBase {
 	private double hoodEncoderPosition;
 
 	public FuelAimingSubsystem() {
+		if (Constants.DEBUG_ENABLED) {
+            sysIdTurret = Optional.of(new SysIdTurret());
+            sysIdHood = Optional.of(new SysIdHood());
+		} else {
+            sysIdTurret = Optional.empty();
+            sysIdHood = Optional.empty();
+		}
+
 		//Turret
 		turretConfig.closedLoop
 		.p(FeedforwardConstants.TURRET_ROTATOR_kP)
@@ -231,73 +245,120 @@ public class FuelAimingSubsystem extends SubsystemBase {
 
 	//Todo: Add sprinkler routine to turret :l
 
-	// Mutable holder for unit-safe voltage values, persisted to avoid reallocation.
-	private final MutVoltage m_appliedVoltage = Volts.mutable(0);
-	// Mutable holder for unit-safe linear distance values, persisted to avoid reallocation.
-	private final MutAngle m_distance = Rotations.mutable(0);
-	// Mutable holder for unit-safe linear velocity values, persisted to avoid reallocation.
-	private final MutAngularVelocity m_velocity = RotationsPerSecond.mutable(0);
+	public class SysIdTurret {
+        private final MutVoltage appliedVoltage = Volts.mutable(0);
+        private final MutAngle distance = Rotations.mutable(0);
+        private final MutAngularVelocity velocity = RotationsPerSecond.mutable(0);
+        private final SysIdRoutine sysIdRoutine = new SysIdRoutine(
+                new SysIdRoutine.Config(),
+                new SysIdRoutine.Mechanism(
+                        // Drive motor controllers
+                        voltage -> {
+                            turretRotator.setVoltage(voltage.baseUnitMagnitude());
+						},
+                        // Tell SysId how to record a frame of data for each motor on the mechanism
+                        // being characterized.
+                        log -> {
+							log.motor("turret-rotator")
+									.voltage(
+											appliedVoltage.mut_replace(
+												turretRotator.getAppliedOutput() * RobotController.getBatteryVoltage(), Volts))
+									.angularPosition(distance.mut_replace(turretRotator.getEncoder().getPosition(), Rotations))
+									.angularVelocity(
+										velocity.mut_replace(turretRotator.getEncoder().getVelocity(), RotationsPerSecond));
+                        },
+                        // Tell SysId to make generated commands require this subsystem.
+                        FuelAimingSubsystem.this));
 
+        /**
+         * Returns a command that will execute a quasistatic test in the given
+         * direction.
+         *
+         * @param direction The direction (forward or reverse) to run the test in
+         */
+        public Command quasistatic(SysIdRoutine.Direction direction) {
+            return sysIdRoutine.quasistatic(direction);
+        }
 
-	// Creates a SysIdRoutine
-	SysIdRoutine turretRoutine = new SysIdRoutine(
-		new SysIdRoutine.Config(),
-		new SysIdRoutine.Mechanism(voltage -> {
-				turretRotator.setVoltage(voltage.baseUnitMagnitude());
-				},
-				// Tell SysId how to record a frame of data for each motor on the mechanism being
-				// characterized.
-				log -> {
-					// Record a frame for the left motors.  Since these share an encoder, we consider
-					// the entire group to be one motor.
-					log.motor("turret-rotator")
-						.voltage(
-							m_appliedVoltage.mut_replace(
-								turretRotator.getAppliedOutput() * RobotController.getBatteryVoltage(), Volts))
-						.angularPosition(m_distance.mut_replace(turretRotator.getEncoder().getPosition(), Rotations))
-						.angularVelocity(
-							m_velocity.mut_replace(turretRotator.getEncoder().getVelocity(), RotationsPerSecond));
-						}, this)
-	);
+        /**
+         * Returns a command that will execute a dynamic test in the given direction.
+         *
+         * @param direction The direction (forward or reverse) to run the test in
+         */
+        public Command dynamic(SysIdRoutine.Direction direction) {
+            return sysIdRoutine.dynamic(direction);
+        }
 
-	public Command sysIdQuasistaticTurret(SysIdRoutine.Direction direction) {
-		return turretRoutine.quasistatic(direction);
-	}
+        /**
+         * Adds system identification commands to the dashboard. Only needs to be called once.
+         */
+        public void configureSendables() {
+            var name = FuelAimingSubsystem.this.getName();
+            SmartDashboard.putData("SysId/"+name+"/Turret/Quasistatic Forward", quasistatic(SysIdRoutine.Direction.kForward));
+            SmartDashboard.putData("SysId/"+name+"/Turret/Quasistatic Reverse", quasistatic(SysIdRoutine.Direction.kReverse));
+            SmartDashboard.putData("SysId/"+name+"/Turret/Dynamic Forward", dynamic(SysIdRoutine.Direction.kForward));
+            SmartDashboard.putData("SysId/"+name+"/Turret/Dynamic Reverse", dynamic(SysIdRoutine.Direction.kReverse));
+        }
+    }
 
-	public Command sysIdDynamicTurret(SysIdRoutine.Direction direction) {
-		return turretRoutine.dynamic(direction);
-	}
+	public class SysIdHood {
+        private final VelocityUnit<VoltageUnit> voltsPerSeconds = Volts.per(Seconds);
+		private final Velocity<VoltageUnit> rampRate = voltsPerSeconds.of(1.5);
 
-	private final VelocityUnit<VoltageUnit> voltsPerSeconds = Volts.per(Seconds);
-	private final Velocity<VoltageUnit> rampRate = voltsPerSeconds.of(1.5);
+		private final MutVoltage appliedVoltage = Volts.mutable(0);
+        private final MutAngle distance = Rotations.mutable(0);
+        private final MutAngularVelocity velocity = RotationsPerSecond.mutable(0);
+        private final SysIdRoutine sysIdRoutine = new SysIdRoutine(
+                new SysIdRoutine.Config(rampRate, Volts.of(10.0), Seconds.of(10.0)),
+                new SysIdRoutine.Mechanism(
+                        // Drive motor controllers
+                        voltage -> {
+                            hoodRotator.setVoltage(voltage.baseUnitMagnitude());
+						},
+                        // Tell SysId how to record a frame of data for each motor on the mechanism
+                        // being characterized.
+                        log -> {
+							log.motor("hood-rotator")
+									.voltage(
+											appliedVoltage.mut_replace(
+												hoodRotator.getAppliedOutput() * RobotController.getBatteryVoltage(), Volts))
+									.angularPosition(distance.mut_replace(hoodRotator.getEncoder().getPosition(), Rotations))
+									.angularVelocity(
+										velocity.mut_replace(hoodRotator.getEncoder().getVelocity(), RotationsPerSecond));
+                        },
+                        // Tell SysId to make generated commands require this subsystem.
+                        FuelAimingSubsystem.this));
 
-	SysIdRoutine hoodRoutine = new SysIdRoutine(
-	 	new SysIdRoutine.Config(rampRate, Volts.of(10.0), Seconds.of(10.0)),
-	 	new SysIdRoutine.Mechanism(voltage -> {
-	 				hoodRotator.setVoltage(voltage.baseUnitMagnitude());
-	 			},
-	 			// Tell SysId how to record a frame of data for each motor on the mechanism being
-	 			// characterized.
-	 			log -> {
-	 				// Record a frame for the left motors.  Since these share an encoder, we consider
-	 				// the entire group to be one motor.
-	 				log.motor("hood-rotator")
-	 					.voltage(
-	 						m_appliedVoltage.mut_replace(
-	 							hoodRotator.getAppliedOutput() * RobotController.getBatteryVoltage(), Volts))
-	 					.angularPosition(m_distance.mut_replace(hoodRotator.getEncoder().getPosition(), Rotations))
-	 					.angularVelocity(
-	 						m_velocity.mut_replace(hoodRotator.getEncoder().getVelocity(), RotationsPerSecond));
-	 					}, this)
-	);
+        /**
+         * Returns a command that will execute a quasistatic test in the given
+         * direction.
+         *
+         * @param direction The direction (forward or reverse) to run the test in
+         */
+        public Command quasistatic(SysIdRoutine.Direction direction) {
+            return sysIdRoutine.quasistatic(direction);
+        }
 
-	 public Command sysIdQuasistaticHood(SysIdRoutine.Direction direction) {
-  	 	return hoodRoutine.quasistatic(direction);
-	 }
+        /**
+         * Returns a command that will execute a dynamic test in the given direction.
+         *
+         * @param direction The direction (forward or reverse) to run the test in
+         */
+        public Command dynamic(SysIdRoutine.Direction direction) {
+            return sysIdRoutine.dynamic(direction);
+        }
 
-	 public Command sysIdDynamicHood(SysIdRoutine.Direction direction) {
-  	 	return hoodRoutine.dynamic(direction);
-	 }
+        /**
+         * Adds system identification commands to the dashboard. Only needs to be called once.
+         */
+        public void configureSendables() {
+            var name = FuelAimingSubsystem.this.getName();
+            SmartDashboard.putData("SysId/"+name+"/Hood/Quasistatic Forward", quasistatic(SysIdRoutine.Direction.kForward));
+            SmartDashboard.putData("SysId/"+name+"/Hood/Quasistatic Reverse", quasistatic(SysIdRoutine.Direction.kReverse));
+            SmartDashboard.putData("SysId/"+name+"/Hood/Dynamic Forward", dynamic(SysIdRoutine.Direction.kForward));
+            SmartDashboard.putData("SysId/"+name+"/Hood/Dynamic Reverse", dynamic(SysIdRoutine.Direction.kReverse));
+        }
+    }
 
 	@Override
 	public void initSendable(SendableBuilder builder) {
@@ -322,16 +383,8 @@ public class FuelAimingSubsystem extends SubsystemBase {
 
 		builder.addDoubleProperty("Set Hood Position", () -> hoodController.getSetpoint(), (position) -> hoodController.setSetpoint(position, ControlType.kMAXMotionPositionControl));
 
-		//Sys ID
-		SmartDashboard.putData("Turret - Run Forward Dynamic", sysIdDynamicTurret(Direction.kForward));
-		SmartDashboard.putData("Turret - Run Reverse Dynamic", sysIdDynamicTurret(Direction.kReverse));
-		SmartDashboard.putData("Turret - Run Forward Quasistatic", sysIdQuasistaticTurret(Direction.kForward));
-		SmartDashboard.putData("Turret - Run Reverse Quasistatic", sysIdQuasistaticTurret(Direction.kReverse));
-
-		SmartDashboard.putData("Hood - Run Forward Dynamic", sysIdDynamicHood(Direction.kForward));
-		SmartDashboard.putData("Hood - Run Reverse Dynamic", sysIdDynamicHood(Direction.kReverse));
-		SmartDashboard.putData("Hood - Run Forward Quasistatic", sysIdQuasistaticHood(Direction.kForward));
-		SmartDashboard.putData("Hood - Run Reverse Quasistatic", sysIdQuasistaticHood(Direction.kReverse));
+		sysIdTurret.ifPresent(sysid -> sysid.configureSendables());
+		sysIdHood.ifPresent(sysid -> sysid.configureSendables());
 
 		//Testing
 		SmartDashboard.putData("Manual Turret CW", manualTurretControlCW());
@@ -345,6 +398,5 @@ public class FuelAimingSubsystem extends SubsystemBase {
 		SmartDashboard.putData("Manual Hood Stop", manualHoodControlStop());
 		SmartDashboard.putData("Manual Hood Run Up", hoodToPosition(2.0));
 		SmartDashboard.putData("Manual Hood Run Down", hoodToPosition(0.0));
-		SmartDashboard.putBoolean("Limit Switch", turretAimmerLimitSwitch.get());
 	}
 }
