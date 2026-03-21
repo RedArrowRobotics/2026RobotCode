@@ -308,6 +308,7 @@ public class FuelAimingSubsystem extends SubsystemBase {
 		builder.addDoubleProperty("Turret Voltage", () -> turretRotator.getAppliedOutput(), null);
 		builder.addDoubleProperty("Turret Setpoint", () -> turretController.getSetpoint(), null);
 		builder.addDoubleProperty("Turret Velocity", () -> turretRotator.getEncoder().getVelocity(), null);
+		builder.addBooleanProperty("Limit Switch", () -> turretAimingLimitSwitch.get(), null);
 
 		builder.addDoubleProperty("Hood Power", () -> hoodRotator.get(), null);
 		builder.addDoubleProperty("Hood Voltage", () -> hoodRotator.getAppliedOutput(), null);
@@ -344,7 +345,6 @@ public class FuelAimingSubsystem extends SubsystemBase {
 		SmartDashboard.putData("Manual Hood Down", manualHoodControlDown());
 		SmartDashboard.putData("Manual Hood Stop", manualHoodControlStop());
 		SmartDashboard.putData("Manual Hood Run Up", hoodToPosition(2.0));
-		SmartDashboard.putData("Manual Hood Run Down", hoodToPosition(0.0));
-		SmartDashboard.putBoolean("Limit Switch", turretAimmerLimitSwitch.get());
+		SmartDashboard.putData("Manual Hood Run Down", hoodToPosition(0.0));		
 	}
 }
