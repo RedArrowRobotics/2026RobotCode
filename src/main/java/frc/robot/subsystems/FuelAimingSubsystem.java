@@ -229,6 +229,10 @@ public class FuelAimingSubsystem extends SubsystemBase {
 		});
 	}
 
+	public boolean turretAtSetpoint() {
+		return turretController.isAtSetpoint();
+	}
+
 	//Todo: Add sprinkler routine to turret :l
 
 	// Mutable holder for unit-safe voltage values, persisted to avoid reallocation.
