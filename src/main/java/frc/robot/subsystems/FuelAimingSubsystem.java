@@ -126,17 +126,6 @@ public class FuelAimingSubsystem extends SubsystemBase {
 		hoodController.setSetpoint(0.0, ControlType.kMAXMotionPositionControl);
 	}
 
-	/*public void zeroTurret() {
-    	if (turretSetZeroStart == false) {
-        	while (turretAimingLimitSwitch.get() == false) {
-				turretRotator.set(0.1);
-			}
-			turretRotator.set(0.0);
-			turretSetZeroStart = true;
-			turretRotator.getEncoder().setPosition(Constants.FuelAimingConstants.TURRET_ROTATION_ZERO * Constants.FuelAimingConstants.DEGREES_TO_ROTATIONS);
-    	}
-	}*/
-
 	public Command zeroTurret() {
 		return runEnd(() -> {
 			turretRotator.set(0.1);
