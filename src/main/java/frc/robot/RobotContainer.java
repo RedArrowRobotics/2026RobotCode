@@ -34,7 +34,7 @@ public class RobotContainer {
         swerveDriveTrain = new DriveSubsystem();
 
         swerveDriveTrain.setDefaultCommand(swerveDriveTrain.teleopDrive(DriveOrientation.FIELD_CENTRIC));
-        //fuelShooter.setDefaultCommand(fuelShooter.shooterDeactivate());
+        fuelShooter.setDefaultCommand(fuelShooter.shooterDeactivate());
         autoChooser = AutoBuilder.buildAutoChooser();
 
         configureBindings();
@@ -54,7 +54,7 @@ public class RobotContainer {
         //ControlInputs.componentsBoard.button(5).whileTrue(agitator.startAgitating());
 
         //ControlInputs.componentsBoard.button(6).whileTrue(fuelAiming.automaticAimRoutine(() -> swerveDriveTrain.getPose()));
-        //ControlInputs.componentsBoard.button(7).whileTrue(fuelShooter.shootFuelVarSpeed(() -> swerveDriveTrain.getPose()));
+        ControlInputs.componentsBoard.button(7).whileTrue(fuelShooter.shootFuelVarSpeed(() -> swerveDriveTrain.getPose()));
 
         NamedCommands.registerCommand("Zero Turret", fuelAiming.zeroTurret());
         NamedCommands.registerCommand("Aim Routine", fuelAiming.automaticAimRoutine(() -> swerveDriveTrain.getPose()).until(() -> fuelAiming.turretAtSetpoint()));
@@ -85,8 +85,8 @@ public class RobotContainer {
     }
 
     public Optional<Command> getAutonomousCommand() {
-         // Fetch the selected autonomous command from the dashoard and put it in an
-         // Optional
+         //Fetch the selected autonomous command from the dashoard and put it in an
+         //Optional
          return Optional.ofNullable(autoChooser.getSelected());
     }
 

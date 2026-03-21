@@ -1,11 +1,5 @@
 package frc.robot;
 
-import static edu.wpi.first.units.Units.Meters;
-
-import java.util.List;
-
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 
 public final class Constants {
@@ -40,7 +34,6 @@ public final class Constants {
         public static final Translation2d RED_ALLIANCE_TRENCH_OUTPOST = new Translation2d(11.900, 7.500);
         public static final Translation2d BLUE_ALLIANCE_TRENCH_DEPOT = new Translation2d(4.700, 7.500);
         public static final Translation2d BLUE_ALLIANCE_TRENCH_OUTPOST = new Translation2d(4.700, 0.650);
-
     }
 
     public final class DeviceConstants {
