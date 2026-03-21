@@ -209,9 +209,9 @@ public class FuelAimingSubsystem extends SubsystemBase {
 			
 			//TODO: restrain degreeRelativeToRobot to bounds that the turret can physically reach
 			if(inAllianceZone) {
-				turretController.setSetpoint(degreeToHubRelativeToRobot * -0.2132, ControlType.kMAXMotionPositionControl);
+				turretController.setSetpoint(degreeToHubRelativeToRobot * FuelAimingConstants.DEGREES_TO_ROTATIONS, ControlType.kMAXMotionPositionControl);
 			} else {
-				//turretController.setSetpoint(robotPose.get().getRotation().getDegrees() * 0.2132, ControlType.kMAXMotionPositionControl);
+				//turretController.setSetpoint(robotPose.get().getRotation().getDegrees() * FuelAimingConstants.DEGREES_TO_ROTATIONS, ControlType.kMAXMotionPositionControl);
 			}
 						
 			//Hood Control

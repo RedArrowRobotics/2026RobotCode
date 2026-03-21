@@ -72,7 +72,7 @@ public final class Constants {
         public static final double TURRET_ROTATION_ZERO = 0.000;
         public static final double HOOD_DOWN_POSITION = 0.0;
         public static final double HOOD_UP_POSITION = 2.142;
-        public static final double DEGREES_TO_ROTATIONS = 2.142;
+        public static final double DEGREES_TO_ROTATIONS = -0.2132;
     }
 
     public final class FeedforwardConstants {
