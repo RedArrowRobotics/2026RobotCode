@@ -44,14 +44,14 @@ public class RobotContainer {
     private void configureBindings() {
         ControlInputs.componentsBoard.axisGreaterThan(1, 0.5).onTrue(fuelAiming.manualTurretControlCW());
         ControlInputs.componentsBoard.axisLessThan(1, -0.5).onTrue(fuelAiming.manualTurretControlCCW());
-        // ControlInputs.componentsBoard.button(6).onTrue(fuelIntake.extendIntake());
-        // ControlInputs.componentsBoard.button(7).onTrue(fuelIntake.retractIntake());
+        //ControlInputs.componentsBoard.button(6).onTrue(fuelIntake.extendIntake());
+        //ControlInputs.componentsBoard.button(7).onTrue(fuelIntake.retractIntake());
         ControlInputs.componentsBoard.button(0).and(() -> fuelAiming.setpointWithinRange).whileTrue(fuelShooter.shootFuel());
-        // ControlInputs.componentsBoard.button(1).onTrue(fuelIntake.intakeFuelIn());
-        // ControlInputs.componentsBoard.button(2).onTrue(fuelIntake.intakeFuelOut());
-        // ControlInputs.componentsBoard.button(3).whileTrue(climber.climberAscend());
-        // ControlInputs.componentsBoard.button(4).whileTrue(climber.climberDescend());
-        // ControlInputs.componentsBoard.button(5).whileTrue(agitator.startAgitating());
+        //ControlInputs.componentsBoard.button(1).onTrue(fuelIntake.intakeFuelIn());
+        //ControlInputs.componentsBoard.button(2).onTrue(fuelIntake.intakeFuelOut());
+        //ControlInputs.componentsBoard.button(3).whileTrue(climber.climberAscend());
+        //ControlInputs.componentsBoard.button(4).whileTrue(climber.climberDescend());
+        //ControlInputs.componentsBoard.button(5).whileTrue(agitator.startAgitating());
 
         //ControlInputs.componentsBoard.button(6).whileTrue(fuelAiming.automaticAimRoutine(() -> swerveDriveTrain.getPose()));
         //ControlInputs.componentsBoard.button(7).whileTrue(fuelShooter.shootFuelVarSpeed(() -> swerveDriveTrain.getPose()));
