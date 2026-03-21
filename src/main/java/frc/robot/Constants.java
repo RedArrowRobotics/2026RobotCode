@@ -52,7 +52,7 @@ public final class Constants {
         public static final String LIMELIGHT_FRONT = "limelight-front";
         public static final String LIMELIGHT_BACK = "limelight-back";
         public static final int CLIMBER_ENCODER_CHANNEL = 22;
-        public static final int TURRET_AIMMER_LIMIT_SWITCH_CHANNEL = 23;
+        public static final int TURRET_AIMMER_LIMIT_SWITCH_CHANNEL = 9;
     }
 
     public final class DriveConstants {
