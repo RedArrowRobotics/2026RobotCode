@@ -116,8 +116,6 @@ public class ClimberSubsystem extends SubsystemBase {
   private final Voltage dynamicVoltage = Volts.of(7.0);
   private final Time runTime = Seconds.of(10.0);
 
-
-
 	// Creates a SysIdRoutine
 	SysIdRoutine routine = new SysIdRoutine(
 		new SysIdRoutine.Config(rampRate, dynamicVoltage, runTime),
