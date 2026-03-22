@@ -14,7 +14,7 @@ import frc.robot.Constants.DeviceConstants;
 
 public class ClimberSubsystem extends SubsystemBase {
     private final SparkMax climberMotor = new SparkMax(DeviceConstants.CLIMBER_MOTOR_ID, MotorType.kBrushless);
-    private DigitalInput climberEncoder = new DigitalInput(DeviceConstants.climberEncoderChannel);
+    private DigitalInput climberEncoder = new DigitalInput(DeviceConstants.CLIMBER_ENCODER_CHANNEL);
 
     public Command climberAscend() {
         return runOnce(() -> {
