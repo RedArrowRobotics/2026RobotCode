@@ -129,7 +129,7 @@ public final class Constants {
         public static final double HOPPER_MAX_VELOCITY = 0.0;
         public static final double HOPPER_MAX_ACCELERATION = 0.0;
         public static final double HOPPER_MAX_ERROR = 0.0;
-
+        
         //Kicker Constants
         public static final double KICKER_kP = 0.00014281;
         public static final double KICKER_kI = 0.0;
@@ -147,10 +147,9 @@ public final class Constants {
         public static final int HOPPER_EXTENDER_MOTOR_ID = 24;
         public static final double INTAKE_SPEED = 0.5;
         public static final double HOPPER_MANUAL_SPEED = 0.5;
-
         public static final double HOPPER_EXTENDED_POSITION = 0.0;
         public static final double HOPPER_RETRACTED_POSITION = 0.0;
-    }      
+    }
 
     public final class AgitatorConstants {
         public static final int BELT_MOTOR_1_ID = 20;
@@ -160,8 +159,8 @@ public final class Constants {
         public static final double BELT_SPEED = 0.5;
         public static final double KICK_RPM = 4000;
     }
-        
-    public final class ClimberConstants {
+
+     public final class ClimberConstants {
         public static final double CLIMBER_POWER = 0.5;
     }
 }

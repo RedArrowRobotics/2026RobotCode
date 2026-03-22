@@ -21,6 +21,7 @@ import frc.robot.subsystems.DriveSubsystem.DriveOrientation;
 import frc.robot.subsystems.FuelAimingSubsystem;
 import frc.robot.subsystems.FuelIntakeSubsystem;
 import frc.robot.subsystems.FuelShooterSubsystem;
+import frc.robot.subsystems.HopperSubsytem;
 
 public class RobotContainer {
     private final DriveSubsystem swerveDriveTrain;
@@ -29,6 +30,7 @@ public class RobotContainer {
     private final FuelShooterSubsystem fuelShooter = new FuelShooterSubsystem();
     private final AgitatorSubsystem agitator = new AgitatorSubsystem();
     private final ClimberSubsystem climber = new ClimberSubsystem();
+    private final HopperSubsytem hopper = new HopperSubsytem();
     private final SendableChooser<Command> autoChooser;
     
     public RobotContainer() throws IOException, Exception {
@@ -47,8 +49,8 @@ public class RobotContainer {
         ControlInputs.componentsBoard.button(InputConstants.SHOOT_FUEL).whileTrue(fuelShooter.shootFuelVarSpeed(() -> swerveDriveTrain.getPose()).alongWith(agitator.startAgitating()));
         ControlInputs.componentsBoard.button(InputConstants.INTAKE_IN).onTrue(fuelIntake.intakeFuelIn());
         ControlInputs.componentsBoard.button(InputConstants.INTAKE_OUT).onTrue(fuelIntake.intakeFuelOut());
-        ControlInputs.componentsBoard.button(InputConstants.EXTEND_HOPPER).onTrue(fuelIntake.extendIntake());
-        ControlInputs.componentsBoard.button(InputConstants.EXTEND_HOPPER).onFalse(fuelIntake.retractIntake());
+        ControlInputs.componentsBoard.button(InputConstants.EXTEND_HOPPER).onTrue(hopper.extendHopperPIDF());
+        ControlInputs.componentsBoard.button(InputConstants.EXTEND_HOPPER).onFalse(hopper.retractHopperPIDF());
         ControlInputs.componentsBoard.button(InputConstants.CLIMBER_UP).onTrue(climber.climberUpPID());
         ControlInputs.componentsBoard.button(InputConstants.CLIMBER_DOWN).onTrue(climber.climberDownPID());
         
@@ -58,8 +60,8 @@ public class RobotContainer {
         NamedCommands.registerCommand("Agitate Fuel", agitator.startAgitating().withTimeout(Seconds.of(5.0)));
         NamedCommands.registerCommand("Climber Up", climber.climberUpPID());
         NamedCommands.registerCommand("Climber Down", climber.climberDownPID());
-        NamedCommands.registerCommand("Hopper In", fuelIntake.retractIntakePIDF());
-        NamedCommands.registerCommand("Hopper Out", fuelIntake.extendIntakePIDF());
+        NamedCommands.registerCommand("Hopper In", hopper.retractHopperPIDF());
+        NamedCommands.registerCommand("Hopper Out", hopper.extendHopperPIDF());
         NamedCommands.registerCommand("Intake Fuel", fuelIntake.intakeFuelIn());
         NamedCommands.registerCommand("'Barf' Fuel", fuelIntake.intakeFuelOut());
         NamedCommands.registerCommand("Stop Intake", fuelIntake.intakeStop());
