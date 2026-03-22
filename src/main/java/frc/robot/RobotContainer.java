@@ -18,6 +18,7 @@ import frc.robot.subsystems.DriveSubsystem.DriveOrientation;
 import frc.robot.subsystems.FuelAimingSubsystem;
 import frc.robot.subsystems.FuelIntakeSubsystem;
 import frc.robot.subsystems.FuelShooterSubsystem;
+import frc.robot.subsystems.HopperSubsytem;
 
 public class RobotContainer {
     private final DriveSubsystem swerveDriveTrain;
@@ -26,6 +27,7 @@ public class RobotContainer {
     private final FuelShooterSubsystem fuelShooter = new FuelShooterSubsystem();
     private final AgitatorSubsystem agitator = new AgitatorSubsystem();
     private final ClimberSubsystem climber = new ClimberSubsystem();
+    private final HopperSubsytem hopper = new HopperSubsytem();
     private final SendableChooser<Command> autoChooser;
     
     public RobotContainer() throws IOException, Exception {
@@ -40,8 +42,8 @@ public class RobotContainer {
     }
 
     private void configureBindings() {
-        ControlInputs.componentsBoard.button(6).onTrue(fuelIntake.extendIntakeManual());
-        ControlInputs.componentsBoard.button(7).onTrue(fuelIntake.retractIntakeManual());
+        ControlInputs.componentsBoard.button(6).onTrue(hopper.extendIntakeManual());
+        ControlInputs.componentsBoard.button(7).onTrue(hopper.retractIntakeManual());
         ControlInputs.componentsBoard.button(0).whileTrue(fuelShooter.shootFuel());
         ControlInputs.componentsBoard.button(1).onTrue(fuelIntake.intakeFuelIn());
         ControlInputs.componentsBoard.button(2).onTrue(fuelIntake.intakeFuelOut());
