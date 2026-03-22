@@ -5,6 +5,7 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.units.Units.Volts;
 
 import com.revrobotics.PersistMode;
@@ -13,9 +14,14 @@ import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.ControlType;
 
+import edu.wpi.first.units.VelocityUnit;
+import edu.wpi.first.units.VoltageUnit;
 import edu.wpi.first.units.measure.MutDistance;
 import edu.wpi.first.units.measure.MutLinearVelocity;
 import edu.wpi.first.units.measure.MutVoltage;
+import edu.wpi.first.units.measure.Time;
+import edu.wpi.first.units.measure.Velocity;
+import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.RobotController;
@@ -98,17 +104,23 @@ public class ClimberSubsystem extends SubsystemBase {
         });
     }
 
-    // Mutable holder for unit-safe voltage values, persisted to avoid reallocation.
+// Mutable holder for unit-safe voltage values, persisted to avoid reallocation.
   private final MutVoltage m_appliedVoltage = Volts.mutable(0);
   // Mutable holder for unit-safe linear distance values, persisted to avoid reallocation.
   private final MutDistance m_distance = Meters.mutable(0);
   // Mutable holder for unit-safe linear velocity values, persisted to avoid reallocation.
   private final MutLinearVelocity m_velocity = MetersPerSecond.mutable(0);
 
+  private final VelocityUnit<VoltageUnit> voltsPerSecond = Volts.per(Seconds);
+  private final Velocity<VoltageUnit> rampRate = voltsPerSecond.of(0.2);
+  private final Voltage dynamicVoltage = Volts.of(7.0);
+  private final Time runTime = Seconds.of(10.0);
+
+
 
 	// Creates a SysIdRoutine
 	SysIdRoutine routine = new SysIdRoutine(
-		new SysIdRoutine.Config(),
+		new SysIdRoutine.Config(rampRate, dynamicVoltage, runTime),
 		new SysIdRoutine.Mechanism(voltage -> {
 				climberMotor.setVoltage(voltage.baseUnitMagnitude());
 				},
