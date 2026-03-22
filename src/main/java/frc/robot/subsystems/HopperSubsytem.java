@@ -29,13 +29,6 @@ public class HopperSubsytem extends SubsystemBase {
     private final SparkMax hopperExtender = new SparkMax(IntakeConstants.HOPPER_EXTENDER_MOTOR_ID, MotorType.kBrushless);
 	private final SparkClosedLoopController hopperController = hopperExtender.getClosedLoopController();
 	private final SparkMaxConfig hopperConfig = new SparkMaxConfig();
-    public HopperState hopperState = HopperState.HOME;
-
-	public enum HopperState {
-		HOME,
-		MOVING,
-		EXTENDED;
-	}
 
     public HopperSubsytem() {
         hopperConfig.closedLoop
@@ -54,13 +47,13 @@ public class HopperSubsytem extends SubsystemBase {
 		hopperExtender.configure(hopperConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
 
-    public Command extendIntakeManual() {
+    public Command extendHopperManual() {
 		return runOnce(() -> {
 			hopperExtender.set(IntakeConstants.HOPPER_MANUAL_SPEED);
 		});
 	}
 
-	public Command retractIntakeManual() {
+	public Command retractHopperManual() {
 		return runOnce(() -> {
 			hopperExtender.set(IntakeConstants.HOPPER_MANUAL_SPEED * -1);
 		});
@@ -72,21 +65,21 @@ public class HopperSubsytem extends SubsystemBase {
 		});
 	}
 
-	public Command extendHopperPIDF() {
+	public Command extendHopper() {
 		return startEnd(() -> {
 			hopperController.setSetpoint(IntakeConstants.HOPPER_EXTENDED_POSITION, ControlType.kMAXMotionPositionControl);
-			hopperState = HopperState.MOVING;
+		
 		}, () -> {
-			hopperState = HopperState.EXTENDED;
+
 		});
 	}
 
-	public Command retractHopperPIDF() {
+	public Command retractHopper() {
 		return startEnd(() -> {
 			hopperController.setSetpoint(IntakeConstants.HOPPER_RETRACTED_POSITION, ControlType.kMAXMotionPositionControl);
-			hopperState = HopperState.MOVING;
+
 		}, () -> {
-			hopperState = HopperState.HOME;
+
 		});
 	}
 
@@ -137,9 +130,9 @@ public class HopperSubsytem extends SubsystemBase {
 		SmartDashboard.putData("Hopper - Dynamic Reverse", sysIdDynamic(Direction.kReverse));
 
 		//Testing
-		SmartDashboard.putData("Extend Intake Manual", extendIntakeManual());
-		SmartDashboard.putData("Retract Intake Manual", retractIntakeManual());
-		SmartDashboard.putData("Extend Intake PIDF", extendHopperPIDF());
-		SmartDashboard.putData("Retract Intake PIDF", retractHopperPIDF());
+		SmartDashboard.putData("Extend Hopper Manual", extendHopperManual());
+		SmartDashboard.putData("Retract Hopper Manual", retractHopperManual());
+		SmartDashboard.putData("Extend Hopper PIDF", extendHopper());
+		SmartDashboard.putData("Retract Hopper PIDF", retractHopper());
 	}
 }

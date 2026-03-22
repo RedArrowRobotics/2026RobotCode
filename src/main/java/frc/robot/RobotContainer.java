@@ -4,6 +4,8 @@ import static edu.wpi.first.units.Units.Seconds;
 
 import java.io.IOException;
 import java.util.Optional;
+import java.util.ResourceBundle.Control;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
@@ -36,9 +38,11 @@ public class RobotContainer {
     public RobotContainer() throws IOException, Exception {
         swerveDriveTrain = new DriveSubsystem();
 
-        swerveDriveTrain.setDefaultCommand(swerveDriveTrain.teleopDrive(DriveOrientation.FIELD_CENTRIC));
         fuelShooter.setDefaultCommand(fuelShooter.shooterDeactivate());
         agitator.setDefaultCommand(agitator.stopAgitating());
+        fuelIntake.setDefaultCommand(fuelIntake.intakeStop());
+        fuelAiming.setDefaultCommand(fuelAiming.automaticAimRoutine(() -> swerveDriveTrain.getPose()));
+        climber.setDefaultCommand(climber.climberStop());
         autoChooser = AutoBuilder.buildAutoChooser();
 
         configureBindings();
@@ -47,21 +51,27 @@ public class RobotContainer {
 
     private void configureBindings() {
         ControlInputs.componentsBoard.button(InputConstants.SHOOT_FUEL).whileTrue(fuelShooter.shootFuelVarSpeed(() -> swerveDriveTrain.getPose()).alongWith(agitator.startAgitating()));
-        ControlInputs.componentsBoard.button(InputConstants.INTAKE_IN).onTrue(fuelIntake.intakeFuelIn());
-        ControlInputs.componentsBoard.button(InputConstants.INTAKE_OUT).onTrue(fuelIntake.intakeFuelOut());
-        ControlInputs.componentsBoard.button(InputConstants.EXTEND_HOPPER).onTrue(hopper.extendHopperPIDF());
-        ControlInputs.componentsBoard.button(InputConstants.EXTEND_HOPPER).onFalse(hopper.retractHopperPIDF());
-        ControlInputs.componentsBoard.button(InputConstants.CLIMBER_UP).onTrue(climber.climberUpPID());
-        ControlInputs.componentsBoard.button(InputConstants.CLIMBER_DOWN).onTrue(climber.climberDownPID());
-        
+        ControlInputs.componentsBoard.button(InputConstants.INTAKE_OUT).whileFalse(fuelIntake.intakeFuelOut());
+        ControlInputs.componentsBoard.button(InputConstants.INTAKE_IN).whileFalse(fuelIntake.intakeFuelIn());
+        ControlInputs.componentsBoard.button(InputConstants.EXTEND_HOPPER).onTrue(hopper.extendHopper());
+        ControlInputs.componentsBoard.button(InputConstants.EXTEND_HOPPER).onFalse(hopper.retractHopper());
+        ControlInputs.componentsBoard.button(InputConstants.CLIMBER_DOWN).whileTrue(climber.climberDownManual());
+        ControlInputs.componentsBoard.button(InputConstants.CLIMBER_UP).whileTrue(climber.climberUpManual());
+        ControlInputs.componentsBoard.button(InputConstants.MANUAL_HOOD_UP).whileTrue(fuelAiming.manualHoodControlUp(() -> ControlInputs.componentsBoard.button(InputConstants.MANUAL_SWITCH).getAsBoolean()));
+        ControlInputs.componentsBoard.button(InputConstants.MANUAL_HOOD_DOWN).whileFalse(fuelAiming.manualHoodControlDown(() -> ControlInputs.componentsBoard.button(InputConstants.MANUAL_SWITCH).getAsBoolean()));
+        ControlInputs.componentsBoard.button(InputConstants.MANUAL_TURRET_CCW).whileTrue(fuelAiming.manualTurretControlCCW(() -> ControlInputs.componentsBoard.button(InputConstants.MANUAL_SWITCH).getAsBoolean()));
+        ControlInputs.componentsBoard.button(InputConstants.MANUAL_TURRET_CW).whileTrue(fuelAiming.manualTurretControlCW(() -> ControlInputs.componentsBoard.button(InputConstants.MANUAL_SWITCH).getAsBoolean()));
+        ControlInputs.componentsBoard.button(InputConstants.DRIVE_ORIENTATION_SWITCH).whileFalse(swerveDriveTrain.teleopDrive(DriveOrientation.FIELD_CENTRIC));
+        ControlInputs.componentsBoard.button(InputConstants.DRIVE_ORIENTATION_SWITCH).whileTrue(swerveDriveTrain.teleopDrive(DriveOrientation.ROBOT_CENTRIC));
+
         NamedCommands.registerCommand("Zero Turret", fuelAiming.zeroTurret());
         NamedCommands.registerCommand("Aim Routine", fuelAiming.automaticAimRoutine(() -> swerveDriveTrain.getPose()).until(() -> fuelAiming.turretAtSetpoint()));
         NamedCommands.registerCommand("Shoot Fuel Var Speed", fuelShooter.shootFuelVarSpeed(() -> swerveDriveTrain.getPose()).withTimeout(Seconds.of(5.0)));
         NamedCommands.registerCommand("Agitate Fuel", agitator.startAgitating().withTimeout(Seconds.of(5.0)));
         NamedCommands.registerCommand("Climber Up", climber.climberUpPID());
         NamedCommands.registerCommand("Climber Down", climber.climberDownPID());
-        NamedCommands.registerCommand("Hopper In", hopper.retractHopperPIDF());
-        NamedCommands.registerCommand("Hopper Out", hopper.extendHopperPIDF());
+        NamedCommands.registerCommand("Hopper In", hopper.retractHopper());
+        NamedCommands.registerCommand("Hopper Out", hopper.extendHopper());
         NamedCommands.registerCommand("Intake Fuel", fuelIntake.intakeFuelIn());
         NamedCommands.registerCommand("'Barf' Fuel", fuelIntake.intakeFuelOut());
         NamedCommands.registerCommand("Stop Intake", fuelIntake.intakeStop());

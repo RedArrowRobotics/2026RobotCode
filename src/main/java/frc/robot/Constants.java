@@ -13,16 +13,17 @@ public final class Constants {
 
     public final class InputConstants {
         public static final int SHOOT_FUEL = 1;
-        public static final int INTAKE_IN = 2;
-        public static final int INTAKE_OUT = 3;
+        public static final int INTAKE_OUT = 2;
+        public static final int INTAKE_IN = 3;
         public static final int EXTEND_HOPPER = 4;
-        public static final int CLIMBER_UP = 5;
-        public static final int CLIMBER_DOWN = 6;
-        public static final int MANUAL_HOOD_UP = 7;
-        public static final int MANUAL_HOOD_DOWN = 8;
-        public static final int MANUAL_SWITCH = 9;
-        public static final int MANUAL_TURRET_CCW = 10;
-        public static final int MANUAL_TURRET_CW = 11;
+        public static final int CLIMBER_DOWN = 5;
+        public static final int CLIMBER_UP = 6;
+        public static final int MANUAL_SWITCH = 7;
+        public static final int MANUAL_HOOD_UP = 8;
+        public static final int MANUAL_HOOD_DOWN = 9;
+        public static final int MANUAL_TURRET_CW = 10;
+        public static final int MANUAL_TURRET_CCW = 11;
+        public static final int DRIVE_ORIENTATION_SWITCH = 12;
     }
 
     public final class AprilTagIDs {
