@@ -2,6 +2,8 @@ package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.Seconds;
+import static edu.wpi.first.units.Units.Volt;
 import static edu.wpi.first.units.Units.Volts;
 
 import com.revrobotics.PersistMode;
@@ -12,9 +14,14 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
+import edu.wpi.first.units.VelocityUnit;
+import edu.wpi.first.units.VoltageUnit;
 import edu.wpi.first.units.measure.MutDistance;
 import edu.wpi.first.units.measure.MutLinearVelocity;
 import edu.wpi.first.units.measure.MutVoltage;
+import edu.wpi.first.units.measure.Time;
+import edu.wpi.first.units.measure.Velocity;
+import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -26,12 +33,12 @@ import frc.robot.Constants.FeedforwardConstants;
 import frc.robot.Constants.IntakeConstants;
 
 public class HopperSubsytem extends SubsystemBase {
-    private final SparkMax hopperExtender = new SparkMax(IntakeConstants.HOPPER_EXTENDER_MOTOR_ID, MotorType.kBrushless);
+	private final SparkMax hopperExtender = new SparkMax(IntakeConstants.HOPPER_EXTENDER_MOTOR_ID, MotorType.kBrushless);
 	private final SparkClosedLoopController hopperController = hopperExtender.getClosedLoopController();
 	private final SparkMaxConfig hopperConfig = new SparkMaxConfig();
 
-    public HopperSubsytem() {
-        hopperConfig.closedLoop
+	public HopperSubsytem() {
+		hopperConfig.closedLoop
 		.p(FeedforwardConstants.HOPPER_kP)
 		.i(FeedforwardConstants.HOPPER_kI)
 		.d(FeedforwardConstants.HOPPER_kD);
@@ -45,9 +52,9 @@ public class HopperSubsytem extends SubsystemBase {
 		.allowedProfileError(FeedforwardConstants.HOPPER_MAX_ERROR);
 
 		hopperExtender.configure(hopperConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    }
+	}
 
-    public Command extendHopperManual() {
+	public Command extendHopperManual() {
 		return runOnce(() -> {
 			hopperExtender.set(IntakeConstants.HOPPER_MANUAL_SPEED);
 		});
@@ -83,17 +90,21 @@ public class HopperSubsytem extends SubsystemBase {
 		});
 	}
 
-    // Mutable holder for unit-safe voltage values, persisted to avoid reallocation.
-    private final MutVoltage m_appliedVoltage = Volts.mutable(0);
-    // Mutable holder for unit-safe linear distance values, persisted to avoid reallocation.
-    private final MutDistance m_distance = Meters.mutable(0);
-    // Mutable holder for unit-safe linear velocity values, persisted to avoid reallocation.
-    private final MutLinearVelocity m_velocity = MetersPerSecond.mutable(0);
+	// Mutable holder for unit-safe voltage values, persisted to avoid reallocation.
+	private final MutVoltage m_appliedVoltage = Volts.mutable(0);
+	// Mutable holder for unit-safe linear distance values, persisted to avoid reallocation.
+	private final MutDistance m_distance = Meters.mutable(0);
+	// Mutable holder for unit-safe linear velocity values, persisted to avoid reallocation.
+	private final MutLinearVelocity m_velocity = MetersPerSecond.mutable(0);
 
+	private final VelocityUnit<VoltageUnit> voltsPerSecond = Volts.per(Seconds);
+	private final Velocity<VoltageUnit> rampRate = voltsPerSecond.of(0.1);
+	private final Voltage dynamicVoltage = Volts.of(7.0);
+	private final Time runTime = Seconds.of(10.0);
 
     // Creates a SysIdRoutine
 	SysIdRoutine routine = new SysIdRoutine(
-		new SysIdRoutine.Config(),
+		new SysIdRoutine.Config(rampRate, dynamicVoltage, runTime),
 		new SysIdRoutine.Mechanism(voltage -> {
 				hopperExtender.setVoltage(voltage.baseUnitMagnitude());
 				},
