@@ -29,7 +29,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Constants;
 import frc.robot.Constants.DeviceConstants;
 import frc.robot.Constants.FeedforwardConstants;
@@ -39,10 +38,9 @@ import frc.robot.Constants.FuelShooterConstants;
 public class FuelShooterSubsystem extends SubsystemBase {
 	private final SparkFlex shooterMotor1 = new SparkFlex(DeviceConstants.FUEL_SHOOTER_MOTOR_1_ID, MotorType.kBrushless);
 	private final SparkFlex shooterMotor2 = new SparkFlex(DeviceConstants.FUEL_SHOOTER_MOTOR_2_ID, MotorType.kBrushless);
-	private final SparkClosedLoopController shooterController = shooterMotor1.getClosedLoopController();
 	private final SparkFlexConfig motor1Config = new SparkFlexConfig();
 	private final SparkFlexConfig motor2Config = new SparkFlexConfig();
-	private ShooterStates state = ShooterStates.AT_SPEED;
+	private final SparkClosedLoopController shooterController = shooterMotor1.getClosedLoopController();
 	private final Translation2d hubPosition = switch(DriverStation.getAlliance().orElse(Alliance.Red)) {
         case Blue -> FieldPoses.BLUE_HUB;
         case Red -> FieldPoses.RED_HUB;
@@ -81,18 +79,13 @@ public class FuelShooterSubsystem extends SubsystemBase {
         PersistMode.kPersistParameters);
 	}
 
-	public enum ShooterStates {
-		ACCELERATING,
-		AT_SPEED;
-	}
-
 	public Command shootFuelVarSpeed(Supplier<Pose2d> robotPose) {
 		return run(() -> {
-			double distance = hubPosition.getDistance(robotPose.get().getTranslation());
 			//Do math to figure out optimal motor speed as a function of distance
 			//Min Distance: 30 in -> 1.359m     Max Distance: 241.7 in -> 6.139m
-			double speedParabolic = (.0544 * Math.pow(distance * 39.3701, 2)) - (2.33 * distance * 39.3701) + 2605.55;
 			//39.3701 converts from inches to meters
+			double distance = hubPosition.getDistance(robotPose.get().getTranslation());
+			double speedParabolic = (.0544 * Math.pow(distance * 39.3701, 2)) - (2.33 * distance * 39.3701) + 2605.55;			
 			shooterController.setSetpoint(speedParabolic, ControlType.kMAXMotionVelocityControl, ClosedLoopSlot.kSlot0);
 		});
 	}
@@ -174,7 +167,6 @@ public class FuelShooterSubsystem extends SubsystemBase {
 		builder.addDoubleProperty("Shooter Setpoint", () -> shooterController.getSetpoint(), null);
 		builder.addDoubleProperty("Shooter Position", () -> shooterMotor1.getEncoder().getPosition(), null);
 		builder.addDoubleProperty("Shooter Velocity", () -> shooterMotor1.getEncoder().getVelocity(), null);
-
 		builder.addDoubleProperty("Set Shooter Setpoint", () -> shooterController.getMAXMotionSetpointVelocity(), (speed) -> shooterController.setSetpoint(speed, ControlType.kMAXMotionVelocityControl));
 
         sysId.ifPresent(sysid -> sysid.configureSendables());
