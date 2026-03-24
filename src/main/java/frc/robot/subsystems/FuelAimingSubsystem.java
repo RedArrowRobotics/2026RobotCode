@@ -77,7 +77,8 @@ public class FuelAimingSubsystem extends SubsystemBase {
 	private boolean inAllianceZone;
 	private double thetaToHub;
 	private double degreeToHubRelativeToRobot;
-	public boolean setpointWithinRange;
+	private boolean turretSetpointWithinRange;
+	private boolean hoodSetpointWithinRange;
 	private double distanceToHub;
 	private double hoodEncoderPosition;
 
@@ -213,12 +214,12 @@ public class FuelAimingSubsystem extends SubsystemBase {
 			degreeToHubRelativeToRobot = (thetaToHub * (180/Math.PI)) - robotPose.get().getRotation().getDegrees(); /*Convert from radians to degrees and subtract yaw of the robot*/
 			if(degreeToHubRelativeToRobot > 180) {
 				degreeToHubRelativeToRobot  = 180;
-				setpointWithinRange = false;
+				turretSetpointWithinRange = false;
 			} else if(degreeToHubRelativeToRobot < 0) {
 				degreeToHubRelativeToRobot = 0;
-				setpointWithinRange = false;
+				turretSetpointWithinRange = false;
 			} else {
-				setpointWithinRange = true;
+				turretSetpointWithinRange = true;
 			}
 			
 			//TODO: restrain degreeRelativeToRobot to bounds that the turret can physically reach
@@ -237,8 +238,12 @@ public class FuelAimingSubsystem extends SubsystemBase {
 			hoodEncoderPosition = 1.4 + 0.01052 * (distanceToHub - 241);
 			if(hoodEncoderPosition < 0) {
 				hoodEncoderPosition = 0;
+				hoodSetpointWithinRange = false;
 			} else if(hoodEncoderPosition > 2.0) {
 				hoodEncoderPosition = 2.0;
+				hoodSetpointWithinRange = false;
+			} else {
+				hoodSetpointWithinRange = true;
 			}
 			//Convert angle to encoder counts (gear ratio of 420:25 = 16.8)
 			if(robotPose.get().getTranslation().getDistance(outpostTrench) > Math.abs(allianceZoneLine.getX() - outpostTrench.getX()) && inAllianceZone
@@ -381,7 +386,7 @@ public class FuelAimingSubsystem extends SubsystemBase {
 		builder.addDoubleProperty("Turret Voltage", () -> turretRotator.getAppliedOutput(), null);
 		builder.addDoubleProperty("Turret Setpoint", () -> turretController.getSetpoint(), null);
 		builder.addDoubleProperty("Turret Velocity", () -> turretRotator.getEncoder().getVelocity(), null);
-		builder.addBooleanProperty("Setpoint Within Range", () -> setpointWithinRange, null);
+		builder.addBooleanProperty("Turret Setpoint Within Range", () -> turretSetpointWithinRange, null);
 		builder.addBooleanProperty("Turret At Setpoint", () -> hoodController.isAtSetpoint(), null);
 		builder.addBooleanProperty("Limit Switch", () -> turretAimingLimitSwitch.get(), null);
 
@@ -390,6 +395,7 @@ public class FuelAimingSubsystem extends SubsystemBase {
 		builder.addDoubleProperty("Hood Setpoint", () -> hoodController.getSetpoint(), null);
 		builder.addDoubleProperty("Hood Encoder", () -> hoodRotator.getEncoder().getPosition(), null);
 		builder.addDoubleProperty("Hood Velocity", () -> hoodRotator.getEncoder().getVelocity(), null);
+		builder.addBooleanProperty("Hood Setpoint Within Range", () -> hoodSetpointWithinRange, null);
 		builder.addBooleanProperty("Hood At Setpoint", () -> hoodController.isAtSetpoint(), null);
 
 		builder.addDoubleProperty("Theta to Hub", () -> thetaToHub, null);
