@@ -8,6 +8,8 @@ import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.units.Units.Volts;
 
+import java.util.function.Supplier;
+
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
@@ -66,16 +68,18 @@ public class ClimberSubsystem extends SubsystemBase {
     }
 
     public Command climberUpManual() {
-        return runOnce(() -> {
+        return startEnd(() -> {
             climberMotor.set(ClimberConstants.CLIMBER_POWER);
-            climberState = ClimberState.MOVING;
+        }, () -> {
+            climberMotor.set(0.0);
         });
     }
 
     public Command climberDownManual() {
-        return runOnce(() -> {
+        return startEnd(() -> {
             climberMotor.set(ClimberConstants.CLIMBER_POWER * -1);
-            climberState = ClimberState.MOVING;
+        }, () -> {
+            climberMotor.set(0.0);
         });
     }
 
@@ -87,21 +91,35 @@ public class ClimberSubsystem extends SubsystemBase {
     }
 
     public Command climberUpPID() {
-        return startEnd(() -> {
+        return runOnce(() -> {
             climberController.setSetpoint(ClimberConstants.CLIMBER_UP_POSITION, ControlType.kMAXMotionPositionControl);
-            climberState = ClimberState.MOVING;
-        }, () -> {
-            climberState = ClimberState.EXTENDED;
         });
     }
 
     public Command climberDownPID() {
-         return startEnd(() -> {
+         return runOnce(() -> {
             climberController.setSetpoint(ClimberConstants.CLIMBER_DOWN_POSITION, ControlType.kMAXMotionPositionControl);
-            climberState = ClimberState.MOVING;
-        }, () -> {
-            climberState = ClimberState.HOME;
         });
+    }
+
+    public Command climberUpCommand(Supplier<Boolean> manualControlled) {
+        Command controlType;
+        if(manualControlled.get() == true) {
+            controlType = climberUpManual();
+        } else {
+            controlType = climberUpPID();
+        }
+        return controlType;
+    }
+
+    public Command climberDownCommand(Supplier<Boolean> manualControlled) {
+        Command controlType;
+        if(manualControlled.get() == true) {
+            controlType = climberDownManual();
+        } else {
+            controlType = climberDownPID();
+        }
+        return controlType;
     }
 
 // Mutable holder for unit-safe voltage values, persisted to avoid reallocation.
