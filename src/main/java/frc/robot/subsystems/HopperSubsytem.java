@@ -73,20 +73,14 @@ public class HopperSubsytem extends SubsystemBase {
 	}
 
 	public Command extendHopper() {
-		return startEnd(() -> {
+		return runOnce(() -> {
 			hopperController.setSetpoint(IntakeConstants.HOPPER_EXTENDED_POSITION, ControlType.kMAXMotionPositionControl);
-		
-		}, () -> {
-
 		});
 	}
 
 	public Command retractHopper() {
-		return startEnd(() -> {
+		return runOnce(() -> {
 			hopperController.setSetpoint(IntakeConstants.HOPPER_RETRACTED_POSITION, ControlType.kMAXMotionPositionControl);
-
-		}, () -> {
-
 		});
 	}
 
