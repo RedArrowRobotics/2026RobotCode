@@ -24,12 +24,13 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Constants.AgitatorConstants;
+import frc.robot.Constants.DeviceConstants;
 import frc.robot.Constants.FeedforwardConstants;
 
 public class AgitatorSubsystem extends SubsystemBase {
     //private final SparkMax belt1 = new SparkMax(AgitatorConstants.BELT_MOTOR_1_ID, MotorType.kBrushless);
     //private final SparkMax belt2 = new SparkMax(AgitatorConstants.BELT_MOTOR_2_ID, MotorType.kBrushless);
-    private final SparkMax kicker = new SparkMax(AgitatorConstants.KICKER_MOTOR_ID, MotorType.kBrushless);
+    private final SparkMax kicker = new SparkMax(DeviceConstants.KICKER_MOTOR_ID, MotorType.kBrushless);
     private final SparkMaxConfig kickerConfig = new SparkMaxConfig();
     private final SparkClosedLoopController kickerController = kicker.getClosedLoopController();
 

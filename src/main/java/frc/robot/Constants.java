@@ -52,11 +52,16 @@ public final class Constants {
     }
 
     public final class DeviceConstants {
+        public static final int KICKER_MOTOR_ID = 9;
         public static final int TURRET_ROTATOR = 10;
         public static final int FUEL_SHOOTER_MOTOR_1_ID = 11;
         public static final int FUEL_SHOOTER_MOTOR_2_ID = 12;
         public static final int HOOD_ROTATOR = 17;
         public static final int CLIMBER_MOTOR_ID = 19;
+        public static final int BELT_MOTOR_1_ID = 20;
+        public static final int BELT_MOTOR_2_ID = 21;
+        public static final int INTAKE_MOTOR_ID = 23;
+        public static final int HOPPER_EXTENDER_MOTOR_ID = 24;
         public static final String LIMELIGHT_FRONT = "limelight-front";
         public static final String LIMELIGHT_BACK = "limelight-back";
         public static final int CLIMBER_ENCODER_CHANNEL = 22;
@@ -144,8 +149,6 @@ public final class Constants {
     }
 
     public final class IntakeConstants {
-        public static final int INTAKE_MOTOR_ID = 23;
-        public static final int HOPPER_EXTENDER_MOTOR_ID = 24;
         public static final double INTAKE_SPEED = 0.5;
         public static final double HOPPER_MANUAL_SPEED = 0.5;
         public static final double HOPPER_EXTENDED_POSITION = 0.0;
@@ -153,10 +156,6 @@ public final class Constants {
     }
 
     public final class AgitatorConstants {
-        public static final int BELT_MOTOR_1_ID = 20;
-        public static final int BELT_MOTOR_2_ID = 21;
-        public static final int KICKER_MOTOR_ID = 9;
-
         public static final double BELT_SPEED = 0.5;
         public static final double KICK_RPM = 4000;
     }

@@ -29,11 +29,12 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import frc.robot.Constants.DeviceConstants;
 import frc.robot.Constants.FeedforwardConstants;
 import frc.robot.Constants.IntakeConstants;
 
 public class HopperSubsytem extends SubsystemBase {
-	private final SparkMax hopperExtender = new SparkMax(IntakeConstants.HOPPER_EXTENDER_MOTOR_ID, MotorType.kBrushless);
+	private final SparkMax hopperExtender = new SparkMax(DeviceConstants.HOPPER_EXTENDER_MOTOR_ID, MotorType.kBrushless);
 	private final SparkClosedLoopController hopperController = hopperExtender.getClosedLoopController();
 	private final SparkMaxConfig hopperConfig = new SparkMaxConfig();
 
