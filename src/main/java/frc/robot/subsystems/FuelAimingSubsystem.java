@@ -21,8 +21,6 @@ import edu.wpi.first.units.VelocityUnit;
 import edu.wpi.first.units.VoltageUnit;
 import edu.wpi.first.units.measure.MutAngle;
 import edu.wpi.first.units.measure.MutAngularVelocity;
-import edu.wpi.first.units.measure.MutDistance;
-import edu.wpi.first.units.measure.MutLinearVelocity;
 import edu.wpi.first.units.measure.MutVoltage;
 import edu.wpi.first.units.measure.Velocity;
 import edu.wpi.first.util.sendable.SendableBuilder;
@@ -34,27 +32,31 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Constants;
 import frc.robot.Constants.DeviceConstants;
 import frc.robot.Constants.FeedforwardConstants;
 import frc.robot.Constants.FieldPoses;
 import frc.robot.Constants.FuelAimingConstants;
-import frc.robot.subsystems.DriveSubsystem.SysId;
-import swervelib.telemetry.SwerveDriveTelemetry;
-import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 
 public class FuelAimingSubsystem extends SubsystemBase {
 	private final SparkMax turretRotator = new SparkMax(DeviceConstants.TURRET_ROTATOR, MotorType.kBrushless);
-	private final SparkClosedLoopController turretController = turretRotator.getClosedLoopController();
+	private final SparkMax hoodRotator = new SparkMax(DeviceConstants.HOOD_ROTATOR, MotorType.kBrushed);
 	private final SparkMaxConfig turretConfig = new SparkMaxConfig();
+	private final SparkMaxConfig hoodConfig = new SparkMaxConfig();
+	private final SparkClosedLoopController turretController = turretRotator.getClosedLoopController();
+	private final SparkClosedLoopController hoodController = hoodRotator.getClosedLoopController();
 	private DigitalInput turretAimingLimitSwitch = new DigitalInput(DeviceConstants.TURRET_AIMMER_LIMIT_SWITCH_CHANNEL);
 	private boolean turretSetZeroStart = false;
-	private final SparkMax hoodRotator = new SparkMax(DeviceConstants.HOOD_ROTATOR, MotorType.kBrushed);
-	private final SparkClosedLoopController hoodController = hoodRotator.getClosedLoopController();
-	private final SparkMaxConfig hoodConfig = new SparkMaxConfig();
 
-    public final Optional<SysIdTurret> sysIdTurret;
+	private boolean inAllianceZone;
+	private double distanceToHub;
+	private double thetaToHub;
+	private double degreeToHubRelativeToRobot;
+	private double hoodEncoderPosition;
+	private boolean turretSetpointWithinRange;
+	private boolean hoodSetpointWithinRange;
+	
+	public final Optional<SysIdTurret> sysIdTurret;
     public final Optional<SysIdHood> sysIdHood;
 
 	//Important Coordinates
@@ -74,13 +76,6 @@ public class FuelAimingSubsystem extends SubsystemBase {
 		case Blue -> FieldPoses.BLUE_ALLIANCE_LINE;
 		case Red -> FieldPoses.RED_ALLIANCE_LINE;
 	};
-	private boolean inAllianceZone;
-	private double thetaToHub;
-	private double degreeToHubRelativeToRobot;
-	private boolean turretSetpointWithinRange;
-	private boolean hoodSetpointWithinRange;
-	private double distanceToHub;
-	private double hoodEncoderPosition;
 
 	public FuelAimingSubsystem() {
 		if (Constants.DEBUG_ENABLED) {
@@ -108,8 +103,6 @@ public class FuelAimingSubsystem extends SubsystemBase {
 		turretRotator.configure(turretConfig, ResetMode.kResetSafeParameters,
 		PersistMode.kPersistParameters);
 
-		turretController.setSetpoint(0.0, ControlType.kMAXMotionPositionControl);
-
 		//Hood
 		hoodConfig.closedLoop
 		.p(FeedforwardConstants.HOOD_ROTATOR_kP)
@@ -129,8 +122,6 @@ public class FuelAimingSubsystem extends SubsystemBase {
 
 		hoodRotator.configure(hoodConfig, ResetMode.kResetSafeParameters,
 		PersistMode.kPersistParameters);
-
-		hoodController.setSetpoint(0.0, ControlType.kMAXMotionPositionControl);
 	}
 
 	public Command zeroTurret() {
@@ -228,7 +219,6 @@ public class FuelAimingSubsystem extends SubsystemBase {
 			} else {
 				hoodSetpointWithinRange = true;
 			}
-			//Convert angle to encoder counts (gear ratio of 420:25 = 16.8)
 			if(robotPose.get().getTranslation().getDistance(outpostTrench) > Math.abs(allianceZoneLine.getX() - outpostTrench.getX()) && inAllianceZone
 				||
 			   robotPose.get().getTranslation().getDistance(depotTrench) > Math.abs(allianceZoneLine.getX() - depotTrench.getX()) && inAllianceZone) {

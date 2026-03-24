@@ -41,6 +41,7 @@ public class FuelShooterSubsystem extends SubsystemBase {
 	private final SparkFlexConfig motor1Config = new SparkFlexConfig();
 	private final SparkFlexConfig motor2Config = new SparkFlexConfig();
 	private final SparkClosedLoopController shooterController = shooterMotor1.getClosedLoopController();
+	
 	private final Translation2d hubPosition = switch(DriverStation.getAlliance().orElse(Alliance.Red)) {
         case Blue -> FieldPoses.BLUE_HUB;
         case Red -> FieldPoses.RED_HUB;
