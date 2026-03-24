@@ -169,6 +169,14 @@ public class ClimberSubsystem extends SubsystemBase {
         public Command sysIdDynamic(SysIdRoutine.Direction direction) {
             return routine.dynamic(direction);
         }
+
+        public void configureSendables() {
+            var name = ClimberSubsystem.this.getName();
+            SmartDashboard.putData("SysId/"+name+"/Quasistatic Forward", sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+            SmartDashboard.putData("SysId/"+name+"/Quasistatic Reverse", sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+            SmartDashboard.putData("SysId/"+name+"/Dynamic Forward", sysIdDynamic(SysIdRoutine.Direction.kForward));
+            SmartDashboard.putData("SysId/"+name+"/Dynamic Reverse", sysIdDynamic(SysIdRoutine.Direction.kReverse));
+        }
     }
 
 
@@ -177,6 +185,8 @@ public class ClimberSubsystem extends SubsystemBase {
         super.initSendable(builder);
         //Telemetry
         builder.addStringProperty("Climber State", () -> climberState.toString(), null);
+
+        SysId.ifPresent(SysId -> SysId.configureSendables());
 
         //Testing
         SmartDashboard.putData("Climber Up Manual", climberUpManual());
