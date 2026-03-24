@@ -144,61 +144,44 @@ public class FuelAimingSubsystem extends SubsystemBase {
 	}
 
 	public Command manualTurretControlCW(Supplier<Boolean> manualControlled) {
-		return runOnce(() -> {
+		return startEnd(() -> {
 			if(manualControlled.get() == true) {
 				turretRotator.set(FuelAimingConstants.TURRET_ROTATOR_MANUAL_POWER * -1);
 				System.out.println("Set turret to :"+turretRotator.get());
 			}
+		}, () -> {
+			turretRotator.set(0.0);
 		});
 	}
 
 	public Command manualTurretControlCCW(Supplier<Boolean> manualControlled) {
-		return runOnce(() -> {
+		return startEnd(() -> {
 			if(manualControlled.get() == true) {
 				turretRotator.set(FuelAimingConstants.TURRET_ROTATOR_MANUAL_POWER);
 				System.out.println("Set turret to :"+turretRotator.get());
 			}
-		});
-	}
-
-	public Command turretToPosition(double position) {
-		return runOnce(() -> {
-			turretController.setSetpoint(position, ControlType.kMAXMotionPositionControl);
-		});
-	}
-
-	public Command manualTurretControlStop() {
-		return runOnce(() -> {
-			turretRotator.set(FuelAimingConstants.STOPPED_SPEED);
-			System.out.println("Stop turret to :"+turretRotator.get());
+		}, () -> {
+			turretRotator.set(0.0);
 		});
 	}
 
 	public Command manualHoodControlUp(Supplier<Boolean> manualControlled) {
-		return runOnce(() -> {
+		return startEnd(() -> {
 			if(manualControlled.get() == true) {
 				hoodRotator.set(FuelAimingConstants.HOOD_ROTATOR_MANUAL_POWER);
 			}
+		}, () -> {
+			hoodRotator.set(0.0);
 		});
 	}
 
 	public Command manualHoodControlDown(Supplier<Boolean> manualControlled) {
-		return runOnce(() -> {
+		return startEnd(() -> {
 			if(manualControlled.get() == true) {
 				hoodRotator.set(FuelAimingConstants.HOOD_ROTATOR_MANUAL_POWER * -1);
 			}
-		});
-	}
-
-	public Command hoodToPosition(double position) {
-		return runOnce(() -> {
-			hoodController.setSetpoint(position, ControlType.kMAXMotionPositionControl);
-		});
-	}
-
-	public Command manualHoodControlStop() {
-		return runOnce(() -> {
-			hoodRotator.set(FuelAimingConstants.STOPPED_SPEED);
+		}, () -> {
+			hoodRotator.set(0.0);
 		});
 	}
 
@@ -390,36 +373,30 @@ public class FuelAimingSubsystem extends SubsystemBase {
 		builder.addBooleanProperty("Turret At Setpoint", () -> hoodController.isAtSetpoint(), null);
 		builder.addBooleanProperty("Limit Switch", () -> turretAimingLimitSwitch.get(), null);
 
+		builder.addDoubleProperty("Hood Encoder", () -> hoodRotator.getEncoder().getPosition(), null);
 		builder.addDoubleProperty("Hood Power", () -> hoodRotator.get(), null);
 		builder.addDoubleProperty("Hood Voltage", () -> hoodRotator.getAppliedOutput(), null);
 		builder.addDoubleProperty("Hood Setpoint", () -> hoodController.getSetpoint(), null);
-		builder.addDoubleProperty("Hood Encoder", () -> hoodRotator.getEncoder().getPosition(), null);
 		builder.addDoubleProperty("Hood Velocity", () -> hoodRotator.getEncoder().getVelocity(), null);
 		builder.addBooleanProperty("Hood Setpoint Within Range", () -> hoodSetpointWithinRange, null);
 		builder.addBooleanProperty("Hood At Setpoint", () -> hoodController.isAtSetpoint(), null);
 
-		builder.addDoubleProperty("Theta to Hub", () -> thetaToHub, null);
-		builder.addDoubleProperty("Degrees Relative to Robot", () -> degreeToHubRelativeToRobot, null);
 		builder.addBooleanProperty("In Alliance Zone", () -> inAllianceZone, null);
 		builder.addDoubleProperty("Distance from Hub", () -> distanceToHub, null);
-
-		builder.addDoubleProperty("Set Hood Position", () -> hoodController.getSetpoint(), (position) -> hoodController.setSetpoint(position, ControlType.kMAXMotionPositionControl));
+		builder.addDoubleProperty("Theta to Hub", () -> thetaToHub, null);
+		builder.addDoubleProperty("Degrees Relative to Robot", () -> degreeToHubRelativeToRobot, null);
+		
 		builder.addDoubleProperty("Set Turret Position", () -> turretController.getSetpoint(), (position) -> hoodController.setSetpoint(position, ControlType.kMAXMotionPositionControl));
-
+		builder.addDoubleProperty("Set Hood Position", () -> hoodController.getSetpoint(), (position) -> hoodController.setSetpoint(position, ControlType.kMAXMotionPositionControl));
+		
 		sysIdTurret.ifPresent(sysid -> sysid.configureSendables());
 		sysIdHood.ifPresent(sysid -> sysid.configureSendables());
 
 		//Testing
 		SmartDashboard.putData("Manual Turret CW", manualTurretControlCW(() -> true));
 		SmartDashboard.putData("Manual Turret CCW", manualTurretControlCCW(() -> true));
-		SmartDashboard.putData("Manual Turret Stop", manualTurretControlStop());
-		SmartDashboard.putData("Manual Turret Run CCW", turretToPosition(100.0));
-		SmartDashboard.putData("Manual Turret Run CW", turretToPosition(0.0));
 
 		SmartDashboard.putData("Manual Hood Up", manualHoodControlUp(() -> true));
 		SmartDashboard.putData("Manual Hood Down", manualHoodControlDown(() -> true));
-		SmartDashboard.putData("Manual Hood Stop", manualHoodControlStop());
-		SmartDashboard.putData("Manual Hood Run Up", hoodToPosition(2.0));
-		SmartDashboard.putData("Manual Hood Run Down", hoodToPosition(0.0));
 	}
 }
