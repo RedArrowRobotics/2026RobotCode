@@ -42,7 +42,6 @@ public class ClimberSubsystem extends SubsystemBase {
     private final SparkMaxConfig climberConfig = new SparkMaxConfig();
     private final SparkClosedLoopController climberController = climberMotor.getClosedLoopController();
     private final DigitalInput climberEncoder = new DigitalInput(DeviceConstants.CLIMBER_ENCODER_CHANNEL);
-    public ClimberState climberState = ClimberState.HOME;
 
     public Optional<SysId> SysId;
 
@@ -70,12 +69,6 @@ public class ClimberSubsystem extends SubsystemBase {
         climberMotor.configure(climberConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
 
-    public enum ClimberState {
-        HOME,
-        MOVING,
-        EXTENDED;
-    }
-
     public Command climberUpManual() {
         return startEnd(() -> {
             climberMotor.set(ClimberConstants.CLIMBER_POWER);
@@ -89,13 +82,6 @@ public class ClimberSubsystem extends SubsystemBase {
             climberMotor.set(ClimberConstants.CLIMBER_POWER * -1);
         }, () -> {
             climberMotor.set(0.0);
-        });
-    }
-
-    public Command climberStop() {
-        return runOnce(() -> {
-            climberMotor.set(0.00000000);
-            climberState = ClimberState.HOME;
         });
     }
 
@@ -179,19 +165,16 @@ public class ClimberSubsystem extends SubsystemBase {
         }
     }
 
-
     @Override
     public void initSendable(SendableBuilder builder) {
         super.initSendable(builder);
         //Telemetry
-        builder.addStringProperty("Climber State", () -> climberState.toString(), null);
-
+    
         SysId.ifPresent(SysId -> SysId.configureSendables());
 
         //Testing
         SmartDashboard.putData("Climber Up Manual", climberUpManual());
         SmartDashboard.putData("Climber Down Manual", climberDownManual());
-        SmartDashboard.putData("Climber Stop", climberStop());
         SmartDashboard.putData("Climb Up PID", climberUpPID());
         SmartDashboard.putData("Climb Down PID", climberDownPID());
     }
