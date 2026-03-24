@@ -169,7 +169,6 @@ public class ClimberSubsystem extends SubsystemBase {
     public void initSendable(SendableBuilder builder) {
         super.initSendable(builder);
         //Telemetry
-    
         SysId.ifPresent(SysId -> SysId.configureSendables());
 
         //Testing
