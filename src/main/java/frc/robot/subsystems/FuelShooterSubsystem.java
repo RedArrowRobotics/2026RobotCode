@@ -167,6 +167,7 @@ public class FuelShooterSubsystem extends SubsystemBase {
 		builder.addDoubleProperty("Shooter Setpoint", () -> shooterController.getSetpoint(), null);
 		builder.addDoubleProperty("Shooter Position", () -> shooterMotor1.getEncoder().getPosition(), null);
 		builder.addDoubleProperty("Shooter Velocity", () -> shooterMotor1.getEncoder().getVelocity(), null);
+		builder.addBooleanProperty("Shooter At Setpoint", () -> shooterController.isAtSetpoint(), null);
 		builder.addDoubleProperty("Set Shooter Setpoint", () -> shooterController.getMAXMotionSetpointVelocity(), (speed) -> shooterController.setSetpoint(speed, ControlType.kMAXMotionVelocityControl));
 
         sysId.ifPresent(sysid -> sysid.configureSendables());

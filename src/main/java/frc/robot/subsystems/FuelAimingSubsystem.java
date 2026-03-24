@@ -75,7 +75,6 @@ public class FuelAimingSubsystem extends SubsystemBase {
 		case Red -> FieldPoses.RED_ALLIANCE_LINE;
 	};
 	private boolean inAllianceZone;
-
 	private double thetaToHub;
 	private double degreeToHubRelativeToRobot;
 	public boolean setpointWithinRange;
@@ -382,6 +381,8 @@ public class FuelAimingSubsystem extends SubsystemBase {
 		builder.addDoubleProperty("Turret Voltage", () -> turretRotator.getAppliedOutput(), null);
 		builder.addDoubleProperty("Turret Setpoint", () -> turretController.getSetpoint(), null);
 		builder.addDoubleProperty("Turret Velocity", () -> turretRotator.getEncoder().getVelocity(), null);
+		builder.addBooleanProperty("Setpoint Within Range", () -> setpointWithinRange, null);
+		builder.addBooleanProperty("Turret At Setpoint", () -> hoodController.isAtSetpoint(), null);
 		builder.addBooleanProperty("Limit Switch", () -> turretAimingLimitSwitch.get(), null);
 
 		builder.addDoubleProperty("Hood Power", () -> hoodRotator.get(), null);
@@ -389,6 +390,7 @@ public class FuelAimingSubsystem extends SubsystemBase {
 		builder.addDoubleProperty("Hood Setpoint", () -> hoodController.getSetpoint(), null);
 		builder.addDoubleProperty("Hood Encoder", () -> hoodRotator.getEncoder().getPosition(), null);
 		builder.addDoubleProperty("Hood Velocity", () -> hoodRotator.getEncoder().getVelocity(), null);
+		builder.addBooleanProperty("Hood At Setpoint", () -> hoodController.isAtSetpoint(), null);
 
 		builder.addDoubleProperty("Theta to Hub", () -> thetaToHub, null);
 		builder.addDoubleProperty("Degrees Relative to Robot", () -> degreeToHubRelativeToRobot, null);
@@ -396,6 +398,7 @@ public class FuelAimingSubsystem extends SubsystemBase {
 		builder.addDoubleProperty("Distance from Hub", () -> distanceToHub, null);
 
 		builder.addDoubleProperty("Set Hood Position", () -> hoodController.getSetpoint(), (position) -> hoodController.setSetpoint(position, ControlType.kMAXMotionPositionControl));
+		builder.addDoubleProperty("Set Turret Position", () -> turretController.getSetpoint(), (position) -> hoodController.setSetpoint(position, ControlType.kMAXMotionPositionControl));
 
 		sysIdTurret.ifPresent(sysid -> sysid.configureSendables());
 		sysIdHood.ifPresent(sysid -> sysid.configureSendables());
