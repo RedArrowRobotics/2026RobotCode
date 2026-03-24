@@ -52,6 +52,7 @@ public final class Constants {
     }
 
     public final class DeviceConstants {
+        //Motor Controllers
         public static final int KICKER_MOTOR_ID = 9;
         public static final int TURRET_ROTATOR = 10;
         public static final int FUEL_SHOOTER_MOTOR_1_ID = 11;
@@ -62,8 +63,12 @@ public final class Constants {
         public static final int BELT_MOTOR_2_ID = 21;
         public static final int INTAKE_MOTOR_ID = 23;
         public static final int HOPPER_EXTENDER_MOTOR_ID = 24;
+
+        //Limelighes
         public static final String LIMELIGHT_FRONT = "limelight-front";
         public static final String LIMELIGHT_BACK = "limelight-back";
+
+        //External Encoders/Sensors
         public static final int CLIMBER_ENCODER_CHANNEL = 22;
         public static final int TURRET_AIMMER_LIMIT_SWITCH_CHANNEL = 9;
     }
