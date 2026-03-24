@@ -73,10 +73,6 @@ public final class Constants {
         public static final int TURRET_AIMMER_LIMIT_SWITCH_CHANNEL = 9;
     }
 
-    public final class DriveConstants {
-        public static final String SWERVE_CONFIG = "swerve-practice";
-    }
-
     public final class FeedforwardConstants {
         //Shooter Constants
         public static final double SHOOTER_kP_NO_FUEL = 0.00027106;
@@ -146,6 +142,10 @@ public final class Constants {
         public static final double CLIMBER_MAX_VELOCITY = 0.0;
         public static final double CLIMBER_MAX_ACCELERATION = 0.0;
         public static final double CLIMBER_MAX_ERROR = 0.0;
+    }
+
+    public final class DriveConstants {
+        public static final String SWERVE_CONFIG = "swerve-practice";
     }
 
     public final class FuelShooterConstants {
