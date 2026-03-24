@@ -122,46 +122,45 @@ public class ClimberSubsystem extends SubsystemBase {
         return controlType;
     }
 
-// Mutable holder for unit-safe voltage values, persisted to avoid reallocation.
-  private final MutVoltage m_appliedVoltage = Volts.mutable(0);
-  // Mutable holder for unit-safe linear distance values, persisted to avoid reallocation.
-  private final MutDistance m_distance = Meters.mutable(0);
-  // Mutable holder for unit-safe linear velocity values, persisted to avoid reallocation.
-  private final MutLinearVelocity m_velocity = MetersPerSecond.mutable(0);
+    public class SysId {
+        private final MutVoltage m_appliedVoltage = Volts.mutable(0);
+        private final MutDistance m_distance = Meters.mutable(0);
+        private final MutLinearVelocity m_velocity = MetersPerSecond.mutable(0);
 
-  private final VelocityUnit<VoltageUnit> voltsPerSecond = Volts.per(Seconds);
-  private final Velocity<VoltageUnit> rampRate = voltsPerSecond.of(0.2);
-  private final Voltage dynamicVoltage = Volts.of(7.0);
-  private final Time runTime = Seconds.of(10.0);
+        private final VelocityUnit<VoltageUnit> voltsPerSecond = Volts.per(Seconds);
+        private final Velocity<VoltageUnit> rampRate = voltsPerSecond.of(0.2);
+        private final Voltage dynamicVoltage = Volts.of(7.0);
+        private final Time runTime = Seconds.of(10.0);
 
-	// Creates a SysIdRoutine
-	SysIdRoutine routine = new SysIdRoutine(
-		new SysIdRoutine.Config(rampRate, dynamicVoltage, runTime),
-		new SysIdRoutine.Mechanism(voltage -> {
-				climberMotor.setVoltage(voltage.baseUnitMagnitude());
-				},
-				// Tell SysId how to record a frame of data for each motor on the mechanism being
-				// characterized.
-				log -> {
-					// Record a frame for the left motors.  Since these share an encoder, we consider
-					// the entire group to be one motor.
-					log.motor("climber")
-						.voltage(
-							m_appliedVoltage.mut_replace(
-								climberMotor.getAppliedOutput() * RobotController.getBatteryVoltage(), Volts))
-						.linearPosition(m_distance.mut_replace(climberMotor.getEncoder().getPosition(), Meters))
-						.linearVelocity(
-							m_velocity.mut_replace(climberMotor.getEncoder().getVelocity(), MetersPerSecond));
-						}, this)
-	);
+            // Creates a SysIdRoutine
+            SysIdRoutine routine = new SysIdRoutine(
+                new SysIdRoutine.Config(rampRate, dynamicVoltage, runTime),
+                new SysIdRoutine.Mechanism(voltage -> {
+                        climberMotor.setVoltage(voltage.baseUnitMagnitude());
+                        },
+                        // Tell SysId how to record a frame of data for each motor on the mechanism being
+                        // characterized.
+                        log -> {
+                            // Record a frame for the left motors.  Since these share an encoder, we consider
+                            // the entire group to be one motor.
+                            log.motor("climber")
+                                .voltage(
+                                    m_appliedVoltage.mut_replace(
+                                        climberMotor.getAppliedOutput() * RobotController.getBatteryVoltage(), Volts))
+                                .linearPosition(m_distance.mut_replace(climberMotor.getEncoder().getPosition(), Meters))
+                                .linearVelocity(
+                                    m_velocity.mut_replace(climberMotor.getEncoder().getVelocity(), MetersPerSecond));
+                                }, ClimberSubsystem.this)
+            );
 
-	public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
-		return routine.quasistatic(direction);
-	}
+        public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
+            return routine.quasistatic(direction);
+        }
 
-	public Command sysIdDynamic(SysIdRoutine.Direction direction) {
-		return routine.dynamic(direction);
-	}
+        public Command sysIdDynamic(SysIdRoutine.Direction direction) {
+            return routine.dynamic(direction);
+        }
+    }
 
 
     @Override
@@ -176,11 +175,5 @@ public class ClimberSubsystem extends SubsystemBase {
         SmartDashboard.putData("Climber Stop", climberStop());
         SmartDashboard.putData("Climb Up PID", climberUpPID());
         SmartDashboard.putData("Climb Down PID", climberDownPID());
-
-        //Sys ID
-        SmartDashboard.putData("Climber - Run Dynamic Forward", sysIdDynamic(Direction.kForward));
-        SmartDashboard.putData("Climber - Run Dynamic Reverse", sysIdDynamic(Direction.kReverse));
-        SmartDashboard.putData("Climber - Run Quasistatic Forward", sysIdQuasistatic(Direction.kForward));
-        SmartDashboard.putData("Climber - Run Quasistatic Reverse", sysIdQuasistatic(Direction.kReverse));
     }
 }
