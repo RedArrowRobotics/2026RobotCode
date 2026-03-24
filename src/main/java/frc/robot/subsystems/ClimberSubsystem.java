@@ -8,6 +8,7 @@ import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.units.Units.Volts;
 
+import java.util.Optional;
 import java.util.function.Supplier;
 
 import com.revrobotics.PersistMode;
@@ -43,7 +44,15 @@ public class ClimberSubsystem extends SubsystemBase {
     private final DigitalInput climberEncoder = new DigitalInput(DeviceConstants.CLIMBER_ENCODER_CHANNEL);
     public ClimberState climberState = ClimberState.HOME;
 
+    public Optional<SysId> SysId;
+
     public ClimberSubsystem() {
+        if (Constants.DEBUG_ENABLED) {
+                SysId = Optional.of(new SysId());
+		    } else {
+                SysId = Optional.empty();
+		    }
+
         climberConfig.closedLoop
         .p(ClimberConstants.CLIMBER_kP)
         .i(ClimberConstants.CLIMBER_kI)
