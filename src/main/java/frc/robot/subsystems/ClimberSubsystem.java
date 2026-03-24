@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import java.util.function.Supplier;
+
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 
@@ -44,6 +46,14 @@ public class ClimberSubsystem extends SubsystemBase {
         return runOnce(() -> {
 
         });
+    }
+
+    public Command climberUpCommand(Supplier<Boolean> manualControlled) {
+        return null;
+    }
+
+    public Command climberDownCommand(Supplier<Boolean> manualControlled) {
+        return null;
     }
 
     @Override
