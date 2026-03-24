@@ -77,22 +77,6 @@ public final class Constants {
         public static final String SWERVE_CONFIG = "swerve-practice";
     }
 
-    
-    public final class FuelShooterConstants {
-        public static final double SHOOTER_RPM = 3250;
-        public static final double STOPPED_SPEED = 0.000;
-    }
-
-    public final class FuelAimingConstants {
-        public static final double TURRET_ROTATOR_MANUAL_POWER = 0.1;
-        public static final double HOOD_ROTATOR_MANUAL_POWER = 1.0;
-        public static final double STOPPED_SPEED = 0.000;
-        public static final double TURRET_ROTATION_ZERO = 0.000;
-        public static final double HOOD_DOWN_POSITION = 0.0;
-        public static final double HOOD_UP_POSITION = 2.142;
-        public static final double DEGREES_TO_ROTATIONS = -0.2132;
-    }
-
     public final class FeedforwardConstants {
         //Shooter Constants
         public static final double SHOOTER_kP_NO_FUEL = 0.00027106;
@@ -151,11 +135,44 @@ public final class Constants {
         public static final double KICKER_MAX_VELOCITY = 5000;
         public static final double KICKER_MAX_ACCELERATION = 6335;
         public static final double KICKER_MAX_ERROR = 75.0;
+
+        //Climber Constants
+        public static final double CLIMBER_kP = 0.0;
+        public static final double CLIMBER_kI = 0.0;
+        public static final double CLIMBER_kD = 0.0;
+        public static final double CLIMBER_kV = 0.0;
+        public static final double CLIMBER_kS = 0.0;
+        public static final double CLIMBER_kA = 0.0;
+        public static final double CLIMBER_MAX_VELOCITY = 0.0;
+        public static final double CLIMBER_MAX_ACCELERATION = 0.0;
+        public static final double CLIMBER_MAX_ERROR = 0.0;
+    }
+
+    public final class FuelShooterConstants {
+        public static final double SHOOTER_RPM = 3250;
+        public static final double STOPPED_SPEED = 0.000;
+    }
+
+    public final class FuelAimingConstants {
+        //Turret
+        public static final double TURRET_ROTATOR_MANUAL_POWER = 0.1;
+        public static final double TURRET_ROTATION_ZERO = 0.000;
+        public static final double DEGREES_TO_ROTATIONS = -0.2132;
+        public static final double STOPPED_SPEED = 0.000;
+       
+        //Hood
+        public static final double HOOD_DOWN_POSITION = 0.0;
+        public static final double HOOD_UP_POSITION = 2.142;
+        public static final double HOOD_ROTATOR_MANUAL_POWER = 1.0;
+        
     }
 
     public final class IntakeConstants {
         public static final double INTAKE_SPEED = 0.5;
         public static final double HOPPER_MANUAL_SPEED = 0.5;
+    }
+
+    public final class HopperConstants {
         public static final double HOPPER_EXTENDED_POSITION = 0.0;
         public static final double HOPPER_RETRACTED_POSITION = 0.0;
     }
