@@ -29,6 +29,7 @@ import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.MutDistance;
 import edu.wpi.first.units.measure.MutLinearVelocity;
 import edu.wpi.first.units.measure.MutVoltage;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.RobotController;
@@ -59,13 +60,13 @@ public class DriveSubsystem extends SubsystemBase {
     static final Trigger slowSpeed = ControlInputs.driveController.button(1);
 
     public DriveSubsystem() throws IOException, ParseException {
-        // if (Constants.DEBUG_ENABLED) {
+        if (Constants.DEBUG_ENABLED) {
             sysId = Optional.of(new SysId());
-        //     SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
-        // } else {
-        //     sysId = Optional.empty();
+            SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
+        } else {
+            sysId = Optional.empty();
             SwerveDriveTelemetry.verbosity = TelemetryVerbosity.LOW;
-        //}
+        }
 
         RobotConfig config;
 
@@ -380,5 +381,12 @@ public class DriveSubsystem extends SubsystemBase {
             SmartDashboard.putData("SysId/"+name+"/Dynamic Forward", dynamic(SysIdRoutine.Direction.kForward));
             SmartDashboard.putData("SysId/"+name+"/Dynamic Reverse", dynamic(SysIdRoutine.Direction.kReverse));
         }
+    }
+
+    @Override
+	public void initSendable(SendableBuilder builder) {
+		super.initSendable(builder);
+        builder.addBooleanProperty("Pose Trusted", () -> this.trustPose, null);
+        sysId.ifPresent(sysid -> sysid.configureSendables());
     }
 }

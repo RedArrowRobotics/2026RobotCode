@@ -5,26 +5,21 @@ import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkFlexConfig;
 
-import static edu.wpi.first.units.Units.Meters;
-import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.Volts;
-
+import java.util.Optional;
 import java.util.function.Supplier;
 
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.ClosedLoopSlot;
-import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.SparkClosedLoopController;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.units.measure.MutAngle;
 import edu.wpi.first.units.measure.MutAngularVelocity;
-import edu.wpi.first.units.measure.MutDistance;
-import edu.wpi.first.units.measure.MutLinearVelocity;
 import edu.wpi.first.units.measure.MutVoltage;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -34,27 +29,33 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import frc.robot.Constants;
 import frc.robot.Constants.DeviceConstants;
 import frc.robot.Constants.FeedforwardConstants;
 import frc.robot.Constants.FieldPoses;
-import frc.robot.Constants.FuelAimingConstants;
 import frc.robot.Constants.FuelShooterConstants;
-import frc.robot.LimelightHelpers;
 
 public class FuelShooterSubsystem extends SubsystemBase {
 	private final SparkFlex shooterMotor1 = new SparkFlex(DeviceConstants.FUEL_SHOOTER_MOTOR_1_ID, MotorType.kBrushless);
 	private final SparkFlex shooterMotor2 = new SparkFlex(DeviceConstants.FUEL_SHOOTER_MOTOR_2_ID, MotorType.kBrushless);
-	private final SparkClosedLoopController controller = shooterMotor1.getClosedLoopController();
 	private final SparkFlexConfig motor1Config = new SparkFlexConfig();
 	private final SparkFlexConfig motor2Config = new SparkFlexConfig();
-	private ShooterStates state = ShooterStates.AT_SPEED;
+	private final SparkClosedLoopController shooterController = shooterMotor1.getClosedLoopController();
+
 	private final Translation2d hubPosition = switch(DriverStation.getAlliance().orElse(Alliance.Red)) {
         case Blue -> FieldPoses.BLUE_HUB;
         case Red -> FieldPoses.RED_HUB;
     };
 	
+    public final Optional<SysId> sysId;
+	
 	public FuelShooterSubsystem () {
+		if (Constants.DEBUG_ENABLED) {
+            sysId = Optional.of(new SysId());
+		} else {
+            sysId = Optional.empty();
+		}
+
 		motor2Config.follow(DeviceConstants.FUEL_SHOOTER_MOTOR_1_ID, true);
 
 		motor1Config.closedLoop
@@ -78,84 +79,100 @@ public class FuelShooterSubsystem extends SubsystemBase {
 		PersistMode.kPersistParameters);
 		shooterMotor2.configure(motor2Config, ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
-
-		controller.setSetpoint(0.0, ControlType.kVelocity, ClosedLoopSlot.kSlot0);
-	}
-
-	public enum ShooterStates {
-		ACCELERATING,
-		AT_SPEED;
 	}
 
 	public Command shootFuelVarSpeed(Supplier<Pose2d> robotPose) {
 		return run(() -> {
-			double distance = hubPosition.getDistance(robotPose.get().getTranslation());
 			//Do math to figure out optimal motor speed as a function of distance
-			//Min Distance: 30 in -> 1.359m     Max Distance: 241.7 in -> 6.139
-			//Min RPM: 2200 rpm       Max RPM: 3100 rpm
-			//slope is 188.285
-			double speed = 2200 + 188.285 * (distance - 1.359);
-			controller.setSetpoint(speed, ControlType.kVelocity, ClosedLoopSlot.kSlot0);
+			//Min Distance: 30 in -> 1.359m     Max Distance: 241.7 in -> 6.139m
+			//39.3701 converts from inches to meters
+			double distance = hubPosition.getDistance(robotPose.get().getTranslation());
+			double speedParabolic = (.0544 * Math.pow(distance * 39.3701, 2)) - (2.33 * distance * 39.3701) + 2605.55;			
+			shooterController.setSetpoint(speedParabolic, ControlType.kMAXMotionVelocityControl, ClosedLoopSlot.kSlot0);
 		});
 	}
 
 	public Command shootFuel() {
 		return runOnce(() -> {
-			controller.setSetpoint(FuelShooterConstants.SHOOTER_POWER, ControlType.kVelocity, ClosedLoopSlot.kSlot0);
+			shooterController.setSetpoint(FuelShooterConstants.SHOOTER_RPM, ControlType.kVelocity, ClosedLoopSlot.kSlot0);
 		});
 	}
 
 	public Command shooterDeactivate() {
 		return runOnce(() -> {
-			controller.setSetpoint(FuelShooterConstants.STOPPED_SPEED, ControlType.kVelocity);
+			shooterController.setSetpoint(FuelShooterConstants.STOPPED_SPEED, ControlType.kMAXMotionVelocityControl);
 		});
 	}
 
-	// Mutable holder for unit-safe voltage values, persisted to avoid reallocation.
-	private final MutVoltage m_appliedVoltage = Volts.mutable(0);
-	 // Mutable holder for unit-safe linear distance values, persisted to avoid reallocation.
-	private final MutAngle m_distance = Rotations.mutable(0);
-	// Mutable holder for unit-safe linear velocity values, persisted to avoid reallocation.
-	private final MutAngularVelocity m_velocity = RotationsPerSecond.mutable(0);
+	public class SysId {
+        private final MutVoltage appliedVoltage = Volts.mutable(0);
+        private final MutAngle distance = Rotations.mutable(0);
+        private final MutAngularVelocity velocity = RotationsPerSecond.mutable(0);
+        private final SysIdRoutine sysIdRoutine = new SysIdRoutine(
+                new SysIdRoutine.Config(),
+                new SysIdRoutine.Mechanism(
+                        // Drive motor controllers
+                        voltage -> {
+                            shooterMotor1.setVoltage(voltage.baseUnitMagnitude());
+						},
+                        // Tell SysId how to record a frame of data for each motor on the mechanism
+                        // being characterized.
+                        log -> {
+							log.motor("shooter-1")
+									.voltage(
+											appliedVoltage.mut_replace(
+												shooterMotor1.getAppliedOutput() * RobotController.getBatteryVoltage(), Volts))
+									.angularPosition(distance.mut_replace(shooterMotor1.getEncoder().getPosition(), Rotations))
+									.angularVelocity(
+										velocity.mut_replace(shooterMotor1.getEncoder().getVelocity(), RotationsPerSecond));
+                        },
+                        // Tell SysId to make generated commands require this subsystem.
+                        FuelShooterSubsystem.this));
 
+        /**
+         * Returns a command that will execute a quasistatic test in the given
+         * direction.
+         *
+         * @param direction The direction (forward or reverse) to run the test in
+         */
+        public Command quasistatic(SysIdRoutine.Direction direction) {
+            return sysIdRoutine.quasistatic(direction);
+        }
 
-	// Creates a SysIdRoutine
-	SysIdRoutine routine = new SysIdRoutine(
-		new SysIdRoutine.Config(),
-		new SysIdRoutine.Mechanism( voltage -> {
-				shooterMotor1.setVoltage(voltage.baseUnitMagnitude());
-				},
-				// Tell SysId how to record a frame of data for each motor on the mechanism being
-				// characterized.
-				log -> {
-					// Record a frame for the left motors.  Since these share an encoder, we consider
-					// the entire group to be one motor.
-					log.motor("shooter-1")
-						.voltage(
-							m_appliedVoltage.mut_replace(
-								shooterMotor1.getAppliedOutput() * RobotController.getBatteryVoltage(), Volts))
-						.angularPosition(m_distance.mut_replace(shooterMotor1.getEncoder().getPosition(), Rotations))
-						.angularVelocity(
-							m_velocity.mut_replace(shooterMotor1.getEncoder().getVelocity(), RotationsPerSecond));
-						}, this)
-	);
+        /**
+         * Returns a command that will execute a dynamic test in the given direction.
+         *
+         * @param direction The direction (forward or reverse) to run the test in
+         */
+        public Command dynamic(SysIdRoutine.Direction direction) {
+            return sysIdRoutine.dynamic(direction);
+        }
 
-	public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
-		return routine.quasistatic(direction);
-	}
-
-	public Command sysIdDynamic(SysIdRoutine.Direction direction) {
-		return routine.dynamic(direction);
-	}
+        /**
+         * Adds system identification commands to the dashboard. Only needs to be called once.
+         */
+        public void configureSendables() {
+            var name = FuelShooterSubsystem.this.getName();
+            SmartDashboard.putData("SysId/"+name+"/Quasistatic Forward", quasistatic(SysIdRoutine.Direction.kForward));
+            SmartDashboard.putData("SysId/"+name+"/Quasistatic Reverse", quasistatic(SysIdRoutine.Direction.kReverse));
+            SmartDashboard.putData("SysId/"+name+"/Dynamic Forward", dynamic(SysIdRoutine.Direction.kForward));
+            SmartDashboard.putData("SysId/"+name+"/Dynamic Reverse", dynamic(SysIdRoutine.Direction.kReverse));
+        }
+    }
 
 	@Override
 	public void initSendable(SendableBuilder builder) {
 		super.initSendable(builder);
-		//Sys ID
-		SmartDashboard.putData("Shooter - Run Forward Dynamic", sysIdDynamic(Direction.kForward));
-		SmartDashboard.putData("Shooter - Run Reverse Dynamic", sysIdDynamic(Direction.kReverse));
-		SmartDashboard.putData("Shooter - Run Forward Quasistatic", sysIdQuasistatic(Direction.kForward));
-		SmartDashboard.putData("Shooter - Run Reverse Quasistatic", sysIdQuasistatic(Direction.kReverse));
+		//Telemetry
+		builder.addDoubleProperty("Shooter Power", () -> shooterMotor1.get(), null);
+		builder.addDoubleProperty("Shooter Voltage", () -> shooterMotor1.getAppliedOutput(), null);
+		builder.addDoubleProperty("Shooter Setpoint", () -> shooterController.getSetpoint(), null);
+		builder.addDoubleProperty("Shooter Position", () -> shooterMotor1.getEncoder().getPosition(), null);
+		builder.addDoubleProperty("Shooter Velocity", () -> shooterMotor1.getEncoder().getVelocity(), null);
+		builder.addBooleanProperty("Shooter At Setpoint", () -> shooterController.isAtSetpoint(), null);
+		builder.addDoubleProperty("Set Shooter Setpoint", () -> shooterController.getMAXMotionSetpointVelocity(), (speed) -> shooterController.setSetpoint(speed, ControlType.kMAXMotionVelocityControl));
+
+        sysId.ifPresent(sysid -> sysid.configureSendables());
 
 		//Testing
 		SmartDashboard.putData("Shoot Fuel", shootFuel());
