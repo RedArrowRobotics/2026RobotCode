@@ -145,7 +145,7 @@ public final class Constants {
     }
 
     public final class DriveConstants {
-        public static final String SWERVE_CONFIG = "swerve-practice";
+        public static final String SWERVE_CONFIG = "swerve";
     }
 
     public final class FuelShooterConstants {
