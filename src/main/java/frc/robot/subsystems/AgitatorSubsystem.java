@@ -29,7 +29,6 @@ import frc.robot.Constants.FeedforwardConstants;
 
 public class AgitatorSubsystem extends SubsystemBase {
     private final SparkMax belt1 = new SparkMax(DeviceConstants.BELT_MOTOR_1_ID, MotorType.kBrushless);
-    private final SparkMax belt2 = new SparkMax(DeviceConstants.BELT_MOTOR_2_ID, MotorType.kBrushless);
     private final SparkMax kicker = new SparkMax(DeviceConstants.KICKER_MOTOR_ID, MotorType.kBrushless);
     private final SparkMaxConfig kickerConfig = new SparkMaxConfig();
     private final SparkClosedLoopController kickerController = kicker.getClosedLoopController();
@@ -52,25 +51,28 @@ public class AgitatorSubsystem extends SubsystemBase {
     }
 
     public Command agitateIn() {
-        return runOnce(() -> {
-            //belt1.set(AgitatorConstants.BELT_SPEED);
-            //belt2.set(AgitatorConstants.BELT_SPEED * -1);
-            kickerController.setSetpoint(AgitatorConstants.KICK_RPM, ControlType.kVelocity);
+        return startEnd(() -> {
+            belt1.set(AgitatorConstants.BELT_SPEED);
+            kickerController.setSetpoint(AgitatorConstants.KICK_RPM, ControlType.kMAXMotionVelocityControl);
+        }, () -> {
+            belt1.set(0.0);
+            kickerController.setSetpoint(0.0, ControlType.kMAXMotionVelocityControl);
+        });
+    }
+
+    public Command beltsIn() {
+        return startEnd(() -> {
+            belt1.set(AgitatorConstants.BELT_SPEED);
+        }, () -> {
+            belt1.set(0.0);
         });
     }
 
     public Command agitateOut() {
-        return runOnce(() -> {
+        return startEnd(() -> {
             belt1.set(AgitatorConstants.BELT_SPEED * -1);
-            belt2.set(AgitatorConstants.BELT_SPEED);
-        });
-    }
-
-    public Command stopAgitating() {
-        return runOnce(() -> {
-            //belt1.set(0.0);
-            //belt2.set(0.0);
-            kickerController.setSetpoint(0.0, ControlType.kVelocity);
+        }, () -> {
+            belt1.set(0.0);
         });
     }
 
@@ -124,7 +126,7 @@ public class AgitatorSubsystem extends SubsystemBase {
         SmartDashboard.putData("Kicker - Run Reverse Quasistatic", sysIdQuasistaticKicker(Direction.kReverse));
 
         //Testing
-        SmartDashboard.putData("Agitate", agitateIn());
-        SmartDashboard.putData("Stop Agitating", stopAgitating());
+        SmartDashboard.putData("Agitate In", agitateIn());
+        SmartDashboard.putData("Agitate Out", agitateOut());
     }
 }

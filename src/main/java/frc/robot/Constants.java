@@ -60,7 +60,6 @@ public final class Constants {
         public static final int HOOD_ROTATOR = 17;
         public static final int CLIMBER_MOTOR_ID = 19;
         public static final int BELT_MOTOR_1_ID = 20;
-        public static final int BELT_MOTOR_2_ID = 21;
         public static final int INTAKE_MOTOR_ID = 23;
         public static final int HOPPER_EXTENDER_MOTOR_ID = 24;
 
