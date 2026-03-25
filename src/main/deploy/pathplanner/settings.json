@@ -1,8 +1,13 @@
 {
-  "robotWidth": 0.762,
+  "robotWidth": 0.635,
   "robotLength": 0.763,
   "holonomicMode": true,
-  "pathFolders": [],
+  "pathFolders": [
+    "Center SSC Paths",
+    "Life-Goal Paths",
+    "Left SSC Paths",
+    "Right SSC Paths"
+  ],
   "autoFolders": [],
   "defaultMaxVel": 3.0,
   "defaultMaxAccel": 3.0,
@@ -29,6 +34,6 @@
   "bumperOffsetX": 0.0,
   "bumperOffsetY": 0.0,
   "robotFeatures": [
-    "{\"name\":\"Rectangle\",\"type\":\"rounded_rect\",\"data\":{\"center\":{\"x\":0.0,\"y\":0.0},\"size\":{\"width\":0.914,\"length\":0.914},\"borderRadius\":0.05,\"strokeWidth\":0.02,\"filled\":false}}"
+    "{\"name\":\"Rectangle\",\"type\":\"rounded_rect\",\"data\":{\"center\":{\"x\":0.0,\"y\":0.0},\"size\":{\"width\":0.786,\"length\":0.914},\"borderRadius\":0.05,\"strokeWidth\":0.02,\"filled\":false}}"
   ]
 }
