@@ -63,7 +63,7 @@ public final class Constants {
         public static final int INTAKE_MOTOR_ID = 23;
         public static final int HOPPER_EXTENDER_MOTOR_ID = 24;
 
-        //Limelighes
+        //Limelights
         public static final String LIMELIGHT_FRONT = "limelight-front";
         public static final String LIMELIGHT_BACK = "limelight-back";
 
