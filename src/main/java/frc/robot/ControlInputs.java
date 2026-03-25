@@ -38,7 +38,7 @@ public class ControlInputs {
         componentsBoardAlert.set(!componentsBoard.isConnected());
     }
 
-     // For later
+    //For later
     public final void setRumble(double value) {
         driveController.setRumble(RumbleType.kBothRumble, value);
     }
