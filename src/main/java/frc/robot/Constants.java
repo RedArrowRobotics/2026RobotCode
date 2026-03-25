@@ -11,19 +11,10 @@ public final class Constants {
         public static final int COMPONENTS_BOARD_PORT = 1;
     }
 
-    public final class InputConstants {
-        public static final int SHOOT_FUEL = 1;
-        public static final int INTAKE_OUT = 2;
-        public static final int INTAKE_IN = 3;
-        public static final int EXTEND_HOPPER = 4;
-        public static final int CLIMBER_DOWN = 5;
-        public static final int CLIMBER_UP = 6;
-        public static final int MANUAL_SWITCH = 7;
-        public static final int MANUAL_HOOD_UP = 8;
-        public static final int MANUAL_HOOD_DOWN = 9;
-        public static final int MANUAL_TURRET_CW = 10;
-        public static final int MANUAL_TURRET_CCW = 11;
-        public static final int DRIVE_ORIENTATION_SWITCH = 12;
+    public final class DeviceConstants {
+        public static final int FUEL_SHOOTER_MOTOR_ID = 15;
+        public static final int CLIMBER_MOTOR_ID = 19;
+        public static final int CLIMBER_ENCODER_CHANNEL = 22;
     }
 
     public final class AprilTagIDs {
@@ -179,10 +170,23 @@ public final class Constants {
 
     public final class AgitatorConstants {
         public static final double BELT_SPEED = 0.5;
-        public static final double KICK_RPM = 4000;
+        public static final double KICK_SPEED = 0.5;
     }
-
-     public final class ClimberConstants {
+    public final class ClimberConstants {
         public static final double CLIMBER_POWER = 0.5;
+
+        public static final double CLIMBER_kP = 0.0;
+        public static final double CLIMBER_kI = 0.0;
+        public static final double CLIMBER_kD = 0.0;
+        public static final double CLIMBER_kV = 0.0;
+        public static final double CLIMBER_kS = 0.0;
+        public static final double CLIMBER_kA = 0.0;
+        public static final double CLIMBER_kG = 0.0;
+        public static final double CLIMBER_MAX_VELOCITY = 0.0;
+        public static final double CLIMBER_MAX_ACCELERATION = 0.0;
+        public static final double CLIMBER_MAX_ERROR = 0.0;
+
+        public static final double CLIMBER_DOWN_POSITION = 0.0;
+        public static final double CLIMBER_UP_POSITION = 0.0;
     }
 }
