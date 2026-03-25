@@ -51,6 +51,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void robotPeriodic() {
+        robotContainer.get().robotPeriodic();
         // Runs the Scheduler. This is responsible for polling buttons, adding newly-scheduled
         // commands, running already-scheduled commands, removing finished or interrupted commands,
         // and running subsystem periodic() methods. This must be called from the robot's periodic
@@ -66,7 +67,7 @@ public class Robot extends TimedRobot {
     public void autonomousInit() {
         robotContainer.ifPresent(RobotContainer::resetGyro);
         // If we have an autonomous command selected, schedule it.
-        autonomousCommand = robotContainer.flatMap(RobotContainer::getAutonomousCommand);
+        //autonomousCommand = robotContainer.flatMap(RobotContainer::getAutonomousCommand);
         autonomousCommand.ifPresent(command -> CommandScheduler.getInstance().schedule(command));
     }
 
@@ -80,9 +81,7 @@ public class Robot extends TimedRobot {
     }
 
     @Override
-    public void teleopPeriodic() {
-
-    }
+    public void teleopPeriodic() {}
 
     @Override
     public void disabledInit() {}
