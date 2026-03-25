@@ -195,8 +195,6 @@ public class FuelAimingSubsystem extends SubsystemBase {
 			} else {
 				turretSetpointWithinRange = true;
 			}
-			
-			//TODO: restrain degreeRelativeToRobot to bounds that the turret can physically reach
 			if(inAllianceZone) {
 				turretController.setSetpoint(degreeToHubRelativeToRobot * FuelAimingConstants.DEGREES_TO_ROTATIONS, ControlType.kMAXMotionPositionControl);
 			} else {
@@ -206,8 +204,6 @@ public class FuelAimingSubsystem extends SubsystemBase {
 			//Hood Control
 			//Do math to figure out optimal hood angle as a function of distance
 			//Min Distance: 30 in -> 1.359m     Max Distance: 241.7 in -> 6.139m
-			//Min Angle: 60 deg       Max Angle: 80 deg
-			//-4.184 is slope
 			distanceToHub = hubPosition.getDistance(robotPose.get().getTranslation());
 			hoodEncoderPosition = 1.4 + 0.01052 * (distanceToHub - 241);
 			if(hoodEncoderPosition < 0) {
