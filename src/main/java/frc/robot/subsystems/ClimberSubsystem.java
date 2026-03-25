@@ -49,11 +49,15 @@ public class ClimberSubsystem extends SubsystemBase {
     }
 
     public Command climberUpCommand(Supplier<Boolean> manualControlled) {
-        return null;
+        return runOnce(() -> {
+
+        });
     }
 
     public Command climberDownCommand(Supplier<Boolean> manualControlled) {
-        return null;
+        return runOnce(() -> {
+            
+        });
     }
 
     @Override

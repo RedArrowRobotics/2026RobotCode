@@ -219,9 +219,9 @@ public class FuelAimingSubsystem extends SubsystemBase {
 			} else {
 				hoodSetpointWithinRange = true;
 			}
-			if(robotPose.get().getTranslation().getDistance(outpostTrench) > Math.abs(allianceZoneLine.getX() - outpostTrench.getX()) && inAllianceZone
+			if(robotPose.get().getTranslation().getDistance(outpostTrench) - 0.6 > Math.abs(allianceZoneLine.getX() - outpostTrench.getX()) && inAllianceZone
 				||
-			   robotPose.get().getTranslation().getDistance(depotTrench) > Math.abs(allianceZoneLine.getX() - depotTrench.getX()) && inAllianceZone) {
+			   robotPose.get().getTranslation().getDistance(depotTrench) - 0.6 > Math.abs(allianceZoneLine.getX() - depotTrench.getX()) && inAllianceZone) {
 				hoodController.setSetpoint(hoodEncoderPosition, ControlType.kMAXMotionPositionControl);
 			   } else {
 				hoodController.setSetpoint(0.0, ControlType.kMAXMotionPositionControl);

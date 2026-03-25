@@ -42,9 +42,11 @@ public class RobotContainer {
         agitator.setDefaultCommand(agitator.stopAgitating());
         fuelIntake.setDefaultCommand(fuelIntake.intakeStop());
         fuelAiming.setDefaultCommand(fuelAiming.automaticAimRoutine(() -> swerveDriveTrain.getPose()));
-        autoChooser = AutoBuilder.buildAutoChooser();
 
         configureBindings();
+
+        autoChooser = AutoBuilder.buildAutoChooser();
+
         configureSendables();
     }
 
