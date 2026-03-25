@@ -12,8 +12,10 @@ import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkClosedLoopController;
+import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.units.VelocityUnit;
@@ -38,9 +40,9 @@ import frc.robot.Constants.HopperConstants;
 import frc.robot.Constants.IntakeConstants;
 
 public class HopperSubsytem extends SubsystemBase {
-	private final SparkMax hopperExtender = new SparkMax(DeviceConstants.HOPPER_EXTENDER_MOTOR_ID, MotorType.kBrushless);
+	private final SparkFlex hopperExtender = new SparkFlex(DeviceConstants.HOPPER_EXTENDER_MOTOR_ID, MotorType.kBrushless);
 	private final SparkClosedLoopController hopperController = hopperExtender.getClosedLoopController();
-	private final SparkMaxConfig hopperConfig = new SparkMaxConfig();
+	private final SparkFlexConfig hopperConfig = new SparkFlexConfig();
 
 	public final Optional<SysId> sysId;
 
