@@ -51,11 +51,18 @@ public class AgitatorSubsystem extends SubsystemBase {
         kicker.configure(kickerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
 
-    public Command startAgitating() {
+    public Command agitateIn() {
         return runOnce(() -> {
             //belt1.set(AgitatorConstants.BELT_SPEED);
             //belt2.set(AgitatorConstants.BELT_SPEED * -1);
             kickerController.setSetpoint(AgitatorConstants.KICK_RPM, ControlType.kVelocity);
+        });
+    }
+
+    public Command agitateOut() {
+        return runOnce(() -> {
+            belt1.set(AgitatorConstants.BELT_SPEED * -1);
+            belt2.set(AgitatorConstants.BELT_SPEED);
         });
     }
 
@@ -117,7 +124,7 @@ public class AgitatorSubsystem extends SubsystemBase {
         SmartDashboard.putData("Kicker - Run Reverse Quasistatic", sysIdQuasistaticKicker(Direction.kReverse));
 
         //Testing
-        SmartDashboard.putData("Agitate", startAgitating());
+        SmartDashboard.putData("Agitate", agitateIn());
         SmartDashboard.putData("Stop Agitating", stopAgitating());
     }
 }

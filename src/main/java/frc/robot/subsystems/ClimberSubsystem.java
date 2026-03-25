@@ -1,6 +1,10 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.SparkMax;
+
+import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.DigitalInput;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import static edu.wpi.first.units.Units.Meters;
