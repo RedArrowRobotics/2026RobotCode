@@ -51,7 +51,7 @@ public class RobotContainer {
     }
 
     private void configureBindings() {
-        ControlInputs.componentsBoard.button(InputConstants.SHOOT_FUEL).whileTrue(fuelShooter.shootFuelVarSpeed(() -> swerveDriveTrain.getPose()).alongWith(agitator.startAgitating()));
+        ControlInputs.componentsBoard.button(InputConstants.SHOOT_FUEL).whileTrue(fuelShooter.shootFuelVarSpeed(() -> swerveDriveTrain.getPose()).alongWith(agitator.agitateIn()));
         ControlInputs.componentsBoard.button(InputConstants.INTAKE_OUT).whileFalse(fuelIntake.intakeFuelOut());
         ControlInputs.componentsBoard.button(InputConstants.INTAKE_IN).whileFalse(fuelIntake.intakeFuelIn());
         ControlInputs.componentsBoard.button(InputConstants.EXTEND_HOPPER).onTrue(hopper.extendHopper());

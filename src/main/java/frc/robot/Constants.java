@@ -11,12 +11,6 @@ public final class Constants {
         public static final int COMPONENTS_BOARD_PORT = 1;
     }
 
-    public final class DeviceConstants {
-        public static final int FUEL_SHOOTER_MOTOR_ID = 15;
-        public static final int CLIMBER_MOTOR_ID = 19;
-        public static final int CLIMBER_ENCODER_CHANNEL = 22;
-    }
-
     public final class AprilTagIDs {
         public static final int[] RED_HUB_IDS = {2,3,4,5,8,9,10,11};
         public static final int[] RED_TRENCH_IDS = {1,6,7,12};
@@ -130,6 +124,7 @@ public final class Constants {
         public static final double CLIMBER_kV = 0.0;
         public static final double CLIMBER_kS = 0.0;
         public static final double CLIMBER_kA = 0.0;
+        public static final double CLIMBER_kG = 0.0;
         public static final double CLIMBER_MAX_VELOCITY = 0.0;
         public static final double CLIMBER_MAX_ACCELERATION = 0.0;
         public static final double CLIMBER_MAX_ERROR = 0.0;
@@ -171,20 +166,10 @@ public final class Constants {
     public final class AgitatorConstants {
         public static final double BELT_SPEED = 0.5;
         public static final double KICK_SPEED = 0.5;
+        public static final double KICK_RPM = 4000;
     }
     public final class ClimberConstants {
         public static final double CLIMBER_POWER = 0.5;
-
-        public static final double CLIMBER_kP = 0.0;
-        public static final double CLIMBER_kI = 0.0;
-        public static final double CLIMBER_kD = 0.0;
-        public static final double CLIMBER_kV = 0.0;
-        public static final double CLIMBER_kS = 0.0;
-        public static final double CLIMBER_kA = 0.0;
-        public static final double CLIMBER_kG = 0.0;
-        public static final double CLIMBER_MAX_VELOCITY = 0.0;
-        public static final double CLIMBER_MAX_ACCELERATION = 0.0;
-        public static final double CLIMBER_MAX_ERROR = 0.0;
 
         public static final double CLIMBER_DOWN_POSITION = 0.0;
         public static final double CLIMBER_UP_POSITION = 0.0;

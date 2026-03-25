@@ -40,6 +40,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Constants;
 import frc.robot.Constants.ClimberConstants;
 import frc.robot.Constants.DeviceConstants;
+import frc.robot.Constants.FeedforwardConstants;
 
 public class ClimberSubsystem extends SubsystemBase {
     private final SparkMax climberMotor = new SparkMax(DeviceConstants.CLIMBER_MOTOR_ID, MotorType.kBrushless);
@@ -57,18 +58,18 @@ public class ClimberSubsystem extends SubsystemBase {
 		    }
 
         climberConfig.closedLoop
-        .p(ClimberConstants.CLIMBER_kP)
-        .i(ClimberConstants.CLIMBER_kI)
-        .d(ClimberConstants.CLIMBER_kD);
+        .p(FeedforwardConstants.CLIMBER_kP)
+        .i(FeedforwardConstants.CLIMBER_kI)
+        .d(FeedforwardConstants.CLIMBER_kD);
         climberConfig.closedLoop.feedForward
-        .kV(ClimberConstants.CLIMBER_kV)
-        .kS(ClimberConstants.CLIMBER_kS)
-        .kA(ClimberConstants.CLIMBER_kA)
-        .kG(ClimberConstants.CLIMBER_kG);
+        .kV(FeedforwardConstants.CLIMBER_kV)
+        .kS(FeedforwardConstants.CLIMBER_kS)
+        .kA(FeedforwardConstants.CLIMBER_kA)
+        .kG(FeedforwardConstants.CLIMBER_kG);
         climberConfig.closedLoop.maxMotion
-        .cruiseVelocity(ClimberConstants.CLIMBER_MAX_VELOCITY)
-        .maxAcceleration(ClimberConstants.CLIMBER_MAX_ACCELERATION)
-        .allowedProfileError(ClimberConstants.CLIMBER_MAX_ERROR);
+        .cruiseVelocity(FeedforwardConstants.CLIMBER_MAX_VELOCITY)
+        .maxAcceleration(FeedforwardConstants.CLIMBER_MAX_ACCELERATION)
+        .allowedProfileError(FeedforwardConstants.CLIMBER_MAX_ERROR);
 
         climberMotor.configure(climberConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
