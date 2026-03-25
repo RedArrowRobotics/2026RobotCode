@@ -3,7 +3,10 @@ package frc.robot.subsystems;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.Seconds;
+import static edu.wpi.first.units.Units.Volt;
 import static edu.wpi.first.units.Units.Volts;
+
+import java.util.Optional;
 
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
@@ -28,23 +31,27 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import frc.robot.Constants;
+import frc.robot.Constants.DeviceConstants;
 import frc.robot.Constants.FeedforwardConstants;
+import frc.robot.Constants.HopperConstants;
 import frc.robot.Constants.IntakeConstants;
 
 public class HopperSubsytem extends SubsystemBase {
-    private final SparkMax hopperExtender = new SparkMax(IntakeConstants.HOPPER_EXTENDER_MOTOR_ID, MotorType.kBrushless);
+	private final SparkMax hopperExtender = new SparkMax(DeviceConstants.HOPPER_EXTENDER_MOTOR_ID, MotorType.kBrushless);
 	private final SparkClosedLoopController hopperController = hopperExtender.getClosedLoopController();
 	private final SparkMaxConfig hopperConfig = new SparkMaxConfig();
-    public HopperState hopperState = HopperState.HOME;
 
-	public enum HopperState {
-		HOME,
-		MOVING,
-		EXTENDED;
-	}
+	public final Optional<SysId> sysId;
 
-    public HopperSubsytem() {
-        hopperConfig.closedLoop
+	public HopperSubsytem() {
+		if (Constants.DEBUG_ENABLED) {
+            sysId = Optional.of(new SysId());
+		} else {
+            sysId = Optional.empty();
+		}
+
+		hopperConfig.closedLoop
 		.p(FeedforwardConstants.HOPPER_kP)
 		.i(FeedforwardConstants.HOPPER_kI)
 		.d(FeedforwardConstants.HOPPER_kD);
@@ -58,15 +65,15 @@ public class HopperSubsytem extends SubsystemBase {
 		.allowedProfileError(FeedforwardConstants.HOPPER_MAX_ERROR);
 
 		hopperExtender.configure(hopperConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    }
+	}
 
-    public Command extendIntakeManual() {
+	public Command extendHopperManual() {
 		return runOnce(() -> {
 			hopperExtender.set(IntakeConstants.HOPPER_MANUAL_SPEED);
 		});
 	}
 
-	public Command retractIntakeManual() {
+	public Command retractHopperManual() {
 		return runOnce(() -> {
 			hopperExtender.set(IntakeConstants.HOPPER_MANUAL_SPEED * -1);
 		});
@@ -78,78 +85,76 @@ public class HopperSubsytem extends SubsystemBase {
 		});
 	}
 
-	public Command extendHopperPIDF() {
-		return startEnd(() -> {
-			hopperController.setSetpoint(IntakeConstants.HOPPER_EXTENDED_POSITION, ControlType.kMAXMotionPositionControl);
-			hopperState = HopperState.MOVING;
-		}, () -> {
-			hopperState = HopperState.EXTENDED;
+	public Command extendHopper() {
+		return runOnce(() -> {
+			hopperController.setSetpoint(HopperConstants.HOPPER_EXTENDED_POSITION, ControlType.kMAXMotionPositionControl);
 		});
 	}
 
-	public Command retractHopperPIDF() {
-		return startEnd(() -> {
-			hopperController.setSetpoint(IntakeConstants.HOPPER_RETRACTED_POSITION, ControlType.kMAXMotionPositionControl);
-			hopperState = HopperState.MOVING;
-		}, () -> {
-			hopperState = HopperState.HOME;
+	public Command retractHopper() {
+		return runOnce(() -> {
+			hopperController.setSetpoint(HopperConstants.HOPPER_RETRACTED_POSITION, ControlType.kMAXMotionPositionControl);
 		});
 	}
 
-    // Mutable holder for unit-safe voltage values, persisted to avoid reallocation.
-    private final MutVoltage m_appliedVoltage = Volts.mutable(0);
-    // Mutable holder for unit-safe linear distance values, persisted to avoid reallocation.
-    private final MutDistance m_distance = Meters.mutable(0);
-    // Mutable holder for unit-safe linear velocity values, persisted to avoid reallocation.
-    private final MutLinearVelocity m_velocity = MetersPerSecond.mutable(0);
+	public class SysId {
+		private final MutVoltage m_appliedVoltage = Volts.mutable(0);
+		private final MutDistance m_distance = Meters.mutable(0);
+		private final MutLinearVelocity m_velocity = MetersPerSecond.mutable(0);
 
-	private final VelocityUnit<VoltageUnit> voltsPerSecond = Volts.per(Seconds);
-	private final Velocity<VoltageUnit> rampRate = voltsPerSecond.of(0.1);
-	private final Voltage dynamicVoltage = Volts.of(7.0);
-	private final Time runTime = Seconds.of(10.0);
+		private final VelocityUnit<VoltageUnit> voltsPerSecond = Volts.per(Seconds);
+		private final Velocity<VoltageUnit> rampRate = voltsPerSecond.of(0.1);
+		private final Voltage dynamicVoltage = Volts.of(7.0);
+		private final Time runTime = Seconds.of(10.0);
 
-    // Creates a SysIdRoutine
-	SysIdRoutine routine = new SysIdRoutine(
-		new SysIdRoutine.Config(rampRate, dynamicVoltage, runTime),
-		new SysIdRoutine.Mechanism(voltage -> {
-				hopperExtender.setVoltage(voltage.baseUnitMagnitude());
-				},
-				// Tell SysId how to record a frame of data for each motor on the mechanism being
-				// characterized.
-				log -> {
-					// Record a frame for the left motors.  Since these share an encoder, we consider
-					// the entire group to be one motor.
-					log.motor("hopper-extender")
-						.voltage(
-							m_appliedVoltage.mut_replace(
-								hopperExtender.getAppliedOutput() * RobotController.getBatteryVoltage(), Volts))
-						.linearPosition(m_distance.mut_replace(hopperExtender.getEncoder().getPosition(), Meters))
-						.linearVelocity(
-							m_velocity.mut_replace(hopperExtender.getEncoder().getVelocity(), MetersPerSecond));
-						}, this)
-	);
+		// Creates a SysIdRoutine
+		private final SysIdRoutine routine = new SysIdRoutine(
+			new SysIdRoutine.Config(rampRate, dynamicVoltage, runTime),
+			new SysIdRoutine.Mechanism(voltage -> {
+					hopperExtender.setVoltage(voltage.baseUnitMagnitude());
+					},
+					// Tell SysId how to record a frame of data for each motor on the mechanism being
+					// characterized.
+					log -> {
+						// Record a frame for the left motors.  Since these share an encoder, we consider
+						// the entire group to be one motor.
+						log.motor("hopper-extender")
+							.voltage(
+								m_appliedVoltage.mut_replace(
+									hopperExtender.getAppliedOutput() * RobotController.getBatteryVoltage(), Volts))
+							.linearPosition(m_distance.mut_replace(hopperExtender.getEncoder().getPosition(), Meters))
+							.linearVelocity(
+								m_velocity.mut_replace(hopperExtender.getEncoder().getVelocity(), MetersPerSecond));
+							}, HopperSubsytem.this)
+		);
 
-	public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
-		return routine.quasistatic(direction);
-	}
+		public Command quasistatic(SysIdRoutine.Direction direction) {
+			return routine.quasistatic(direction);
+		}
 
-	public Command sysIdDynamic(SysIdRoutine.Direction direction) {
-		return routine.dynamic(direction);
+		public Command dynamic(SysIdRoutine.Direction direction) {
+			return routine.dynamic(direction);
+		}
+
+		public void configureSendables() {
+            var name = HopperSubsytem.this.getName();
+            SmartDashboard.putData("SysId/"+name+"/Quasistatic Forward", quasistatic(SysIdRoutine.Direction.kForward));
+            SmartDashboard.putData("SysId/"+name+"/Quasistatic Reverse", quasistatic(SysIdRoutine.Direction.kReverse));
+            SmartDashboard.putData("SysId/"+name+"/Dynamic Forward", dynamic(SysIdRoutine.Direction.kForward));
+            SmartDashboard.putData("SysId/"+name+"/Dynamic Reverse", dynamic(SysIdRoutine.Direction.kReverse));
+        }
 	}
 
     @Override
 	public void initSendable(SendableBuilder builder) {
 		super.initSendable(builder);
-		//Sys ID
-		SmartDashboard.putData("Hopper - Quasistatic Foward", sysIdQuasistatic(Direction.kForward));
-		SmartDashboard.putData("Hopper - Quasistatic Reverse", sysIdQuasistatic(Direction.kReverse));
-		SmartDashboard.putData("Hopper - Dynamic Foward", sysIdDynamic(Direction.kForward));
-		SmartDashboard.putData("Hopper - Dynamic Reverse", sysIdDynamic(Direction.kReverse));
+		//Telemetry
+		sysId.ifPresent(sysid -> sysid.configureSendables());
 
 		//Testing
-		SmartDashboard.putData("Extend Intake Manual", extendIntakeManual());
-		SmartDashboard.putData("Retract Intake Manual", retractIntakeManual());
-		SmartDashboard.putData("Extend Intake PIDF", extendHopperPIDF());
-		SmartDashboard.putData("Retract Intake PIDF", retractHopperPIDF());
+		SmartDashboard.putData("Extend Hopper Manual", extendHopperManual());
+		SmartDashboard.putData("Retract Hopper Manual", retractHopperManual());
+		SmartDashboard.putData("Extend Hopper PIDF", extendHopper());
+		SmartDashboard.putData("Retract Hopper PIDF", retractHopper());
 	}
 }
