@@ -134,43 +134,35 @@ public class FuelAimingSubsystem extends SubsystemBase {
 		}).onlyWhile(() -> !turretAimingLimitSwitch.get()).onlyIf(() -> !turretSetZeroStart);
 	}
 
-	public Command manualTurretControlCW(Supplier<Boolean> manualControlled) {
+	public Command manualTurretControlCW() {
 		return startEnd(() -> {
-			if(manualControlled.get() == true) {
-				turretRotator.set(FuelAimingConstants.TURRET_ROTATOR_MANUAL_POWER * -1);
-				System.out.println("Set turret to :"+turretRotator.get());
-			}
+			turretRotator.set(FuelAimingConstants.TURRET_ROTATOR_MANUAL_POWER * -1);
+			System.out.println("Set turret to :"+turretRotator.get());
 		}, () -> {
 			turretRotator.set(0.0);
 		});
 	}
 
-	public Command manualTurretControlCCW(Supplier<Boolean> manualControlled) {
+	public Command manualTurretControlCCW() {
 		return startEnd(() -> {
-			if(manualControlled.get() == true) {
-				turretRotator.set(FuelAimingConstants.TURRET_ROTATOR_MANUAL_POWER);
-				System.out.println("Set turret to :"+turretRotator.get());
-			}
+			turretRotator.set(FuelAimingConstants.TURRET_ROTATOR_MANUAL_POWER);
+			System.out.println("Set turret to :"+turretRotator.get());
 		}, () -> {
 			turretRotator.set(0.0);
 		});
 	}
 
-	public Command manualHoodControlUp(Supplier<Boolean> manualControlled) {
+	public Command manualHoodControlUp() {
 		return startEnd(() -> {
-			if(manualControlled.get() == true) {
-				hoodRotator.set(FuelAimingConstants.HOOD_ROTATOR_MANUAL_POWER);
-			}
+			hoodRotator.set(FuelAimingConstants.HOOD_ROTATOR_MANUAL_POWER);
 		}, () -> {
 			hoodRotator.set(0.0);
 		});
 	}
 
-	public Command manualHoodControlDown(Supplier<Boolean> manualControlled) {
+	public Command manualHoodControlDown() {
 		return startEnd(() -> {
-			if(manualControlled.get() == true) {
-				hoodRotator.set(FuelAimingConstants.HOOD_ROTATOR_MANUAL_POWER * -1);
-			}
+			hoodRotator.set(FuelAimingConstants.HOOD_ROTATOR_MANUAL_POWER * -1);
 		}, () -> {
 			hoodRotator.set(0.0);
 		});
@@ -379,10 +371,10 @@ public class FuelAimingSubsystem extends SubsystemBase {
 		sysIdHood.ifPresent(sysid -> sysid.configureSendables());
 
 		//Testing
-		SmartDashboard.putData("Manual Turret CW", manualTurretControlCW(() -> true));
-		SmartDashboard.putData("Manual Turret CCW", manualTurretControlCCW(() -> true));
+		SmartDashboard.putData("Manual Turret CW", manualTurretControlCW());
+		SmartDashboard.putData("Manual Turret CCW", manualTurretControlCCW());
 
-		SmartDashboard.putData("Manual Hood Up", manualHoodControlUp(() -> true));
-		SmartDashboard.putData("Manual Hood Down", manualHoodControlDown(() -> true));
+		SmartDashboard.putData("Manual Hood Up", manualHoodControlUp());
+		SmartDashboard.putData("Manual Hood Down", manualHoodControlDown());
 	}
 }

@@ -55,12 +55,14 @@ public class RobotContainer {
         ControlInputs.componentsBoard.button(InputConstants.INTAKE_IN).whileFalse(fuelIntake.intakeFuelIn().alongWith(agitator.beltsIn()));
         ControlInputs.componentsBoard.button(InputConstants.EXTEND_HOPPER).onTrue(hopper.extendHopper());
         ControlInputs.componentsBoard.button(InputConstants.EXTEND_HOPPER).onFalse(hopper.retractHopper());
-        ControlInputs.componentsBoard.button(InputConstants.CLIMBER_DOWN).whileTrue(climber.climberDownCommand(() -> ControlInputs.componentsBoard.button(InputConstants.MANUAL_SWITCH).getAsBoolean()));
-        ControlInputs.componentsBoard.button(InputConstants.CLIMBER_UP).whileTrue(climber.climberUpCommand(() -> ControlInputs.componentsBoard.button(InputConstants.MANUAL_SWITCH).getAsBoolean()));
-        ControlInputs.componentsBoard.button(InputConstants.MANUAL_HOOD_UP).whileTrue(fuelAiming.manualHoodControlUp(() -> ControlInputs.componentsBoard.button(InputConstants.MANUAL_SWITCH).getAsBoolean()));
-        ControlInputs.componentsBoard.button(InputConstants.MANUAL_HOOD_DOWN).whileFalse(fuelAiming.manualHoodControlDown(() -> ControlInputs.componentsBoard.button(InputConstants.MANUAL_SWITCH).getAsBoolean()));
-        ControlInputs.componentsBoard.button(InputConstants.MANUAL_TURRET_CCW).whileTrue(fuelAiming.manualTurretControlCCW(() -> ControlInputs.componentsBoard.button(InputConstants.MANUAL_SWITCH).getAsBoolean()));
-        ControlInputs.componentsBoard.button(InputConstants.MANUAL_TURRET_CW).whileTrue(fuelAiming.manualTurretControlCW(() -> ControlInputs.componentsBoard.button(InputConstants.MANUAL_SWITCH).getAsBoolean()));
+        ControlInputs.componentsBoard.button(InputConstants.CLIMBER_DOWN).and(ControlInputs.componentsBoard.button(InputConstants.MANUAL_SWITCH)).and(hopper::hopperHome).whileTrue(climber.climberDownManual());
+        ControlInputs.componentsBoard.button(InputConstants.CLIMBER_DOWN).and(ControlInputs.componentsBoard.button(InputConstants.MANUAL_SWITCH).negate()).and(hopper::hopperHome).whileTrue(climber.climberDownPID());
+        ControlInputs.componentsBoard.button(InputConstants.CLIMBER_UP).and(ControlInputs.componentsBoard.button(InputConstants.MANUAL_SWITCH)).and(hopper::hopperHome).whileTrue(climber.climberUpManual());
+        ControlInputs.componentsBoard.button(InputConstants.CLIMBER_UP).and(ControlInputs.componentsBoard.button(InputConstants.MANUAL_SWITCH).negate()).and(hopper::hopperHome).whileTrue(climber.climberUpPID());
+        ControlInputs.componentsBoard.button(InputConstants.MANUAL_HOOD_UP).and(ControlInputs.componentsBoard.button(InputConstants.MANUAL_SWITCH)).whileTrue(fuelAiming.manualHoodControlUp());
+        ControlInputs.componentsBoard.button(InputConstants.MANUAL_HOOD_DOWN).and(ControlInputs.componentsBoard.button(InputConstants.MANUAL_SWITCH)).whileFalse(fuelAiming.manualHoodControlDown());
+        ControlInputs.componentsBoard.button(InputConstants.MANUAL_TURRET_CCW).and(ControlInputs.componentsBoard.button(InputConstants.MANUAL_SWITCH)).whileTrue(fuelAiming.manualTurretControlCCW());
+        ControlInputs.componentsBoard.button(InputConstants.MANUAL_TURRET_CW).and(ControlInputs.componentsBoard.button(InputConstants.MANUAL_SWITCH)).whileTrue(fuelAiming.manualTurretControlCW());
         ControlInputs.componentsBoard.button(InputConstants.DRIVE_ORIENTATION_SWITCH).whileFalse(swerveDriveTrain.teleopDrive(DriveOrientation.FIELD_CENTRIC));
         ControlInputs.componentsBoard.button(InputConstants.DRIVE_ORIENTATION_SWITCH).whileTrue(swerveDriveTrain.teleopDrive(DriveOrientation.ROBOT_CENTRIC));
 

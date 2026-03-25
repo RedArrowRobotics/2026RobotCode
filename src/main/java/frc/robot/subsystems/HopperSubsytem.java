@@ -68,20 +68,18 @@ public class HopperSubsytem extends SubsystemBase {
 	}
 
 	public Command extendHopperManual() {
-		return runOnce(() -> {
+		return startEnd(() -> {
+			hopperExtender.set(IntakeConstants.HOPPER_MANUAL_SPEED);
+		}, () -> {
 			hopperExtender.set(IntakeConstants.HOPPER_MANUAL_SPEED);
 		});
 	}
 
 	public Command retractHopperManual() {
-		return runOnce(() -> {
+		return startEnd(() -> {
 			hopperExtender.set(IntakeConstants.HOPPER_MANUAL_SPEED * -1);
-		});
-	}
-
-	public Command stopHopperExtension() {
-		return runOnce(() -> {
-			hopperExtender.set(0.0);
+		}, () -> {
+			hopperExtender.set(IntakeConstants.HOPPER_MANUAL_SPEED * -1);
 		});
 	}
 
@@ -95,6 +93,10 @@ public class HopperSubsytem extends SubsystemBase {
 		return runOnce(() -> {
 			hopperController.setSetpoint(HopperConstants.HOPPER_RETRACTED_POSITION, ControlType.kMAXMotionPositionControl);
 		});
+	}
+
+	public boolean hopperHome() {
+		return hopperController.getSetpoint() == HopperConstants.HOPPER_RETRACTED_POSITION && hopperController.isAtSetpoint();
 	}
 
 	public class SysId {

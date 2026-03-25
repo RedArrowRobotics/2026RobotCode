@@ -102,7 +102,7 @@ public class ClimberSubsystem extends SubsystemBase {
         });
     }
 
-    public Command climberUpCommand(Supplier<Boolean> manualControlled) {
+    public Command climberUpCommand(Supplier<Boolean> manualControlled, Supplier<Boolean> hopperHome) {
         Command controlType;
         if(manualControlled.get() == true) {
             controlType = climberUpManual();
@@ -112,12 +112,16 @@ public class ClimberSubsystem extends SubsystemBase {
         return controlType;
     }
 
-    public Command climberDownCommand(Supplier<Boolean> manualControlled) {
+    public Command climberDownCommand(Supplier<Boolean> manualControlled, Supplier<Boolean> hopperHome) {
         Command controlType;
-        if(manualControlled.get() == true) {
-            controlType = climberDownManual();
+        if(hopperHome.get() == true) {
+            if(manualControlled.get() == true) {
+                controlType = climberDownManual();
+            } else {
+                controlType = climberDownPID();
+            }
         } else {
-            controlType = climberDownPID();
+            controlType = runOnce(() -> {});
         }
         return controlType;
     }
