@@ -96,7 +96,7 @@ public final class Constants {
         public static final double TURRET_ROTATOR_kA = 8.407E-05;
         public static final double TURRET_ROTATOR_MAX_VELOCITY = 8000; //RPM
         public static final double TURRET_ROTATOR_MAX_ACCELERATION = 12000; //RPM/s
-        public static final double TURRET_ROTATOR_MAX_ERROR = 1000; //RPM
+        public static final double TURRET_ROTATOR_MAX_ERROR = 100; //RPM
 
         //Hood Constants
         public static final double HOOD_ROTATOR_kP = 14.042;
