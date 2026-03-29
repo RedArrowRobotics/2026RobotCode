@@ -14,6 +14,7 @@ import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -121,6 +122,7 @@ public class FuelAimingSubsystem extends SubsystemBase {
 
 		hoodConfig.inverted(true);
 		hoodConfig.encoder.inverted(true);
+		hoodConfig.idleMode(IdleMode.kCoast);
 
 		hoodRotator.configure(hoodConfig, ResetMode.kResetSafeParameters,
 		PersistMode.kPersistParameters);
