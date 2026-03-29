@@ -159,7 +159,7 @@ public final class Constants {
         //Turret
         public static final double TURRET_ROTATOR_MANUAL_POWER = 0.1;
         public static final double TURRET_ROTATION_ZERO = 0.000;
-        public static final double DEGREES_TO_ROTATIONS = -0.2132;
+        public static final double DEGREES_TO_ROTATIONS = 0.2132;
         public static final double STOPPED_SPEED = 0.000;
        
         //Hood

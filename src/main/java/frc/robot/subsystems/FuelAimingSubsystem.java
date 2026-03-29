@@ -102,6 +102,7 @@ public class FuelAimingSubsystem extends SubsystemBase {
 		.allowedProfileError(FeedforwardConstants.TURRET_ROTATOR_MAX_ERROR);
 
 		turretConfig.smartCurrentLimit(20);
+		turretConfig.inverted(true);
 
 		turretRotator.configure(turretConfig, ResetMode.kResetSafeParameters,
 		PersistMode.kPersistParameters);
@@ -194,16 +195,16 @@ public class FuelAimingSubsystem extends SubsystemBase {
 			thetaToHub = Math.atan((hubPosition.getY() - robotPose.get().getY()) /
 								   (hubPosition.getX() - robotPose.get().getX()));
 			degreeToHubRelativeToRobot = (thetaToHub * (180/Math.PI)) - robotPose.get().getRotation().getDegrees(); /*Convert from radians to degrees and subtract yaw of the robot*/
-			if(degreeToHubRelativeToRobot > 180) {
-				degreeToHubRelativeToRobot  = 180;
+			if(degreeToHubRelativeToRobot > 90) {
+				degreeToHubRelativeToRobot  = 90;
 				turretSetpointWithinRange = false;
-			} else if(degreeToHubRelativeToRobot < 0) {
-				degreeToHubRelativeToRobot = 0;
+			} else if(degreeToHubRelativeToRobot < -90) {
+				degreeToHubRelativeToRobot = -90;
 				turretSetpointWithinRange = false;
 			} else {
 				turretSetpointWithinRange = true;
 			}
-			if(inAllianceZone) {
+			if(inAllianceZone && turretSetpointWithinRange) {
 				turretController.setSetpoint(degreeToHubRelativeToRobot * FuelAimingConstants.DEGREES_TO_ROTATIONS, ControlType.kMAXMotionPositionControl);
 			} else {
 				turretController.setSetpoint(90.0 * FuelAimingConstants.DEGREES_TO_ROTATIONS, ControlType.kMAXMotionPositionControl);
@@ -226,9 +227,9 @@ public class FuelAimingSubsystem extends SubsystemBase {
 			if(robotPose.get().getTranslation().getDistance(outpostTrench) - 0.6 > Math.abs(allianceZoneLine.getX() - outpostTrench.getX()) && inAllianceZone
 				||
 			   robotPose.get().getTranslation().getDistance(depotTrench) - 0.6 > Math.abs(allianceZoneLine.getX() - depotTrench.getX()) && inAllianceZone) {
-				hoodController.setSetpoint(hoodEncoderPosition, ControlType.kMAXMotionPositionControl);
+				//hoodController.setSetpoint(hoodEncoderPosition, ControlType.kMAXMotionPositionControl);
 			   } else {
-				hoodController.setSetpoint(0.0, ControlType.kMAXMotionPositionControl);
+				//hoodController.setSetpoint(0.0, ControlType.kMAXMotionPositionControl);
 			   }
 		});
 	}
