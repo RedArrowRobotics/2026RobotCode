@@ -129,6 +129,7 @@ public class FuelAimingSubsystem extends SubsystemBase {
 	public Command timeOut() {
 		return runOnce(() -> {
 			turretRotator.set(0.0);
+			hoodRotator.set(0.0);
 		});
 	}
 
