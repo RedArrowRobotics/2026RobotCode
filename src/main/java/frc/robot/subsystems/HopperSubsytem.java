@@ -67,6 +67,8 @@ public class HopperSubsytem extends SubsystemBase {
 		.allowedProfileError(FeedforwardConstants.HOPPER_MAX_ERROR);
 
 		hopperExtender.configure(hopperConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+		hopperController.setSetpoint(0.0, ControlType.kMAXMotionPositionControl);
 	}
 
 	public Command extendHopperManual() {

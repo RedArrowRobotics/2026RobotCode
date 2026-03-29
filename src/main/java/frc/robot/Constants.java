@@ -169,7 +169,7 @@ public final class Constants {
     }
 
     public final class IntakeConstants {
-        public static final double INTAKE_SPEED = 0.5;
+        public static final double INTAKE_SPEED = 1.0;
     }
 
     public final class HopperConstants {
@@ -180,7 +180,7 @@ public final class Constants {
     }
 
     public final class AgitatorConstants {
-        public static final double BELT_SPEED = 0.5;
+        public static final double BELT_SPEED = 1.0;
         public static final double KICK_SPEED = 0.5;
         public static final double KICK_RPM = 4000;
     }

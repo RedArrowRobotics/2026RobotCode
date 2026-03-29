@@ -64,6 +64,8 @@ public class ClimberSubsystem extends SubsystemBase {
         .allowedProfileError(FeedforwardConstants.CLIMBER_MAX_ERROR);
 
         climberMotor.configure(climberConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+        climberController.setSetpoint(0.0, ControlType.kMAXMotionPositionControl);
     }
 
     public Command climberUpManual() {
