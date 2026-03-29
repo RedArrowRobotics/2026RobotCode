@@ -71,8 +71,10 @@ public class AgitatorSubsystem extends SubsystemBase {
     public Command agitateOut() {
         return startEnd(() -> {
             belt1.set(AgitatorConstants.BELT_SPEED * -1);
+            kickerController.setSetpoint(AgitatorConstants.KICK_RPM * -1, ControlType.kMAXMotionVelocityControl);
         }, () -> {
             belt1.set(0.0);
+            kickerController.setSetpoint(0.0, ControlType.kMAXMotionVelocityControl);
         });
     }
 
@@ -118,6 +120,7 @@ public class AgitatorSubsystem extends SubsystemBase {
         super.initSendable(builder);
         //Telemetry
         builder.addDoubleProperty("Kicker Position", () -> kicker.getEncoder().getPosition(), null);
+        builder.addDoubleProperty("Set Kicker Setpoint", () -> kickerController.getMAXMotionSetpointVelocity(), (setpoint) -> kickerController.setSetpoint(setpoint, ControlType.kMAXMotionVelocityControl));
         
         //Sys ID
         SmartDashboard.putData("Kicker - Run Forward Dynamic", sysIdDynamicKicker(Direction.kForward));
@@ -128,5 +131,6 @@ public class AgitatorSubsystem extends SubsystemBase {
         //Testing
         SmartDashboard.putData("Agitate In", agitateIn());
         SmartDashboard.putData("Agitate Out", agitateOut());
+        SmartDashboard.putData("Belts In", beltsIn());
     }
 }

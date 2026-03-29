@@ -9,6 +9,7 @@ public final class Constants {
     public final class OperatorConstants {
         public static final int DRIVE_JOYSTICK_PORT = 0;
         public static final int COMPONENTS_BOARD_PORT = 1;
+        public static final int EMERGENCY_JANKY_FLIGHT_STICK = 2;
     }
 
     public final class InputConstants {
@@ -110,15 +111,16 @@ public final class Constants {
         public static final double HOOD_ROTATOR_MAX_ERROR = 84.241;
 
         //Hopper Constants
-        public static final double HOPPER_kP = 0.0;
+        public static final double HOPPER_kP = 3.596;
         public static final double HOPPER_kI = 0.0;
         public static final double HOPPER_kD = 0.0;
-        public static final double HOPPER_kV = 0.0;
-        public static final double HOPPER_kS = 0.0;
-        public static final double HOPPER_kA = 0.0;
-        public static final double HOPPER_MAX_VELOCITY = 0.0;
-        public static final double HOPPER_MAX_ACCELERATION = 0.0;
-        public static final double HOPPER_MAX_ERROR = 0.0;
+        public static final double HOPPER_kV = 0.025052;
+        public static final double HOPPER_kS = 0.55954;
+        public static final double HOPPER_kA = 0.012042;
+        public static final Double HOPPER_kG = 0.15691;
+        public static final double HOPPER_MAX_VELOCITY = 50;
+        public static final double HOPPER_MAX_ACCELERATION = 75;
+        public static final double HOPPER_MAX_ERROR = 10;
         
         //Kicker Constants
         public static final double KICKER_kP = 0.00014281;
@@ -132,16 +134,16 @@ public final class Constants {
         public static final double KICKER_MAX_ERROR = 75.0;
 
         //Climber Constants
-        public static final double CLIMBER_kP = 0.0;
+        public static final double CLIMBER_kP = 1.5061;
         public static final double CLIMBER_kI = 0.0;
-        public static final double CLIMBER_kD = 0.0;
-        public static final double CLIMBER_kV = 0.0;
-        public static final double CLIMBER_kS = 0.0;
-        public static final double CLIMBER_kA = 0.0;
-        public static final double CLIMBER_kG = 0.0;
-        public static final double CLIMBER_MAX_VELOCITY = 0.0;
-        public static final double CLIMBER_MAX_ACCELERATION = 0.0;
-        public static final double CLIMBER_MAX_ERROR = 0.0;
+        public static final double CLIMBER_kD = 0.016293;
+        public static final double CLIMBER_kV = 0.0020142;
+        public static final double CLIMBER_kS = 0.086225;
+        public static final double CLIMBER_kA = 0.00020083;
+        public static final double CLIMBER_kG = 0.022574;
+        public static final double CLIMBER_MAX_VELOCITY = 3500;
+        public static final double CLIMBER_MAX_ACCELERATION = 10000;
+        public static final double CLIMBER_MAX_ERROR = 1000;
     }
 
     public final class DriveConstants {
@@ -164,16 +166,16 @@ public final class Constants {
         public static final double HOOD_DOWN_POSITION = 0.0;
         public static final double HOOD_UP_POSITION = 2.142;
         public static final double HOOD_ROTATOR_MANUAL_POWER = 1.0;
-        
     }
 
     public final class IntakeConstants {
         public static final double INTAKE_SPEED = 0.5;
-        public static final double HOPPER_MANUAL_SPEED = 0.5;
     }
 
     public final class HopperConstants {
-        public static final double HOPPER_EXTENDED_POSITION = 0.0;
+        public static final double HOPPER_MANUAL_SPEED = 0.5;
+
+        public static final double HOPPER_EXTENDED_POSITION = 1.72;
         public static final double HOPPER_RETRACTED_POSITION = 0.0;
     }
 
@@ -183,10 +185,10 @@ public final class Constants {
         public static final double KICK_RPM = 4000;
     }
     public final class ClimberConstants {
-        public static final double CLIMBER_POWER = 0.5;
+        public static final double CLIMBER_POWER = 0.8;
 
         public static final double CLIMBER_DOWN_POSITION = 0.0;
-        public static final double CLIMBER_UP_POSITION = 0.0;
+        public static final double CLIMBER_UP_POSITION = 170.0;
     }
 }
     

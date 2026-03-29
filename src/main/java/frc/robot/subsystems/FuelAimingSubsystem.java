@@ -100,6 +100,8 @@ public class FuelAimingSubsystem extends SubsystemBase {
 		.maxAcceleration(FeedforwardConstants.TURRET_ROTATOR_MAX_ACCELERATION)
 		.allowedProfileError(FeedforwardConstants.TURRET_ROTATOR_MAX_ERROR);
 
+		turretConfig.smartCurrentLimit(20);
+
 		turretRotator.configure(turretConfig, ResetMode.kResetSafeParameters,
 		PersistMode.kPersistParameters);
 
@@ -124,6 +126,12 @@ public class FuelAimingSubsystem extends SubsystemBase {
 		PersistMode.kPersistParameters);
 	}
 
+	public Command timeOut() {
+		return runOnce(() -> {
+			turretRotator.set(0.0);
+		});
+	}
+
 	public Command zeroTurret() {
 		return runEnd(() -> {
 			turretRotator.set(0.1);
@@ -140,6 +148,7 @@ public class FuelAimingSubsystem extends SubsystemBase {
 			System.out.println("Set turret to :"+turretRotator.get());
 		}, () -> {
 			turretRotator.set(0.0);
+			turretController.setSetpoint(turretRotator.getEncoder().getPosition(), ControlType.kMAXMotionPositionControl);
 		});
 	}
 
@@ -149,14 +158,17 @@ public class FuelAimingSubsystem extends SubsystemBase {
 			System.out.println("Set turret to :"+turretRotator.get());
 		}, () -> {
 			turretRotator.set(0.0);
+			turretController.setSetpoint(turretRotator.getEncoder().getPosition(), ControlType.kMAXMotionPositionControl);
 		});
 	}
 
 	public Command manualHoodControlUp() {
-		return startEnd(() -> {
+		return runEnd(() -> {
 			hoodRotator.set(FuelAimingConstants.HOOD_ROTATOR_MANUAL_POWER);
+			//hoodController.setSetpoint(hoodRotator.getEncoder(), )
 		}, () -> {
 			hoodRotator.set(0.0);
+			hoodController.setSetpoint(hoodRotator.getEncoder().getPosition(), ControlType.kMAXMotionPositionControl);
 		});
 	}
 
@@ -165,6 +177,7 @@ public class FuelAimingSubsystem extends SubsystemBase {
 			hoodRotator.set(FuelAimingConstants.HOOD_ROTATOR_MANUAL_POWER * -1);
 		}, () -> {
 			hoodRotator.set(0.0);
+			hoodController.setSetpoint(hoodRotator.getEncoder().getPosition(), ControlType.kMAXMotionPositionControl); 
 		});
 	}
 

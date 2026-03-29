@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 
 public class ControlInputs {
     // Joysticks
-    public static final CommandJoystick driveController = new CommandJoystick(OperatorConstants.DRIVE_JOYSTICK_PORT);
+    public static final CommandJoystick driveController = new CommandJoystick(OperatorConstants.EMERGENCY_JANKY_FLIGHT_STICK);
     public static final CommandGenericHID componentsBoard = new CommandGenericHID(OperatorConstants.COMPONENTS_BOARD_PORT);
 
     private static final Alert driveControllerAlert = new Alert("The drive joystick is not connected to the driver's station.", AlertType.kWarning);
@@ -30,7 +30,7 @@ public class ControlInputs {
         var rotation = (driveController.getZ() * Math.abs(driveController.getZ()))
                 * driveControllerRotationMultiplier * -1;
         // Compose the seperate components into a state record
-        return new Twist2d(x, y, rotation);
+        return new Twist2d(-y, -x, rotation);
     }
 
     public static void updateAlerts() {

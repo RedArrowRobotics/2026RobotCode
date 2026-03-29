@@ -48,15 +48,7 @@ public class ClimberSubsystem extends SubsystemBase {
     private final SparkClosedLoopController climberController = climberMotor.getClosedLoopController();
     private final DigitalInput climberEncoder = new DigitalInput(DeviceConstants.CLIMBER_ENCODER_CHANNEL);
 
-    public Optional<SysId> SysId;
-
     public ClimberSubsystem() {
-        if (Constants.DEBUG_ENABLED) {
-                SysId = Optional.of(new SysId());
-		    } else {
-                SysId = Optional.empty();
-		    }
-
         climberConfig.closedLoop
         .p(FeedforwardConstants.CLIMBER_kP)
         .i(FeedforwardConstants.CLIMBER_kI)
@@ -126,15 +118,14 @@ public class ClimberSubsystem extends SubsystemBase {
         return controlType;
     }
 
-    public class SysId {
-        private final MutVoltage m_appliedVoltage = Volts.mutable(0);
-        private final MutDistance m_distance = Meters.mutable(0);
-        private final MutLinearVelocity m_velocity = MetersPerSecond.mutable(0);
+    private final MutVoltage m_appliedVoltage = Volts.mutable(0);
+    private final MutDistance m_distance = Meters.mutable(0);
+    private final MutLinearVelocity m_velocity = MetersPerSecond.mutable(0);
 
-        private final VelocityUnit<VoltageUnit> voltsPerSecond = Volts.per(Seconds);
-        private final Velocity<VoltageUnit> rampRate = voltsPerSecond.of(0.2);
-        private final Voltage dynamicVoltage = Volts.of(7.0);
-        private final Time runTime = Seconds.of(10.0);
+    private final VelocityUnit<VoltageUnit> voltsPerSecond = Volts.per(Seconds);
+    private final Velocity<VoltageUnit> rampRate = voltsPerSecond.of(0.2);
+    private final Voltage dynamicVoltage = Volts.of(7.0);
+    private final Time runTime = Seconds.of(30.0);
 
             // Creates a SysIdRoutine
             SysIdRoutine routine = new SysIdRoutine(
@@ -165,22 +156,20 @@ public class ClimberSubsystem extends SubsystemBase {
             return routine.dynamic(direction);
         }
 
-        public void configureSendables() {
-            var name = ClimberSubsystem.this.getName();
-            SmartDashboard.putData("SysId/"+name+"/Quasistatic Forward", sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-            SmartDashboard.putData("SysId/"+name+"/Quasistatic Reverse", sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-            SmartDashboard.putData("SysId/"+name+"/Dynamic Forward", sysIdDynamic(SysIdRoutine.Direction.kForward));
-            SmartDashboard.putData("SysId/"+name+"/Dynamic Reverse", sysIdDynamic(SysIdRoutine.Direction.kReverse));
-        }
-    }
-
     @Override
     public void initSendable(SendableBuilder builder) {
         super.initSendable(builder);
         //Telemetry
-        SysId.ifPresent(SysId -> SysId.configureSendables());
+        builder.addDoubleProperty("Climber Position", () -> climberMotor.getEncoder().getPosition(), null);
+        builder.addDoubleProperty("Set Climber Position", () -> climberController.getSetpoint(), (pos) -> climberController.setSetpoint(pos, ControlType.kMAXMotionPositionControl));
+        builder.addDoubleProperty("Set Climber Power", () -> climberMotor.get(), (speed) -> climberMotor.set(speed));
 
         //Testing
+        SmartDashboard.putData("Climber - Dynamic Forward", sysIdDynamic(Direction.kForward));
+        SmartDashboard.putData("Climber - Dynamic Reverse", sysIdDynamic(Direction.kReverse));
+        SmartDashboard.putData("Climber - Quasistatic Forward", sysIdQuasistatic(Direction.kForward));
+        SmartDashboard.putData("Climber - Quasistatic Reverse", sysIdQuasistatic(Direction.kReverse));
+
         SmartDashboard.putData("Climber Up Manual", climberUpManual());
         SmartDashboard.putData("Climber Down Manual", climberDownManual());
         SmartDashboard.putData("Climb Up PID", climberUpPID());
