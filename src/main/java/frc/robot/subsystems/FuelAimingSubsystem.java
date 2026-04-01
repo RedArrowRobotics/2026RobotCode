@@ -169,7 +169,6 @@ public class FuelAimingSubsystem extends SubsystemBase {
 	public Command manualHoodControlUp() {
 		return runEnd(() -> {
 			hoodRotator.set(FuelAimingConstants.HOOD_ROTATOR_MANUAL_POWER);
-			//hoodController.setSetpoint(hoodRotator.getEncoder(), )
 		}, () -> {
 			hoodRotator.set(0.0);
 			hoodController.setSetpoint(hoodRotator.getEncoder().getPosition(), ControlType.kMAXMotionPositionControl);
