@@ -118,8 +118,8 @@ public final class Constants {
         public static final double HOPPER_kS = 0.55954;
         public static final double HOPPER_kA = 0.012042;
         public static final Double HOPPER_kG = 0.15691;
-        public static final double HOPPER_MAX_VELOCITY = 50;
-        public static final double HOPPER_MAX_ACCELERATION = 75;
+        public static final double HOPPER_MAX_VELOCITY = 75;
+        public static final double HOPPER_MAX_ACCELERATION = 100;
         public static final double HOPPER_MAX_ERROR = 10;
         
         //Kicker Constants

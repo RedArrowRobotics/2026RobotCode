@@ -209,7 +209,7 @@ public class FuelAimingSubsystem extends SubsystemBase {
 			} else {
 				turretController.setSetpoint(90.0 * FuelAimingConstants.DEGREES_TO_ROTATIONS, ControlType.kMAXMotionPositionControl);
 			}
-						
+				
 			//Hood Control
 			//Do math to figure out optimal hood angle as a function of distance
 			//Min Distance: 30 in -> 1.359m     Max Distance: 241.7 in -> 6.139m
