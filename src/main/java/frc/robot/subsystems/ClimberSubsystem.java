@@ -69,8 +69,12 @@ public class ClimberSubsystem extends SubsystemBase {
     }
 
     public Command climberUpManual() {
-        return startEnd(() -> {
-            climberMotor.set(ClimberConstants.CLIMBER_POWER);
+        return runEnd(() -> {
+            if(climberMotor.getEncoder().getPosition() <= ClimberConstants.CLIMBER_UP_POSITION) {
+                climberMotor.set(ClimberConstants.CLIMBER_POWER);
+            } else {
+                climberMotor.set(0.0);
+            }
         }, () -> {
             climberMotor.set(0.0);
         });
