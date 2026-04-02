@@ -151,8 +151,8 @@ public class FuelAimingSubsystem extends SubsystemBase {
 			turretRotator.set(FuelAimingConstants.TURRET_ROTATOR_MANUAL_POWER * -1);
 			System.out.println("Set turret to :"+turretRotator.get());
 		}, () -> {
-			turretRotator.set(0.0);
 			turretController.setSetpoint(turretRotator.getEncoder().getPosition(), ControlType.kMAXMotionPositionControl);
+			turretRotator.set(0.0);
 		});
 	}
 
@@ -161,8 +161,8 @@ public class FuelAimingSubsystem extends SubsystemBase {
 			turretRotator.set(FuelAimingConstants.TURRET_ROTATOR_MANUAL_POWER);
 			System.out.println("Set turret to :"+turretRotator.get());
 		}, () -> {
-			turretRotator.set(0.0);
 			turretController.setSetpoint(turretRotator.getEncoder().getPosition(), ControlType.kMAXMotionPositionControl);
+			turretRotator.set(0.0);
 		});
 	}
 
@@ -170,8 +170,8 @@ public class FuelAimingSubsystem extends SubsystemBase {
 		return runEnd(() -> {
 			hoodRotator.set(FuelAimingConstants.HOOD_ROTATOR_MANUAL_POWER);
 		}, () -> {
-			hoodRotator.set(0.0);
 			hoodController.setSetpoint(hoodRotator.getEncoder().getPosition(), ControlType.kMAXMotionPositionControl);
+			hoodRotator.set(0.0);
 		});
 	}
 
@@ -179,8 +179,8 @@ public class FuelAimingSubsystem extends SubsystemBase {
 		return startEnd(() -> {
 			hoodRotator.set(FuelAimingConstants.HOOD_ROTATOR_MANUAL_POWER * -1);
 		}, () -> {
-			hoodRotator.set(0.0);
 			hoodController.setSetpoint(hoodRotator.getEncoder().getPosition(), ControlType.kMAXMotionPositionControl); 
+			hoodRotator.set(0.0);
 		});
 	}
 
