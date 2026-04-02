@@ -395,6 +395,7 @@ public class FuelAimingSubsystem extends SubsystemBase {
 		//Testing
 		SmartDashboard.putData("Manual Turret CW", manualTurretControlCW());
 		SmartDashboard.putData("Manual Turret CCW", manualTurretControlCCW());
+		SmartDashboard.putData("Run Turret to Position", runTurretToDegree(0.0));
 
 		SmartDashboard.putData("Manual Hood Up", manualHoodControlUp());
 		SmartDashboard.putData("Manual Hood Down", manualHoodControlDown());
