@@ -46,6 +46,8 @@ public class FuelShooterSubsystem extends SubsystemBase {
         case Blue -> FieldPoses.BLUE_HUB;
         case Red -> FieldPoses.RED_HUB;
     };
+
+	private double speedParabolic;
 	
     public final Optional<SysId> sysId;
 	
@@ -87,7 +89,7 @@ public class FuelShooterSubsystem extends SubsystemBase {
 			//Min Distance: 30 in -> 1.359m     Max Distance: 241.7 in -> 6.139m
 			//39.3701 converts from inches to meters
 			double distance = hubPosition.getDistance(robotPose.get().getTranslation());
-			double speedParabolic = (.0544 * Math.pow(distance * 39.3701, 2)) - (2.33 * distance * 39.3701) + 2605.55;			
+			speedParabolic = (.0544 * Math.pow(distance * 39.3701, 2)) - (2.33 * distance * 39.3701) + 2605.55;			
 			shooterController.setSetpoint(speedParabolic, ControlType.kMAXMotionVelocityControl, ClosedLoopSlot.kSlot0);
 		});
 	}
@@ -166,6 +168,7 @@ public class FuelShooterSubsystem extends SubsystemBase {
 		//Telemetry
 		builder.addDoubleProperty("Shooter Power", () -> shooterMotor1.get(), null);
 		builder.addDoubleProperty("Shooter Voltage", () -> shooterMotor1.getAppliedOutput(), null);
+		builder.addDoubleProperty("Shooter Speed Parabolic", () -> speedParabolic, null);
 		builder.addDoubleProperty("Shooter Setpoint", () -> shooterController.getSetpoint(), null);
 		builder.addDoubleProperty("Shooter Position", () -> shooterMotor1.getEncoder().getPosition(), null);
 		builder.addDoubleProperty("Shooter Velocity", () -> shooterMotor1.getEncoder().getVelocity(), null);
