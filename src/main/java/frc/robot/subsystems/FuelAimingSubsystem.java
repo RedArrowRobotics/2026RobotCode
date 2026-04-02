@@ -166,6 +166,12 @@ public class FuelAimingSubsystem extends SubsystemBase {
 		});
 	}
 
+	public Command runTurretToDegree(double degree) {
+		return runOnce(() -> {
+			turretController.setSetpoint(degree * FuelAimingConstants.DEGREES_TO_ROTATIONS, ControlType.kMAXMotionPositionControl);
+		});
+	}
+
 	public Command manualHoodControlUp() {
 		return runEnd(() -> {
 			hoodRotator.set(FuelAimingConstants.HOOD_ROTATOR_MANUAL_POWER);
