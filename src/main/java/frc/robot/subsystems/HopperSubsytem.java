@@ -75,7 +75,7 @@ public class HopperSubsytem extends SubsystemBase {
 		return startEnd(() -> {
 			hopperExtender.set(HopperConstants.HOPPER_MANUAL_SPEED);
 		}, () -> {
-			hopperExtender.set(HopperConstants.HOPPER_MANUAL_SPEED);
+			hopperExtender.set(0.0);
 		});
 	}
 
@@ -83,7 +83,7 @@ public class HopperSubsytem extends SubsystemBase {
 		return startEnd(() -> {
 			hopperExtender.set(HopperConstants.HOPPER_MANUAL_SPEED * -1);
 		}, () -> {
-			hopperExtender.set(HopperConstants.HOPPER_MANUAL_SPEED * -1);
+			hopperExtender.set(0.0);
 		});
 	}
 
