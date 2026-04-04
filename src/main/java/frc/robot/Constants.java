@@ -58,6 +58,7 @@ public final class Constants {
         public static final int FUEL_SHOOTER_MOTOR_1_ID = 11;
         public static final int FUEL_SHOOTER_MOTOR_2_ID = 12;
         public static final int TURRET_ROTATOR = 13;
+        public static final int SPINNER_MOTOR_ID = 14;
         public static final int BELT_MOTOR_ID = 15;
         public static final int HOOD_ROTATOR = 17;
         public static final int CLIMBER_MOTOR_ID = 19;
@@ -118,9 +119,9 @@ public final class Constants {
         public static final double HOPPER_kS = 0.55954;
         public static final double HOPPER_kA = 0.012042;
         public static final Double HOPPER_kG = 0.15691;
-        public static final double HOPPER_MAX_VELOCITY = 75;
-        public static final double HOPPER_MAX_ACCELERATION = 100;
-        public static final double HOPPER_MAX_ERROR = 10;
+        public static final double HOPPER_MAX_VELOCITY = 300;
+        public static final double HOPPER_MAX_ACCELERATION = 300;
+        public static final double HOPPER_MAX_ERROR = 50;
         
         //Kicker Constants
         public static final double KICKER_kP = 0.00014281;
@@ -183,6 +184,7 @@ public final class Constants {
         public static final double BELT_SPEED = 1.0;
         public static final double KICK_SPEED = 0.5;
         public static final double KICK_RPM = 4000;
+        public static final double SPIN_SPEED = 0.5;
     }
     public final class ClimberConstants {
         public static final double CLIMBER_POWER = 0.8;

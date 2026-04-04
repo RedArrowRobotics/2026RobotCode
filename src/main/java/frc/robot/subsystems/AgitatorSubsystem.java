@@ -28,8 +28,9 @@ import frc.robot.Constants.DeviceConstants;
 import frc.robot.Constants.FeedforwardConstants;
 
 public class AgitatorSubsystem extends SubsystemBase {
-    private final SparkMax belt1 = new SparkMax(DeviceConstants.BELT_MOTOR_ID, MotorType.kBrushless);
+    private final SparkMax belt = new SparkMax(DeviceConstants.BELT_MOTOR_ID, MotorType.kBrushless);
     private final SparkMax kicker = new SparkMax(DeviceConstants.KICKER_MOTOR_ID, MotorType.kBrushless);
+    private final SparkMax spinner = new SparkMax(DeviceConstants.SPINNER_MOTOR_ID, MotorType.kBrushless);
     private final SparkMaxConfig kickerConfig = new SparkMaxConfig();
     private final SparkClosedLoopController kickerController = kicker.getClosedLoopController();
 
@@ -52,29 +53,33 @@ public class AgitatorSubsystem extends SubsystemBase {
 
     public Command agitateIn() {
         return startEnd(() -> {
-            belt1.set(AgitatorConstants.BELT_SPEED);
+            belt.set(AgitatorConstants.BELT_SPEED);
             kickerController.setSetpoint(AgitatorConstants.KICK_RPM, ControlType.kMAXMotionVelocityControl);
+            spinner.set(AgitatorConstants.SPIN_SPEED);
         }, () -> {
-            belt1.set(0.0);
+            belt.set(0.0);
             kickerController.setSetpoint(0.0, ControlType.kMAXMotionVelocityControl);
+            spinner.set(0.0);
         });
     }
 
     public Command beltsIn() {
         return startEnd(() -> {
-            belt1.set(AgitatorConstants.BELT_SPEED);
+            belt.set(AgitatorConstants.BELT_SPEED);
         }, () -> {
-            belt1.set(0.0);
+            belt.set(0.0);
         });
     }
 
     public Command agitateOut() {
         return startEnd(() -> {
-            belt1.set(AgitatorConstants.BELT_SPEED * -1);
+            belt.set(AgitatorConstants.BELT_SPEED * -1);
             kickerController.setSetpoint(AgitatorConstants.KICK_RPM * -1, ControlType.kMAXMotionVelocityControl);
+            spinner.set(AgitatorConstants.SPIN_SPEED * -1);
         }, () -> {
-            belt1.set(0.0);
+            belt.set(0.0);
             kickerController.setSetpoint(0.0, ControlType.kMAXMotionVelocityControl);
+            spinner.set(0.0);
         });
     }
 
