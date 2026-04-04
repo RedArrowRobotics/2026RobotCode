@@ -103,8 +103,8 @@ public class HopperSubsytem extends SubsystemBase {
 		private final MutLinearVelocity m_velocity = MetersPerSecond.mutable(0);
 
 		private final VelocityUnit<VoltageUnit> voltsPerSecond = Volts.per(Seconds);
-		private final Velocity<VoltageUnit> rampRate = voltsPerSecond.of(0.1);
-		private final Voltage dynamicVoltage = Volts.of(3.0);
+		private final Velocity<VoltageUnit> rampRate = voltsPerSecond.of(0.2);
+		private final Voltage dynamicVoltage = Volts.of(7.0);
 		private final Time runTime = Seconds.of(30.0);
 
 		// Creates a SysIdRoutine
