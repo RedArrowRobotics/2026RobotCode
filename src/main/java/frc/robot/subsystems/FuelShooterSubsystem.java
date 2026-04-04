@@ -48,6 +48,7 @@ public class FuelShooterSubsystem extends SubsystemBase {
     };
 
 	private double speedParabolic;
+	private double speedOffset = 0.0;
 	
     public final Optional<SysId> sysId;
 	
@@ -90,7 +91,19 @@ public class FuelShooterSubsystem extends SubsystemBase {
 			//39.3701 converts from inches to meters
 			double distance = hubPosition.getDistance(robotPose.get().getTranslation());
 			speedParabolic = (.0544 * Math.pow(distance * 39.3701, 2)) - (2.33 * distance * 39.3701) + 2605.55;			
-			shooterController.setSetpoint(speedParabolic, ControlType.kMAXMotionVelocityControl, ClosedLoopSlot.kSlot0);
+			shooterController.setSetpoint(speedParabolic + speedOffset, ControlType.kMAXMotionVelocityControl, ClosedLoopSlot.kSlot0);
+		});
+	}
+
+	public Command increaseOffset() {
+		return runOnce(() -> {
+			speedOffset += FuelShooterConstants.SHOOTER_OFFSET_SIZE;
+		});
+	}
+
+	public Command decreaseOffset() {
+		return runOnce(() -> {
+			speedOffset -= FuelShooterConstants.SHOOTER_OFFSET_SIZE;
 		});
 	}
 
@@ -176,6 +189,9 @@ public class FuelShooterSubsystem extends SubsystemBase {
 		builder.addDoubleProperty("Set Shooter Setpoint", () -> shooterController.getMAXMotionSetpointVelocity(), (speed) -> shooterController.setSetpoint(speed, ControlType.kMAXMotionVelocityControl));
 
         sysId.ifPresent(sysid -> sysid.configureSendables());
+
+		SmartDashboard.putData("Increase Shooter Offset", increaseOffset());
+		SmartDashboard.putData("Decrease Shooter Offset", decreaseOffset());
 
 		//Testing
 		SmartDashboard.putData("Shoot Fuel", shootFuel());

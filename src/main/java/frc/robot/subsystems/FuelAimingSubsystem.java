@@ -56,6 +56,7 @@ public class FuelAimingSubsystem extends SubsystemBase {
 	private double hoodEncoderPosition;
 	private boolean turretSetpointWithinRange;
 	private boolean hoodSetpointWithinRange;
+	private double turretOffset = 0.0;
 	
 	public final Optional<SysIdTurret> sysIdTurret;
     public final Optional<SysIdHood> sysIdHood;
@@ -210,7 +211,7 @@ public class FuelAimingSubsystem extends SubsystemBase {
 				turretSetpointWithinRange = true;
 			}
 			if(inAllianceZone && turretSetpointWithinRange) {
-				turretController.setSetpoint(degreeToHubRelativeToRobot * FuelAimingConstants.DEGREES_TO_ROTATIONS, ControlType.kMAXMotionPositionControl);
+				turretController.setSetpoint((degreeToHubRelativeToRobot + turretOffset) * FuelAimingConstants.DEGREES_TO_ROTATIONS, ControlType.kMAXMotionPositionControl);
 			} else {
 				turretRotator.set(0.0);
 			}
@@ -236,6 +237,18 @@ public class FuelAimingSubsystem extends SubsystemBase {
 			   } else {
 				//hoodController.setSetpoint(0.0, ControlType.kMAXMotionPositionControl);
 			   }
+		});
+	}
+
+	public Command increaseTurretOffset() {
+		return runOnce(() -> {
+			turretOffset += FuelAimingConstants.TURRET_OFFSET_SIZE;
+		});
+	}
+
+	public Command decreaseTurretOffset() {
+		return runOnce(() -> {
+			turretOffset -= FuelAimingConstants.TURRET_OFFSET_SIZE;
 		});
 	}
 
@@ -391,6 +404,9 @@ public class FuelAimingSubsystem extends SubsystemBase {
 		
 		sysIdTurret.ifPresent(sysid -> sysid.configureSendables());
 		sysIdHood.ifPresent(sysid -> sysid.configureSendables());
+
+		SmartDashboard.putData("Increase Turret Offset", increaseTurretOffset());
+		SmartDashboard.putData("Decrease Turret Offset", decreaseTurretOffset());
 
 		//Testing
 		SmartDashboard.putData("Manual Turret CW", manualTurretControlCW());
