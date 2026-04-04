@@ -11,7 +11,8 @@ import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 public class ControlInputs {
     // Joysticks
     public static final CommandJoystick driveController = new CommandJoystick(OperatorConstants.EMERGENCY_JANKY_FLIGHT_STICK);
-    public static final CommandGenericHID componentsBoard = new CommandGenericHID(OperatorConstants.COMPONENTS_BOARD_PORT);
+    public static final CommandGenericHID componentsBoard1 = new CommandGenericHID(OperatorConstants.COMPONENTS_BOARD_1_PORT);
+    public static final CommandGenericHID componentsBoard2 = new CommandGenericHID(OperatorConstants.COMPONENTS_BOARD_2_PORT);
 
     private static final Alert driveControllerAlert = new Alert("The drive joystick is not connected to the driver's station.", AlertType.kWarning);
     private static final Alert componentsBoardAlert = new Alert("The components control board is not connected to the driver's station.", AlertType.kWarning);
@@ -34,7 +35,7 @@ public class ControlInputs {
 
     public static void updateAlerts() {
         driveControllerAlert.set(!driveController.isConnected());
-        componentsBoardAlert.set(!componentsBoard.isConnected());
+        componentsBoardAlert.set(!componentsBoard1.isConnected());
     }
 
     //For later

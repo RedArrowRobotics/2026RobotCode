@@ -8,11 +8,13 @@ public final class Constants {
     
     public final class OperatorConstants {
         public static final int DRIVE_JOYSTICK_PORT = 0;
-        public static final int COMPONENTS_BOARD_PORT = 1;
-        public static final int EMERGENCY_JANKY_FLIGHT_STICK = 2;
+        public static final int COMPONENTS_BOARD_1_PORT = 1;
+        public static final int COMPONENTS_BOARD_2_PORT = 2;
+        public static final int EMERGENCY_JANKY_FLIGHT_STICK = 3;
     }
 
     public final class InputConstants {
+        //Board 1
         public static final int SHOOT_FUEL = 1;
         public static final int INTAKE_OUT = 2;
         public static final int INTAKE_IN = 3;
@@ -26,6 +28,8 @@ public final class Constants {
         public static final int MANUAL_TURRET_CW = 10;
         public static final int MANUAL_TURRET_CCW = 11;
         public static final int DRIVE_ORIENTATION_SWITCH = 12;
+
+        //Board 2
     }
 
     public final class AprilTagIDs {
