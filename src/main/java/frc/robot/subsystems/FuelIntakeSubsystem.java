@@ -1,6 +1,5 @@
 package frc.robot.subsystems;
 
-import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 

@@ -3,7 +3,6 @@ package frc.robot.subsystems;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.Seconds;
-import static edu.wpi.first.units.Units.Volt;
 import static edu.wpi.first.units.Units.Volts;
 
 import java.util.Optional;
@@ -14,10 +13,7 @@ import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkFlexConfig;
-import com.revrobotics.spark.config.SparkMaxConfig;
-
 import edu.wpi.first.units.VelocityUnit;
 import edu.wpi.first.units.VoltageUnit;
 import edu.wpi.first.units.measure.MutDistance;
@@ -32,12 +28,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Constants;
 import frc.robot.Constants.DeviceConstants;
 import frc.robot.Constants.FeedforwardConstants;
 import frc.robot.Constants.HopperConstants;
-import frc.robot.Constants.IntakeConstants;
 
 public class HopperSubsytem extends SubsystemBase {
 	private final SparkFlex hopperExtender = new SparkFlex(DeviceConstants.HOPPER_EXTENDER_MOTOR_ID, MotorType.kBrushless);

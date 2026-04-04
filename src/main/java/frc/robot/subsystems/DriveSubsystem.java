@@ -53,6 +53,7 @@ public class DriveSubsystem extends SubsystemBase {
     private SwerveDrive swerveDrive;
     private final Field2d field = new Field2d();
     private boolean trustPose = false;
+    @SuppressWarnings("unused")
     private boolean isPathRunning = false;
     private final LinearVelocity maximumSpeed = MetersPerSecond.of(3.31);
     public final Optional<SysId> sysId;
