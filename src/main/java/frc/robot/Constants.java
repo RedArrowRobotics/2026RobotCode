@@ -19,17 +19,18 @@ public final class Constants {
         public static final int INTAKE_OUT = 2;
         public static final int INTAKE_IN = 3;
         public static final int EXTEND_HOPPER = 4;
-        public static final int RETRACT_HOPPER = 13;
-        public static final int CLIMBER_DOWN = 5;
+        public static final int RETRACT_HOPPER = 5;
         public static final int CLIMBER_UP = 6;
-        public static final int MANUAL_SWITCH = 7;
-        public static final int MANUAL_HOOD_UP = 8;
-        public static final int MANUAL_HOOD_DOWN = 9;
-        public static final int MANUAL_TURRET_CW = 10;
-        public static final int MANUAL_TURRET_CCW = 11;
+        public static final int CLIMBER_DOWN = 7;
         public static final int DRIVE_ORIENTATION_SWITCH = 12;
 
         //Board 2
+        public static final int MANUAL_SWITCH = 1;
+        public static final int MANUAL_HOOD_UP = 2;
+        public static final int MANUAL_HOOD_DOWN = 3;
+        public static final int MANUAL_TURRET_CW = 4;
+        public static final int MANUAL_TURRET_CCW = 5;
+        
     }
 
     public final class AprilTagIDs {
