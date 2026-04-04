@@ -383,6 +383,7 @@ public class FuelAimingSubsystem extends SubsystemBase {
 		builder.addDoubleProperty("Turret Velocity", () -> turretRotator.getEncoder().getVelocity(), null);
 		builder.addBooleanProperty("Turret Setpoint Within Range", () -> turretSetpointWithinRange, null);
 		builder.addBooleanProperty("Turret At Setpoint", () -> hoodController.isAtSetpoint(), null);
+		builder.addDoubleProperty("Turret Offset", () -> turretOffset, null);
 		builder.addBooleanProperty("Limit Switch", () -> turretAimingLimitSwitch.get(), null);
 
 		builder.addDoubleProperty("Hood Encoder", () -> hoodRotator.getEncoder().getPosition(), null);
@@ -404,8 +405,8 @@ public class FuelAimingSubsystem extends SubsystemBase {
 		sysIdTurret.ifPresent(sysid -> sysid.configureSendables());
 		sysIdHood.ifPresent(sysid -> sysid.configureSendables());
 
-		SmartDashboard.putData("Increase Turret Offset", increaseTurretOffset());
-		SmartDashboard.putData("Decrease Turret Offset", decreaseTurretOffset());
+		SmartDashboard.putData("Turret Offset CCW", increaseTurretOffset());
+		SmartDashboard.putData("Turret Offset CW", decreaseTurretOffset());
 
 		//Testing
 		SmartDashboard.putData("Manual Turret CW", manualTurretControlCW());
