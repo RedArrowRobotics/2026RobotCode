@@ -48,7 +48,7 @@ public class FuelShooterSubsystem extends SubsystemBase {
     };
 
 	private double speedParabolic;
-	private double speedOffset = 0.0;
+	private double distanceOffset = 0.0;
 	
     public final Optional<SysId> sysId;
 	
@@ -90,20 +90,20 @@ public class FuelShooterSubsystem extends SubsystemBase {
 			//Min Distance: 30 in -> 1.359m     Max Distance: 241.7 in -> 6.139m
 			//39.3701 converts from inches to meters
 			double distance = hubPosition.getDistance(robotPose.get().getTranslation());
-			speedParabolic = (.0544 * Math.pow(distance * 39.3701, 2)) - (2.33 * distance * 39.3701) + 2605.55;			
-			shooterController.setSetpoint(speedParabolic + speedOffset, ControlType.kMAXMotionVelocityControl, ClosedLoopSlot.kSlot0);
+			speedParabolic = (.0544 * Math.pow((distance + distanceOffset) * 39.3701, 2)) - (2.33 * (distance + distanceOffset) * 39.3701) + 2605.55;			
+			shooterController.setSetpoint(speedParabolic, ControlType.kMAXMotionVelocityControl, ClosedLoopSlot.kSlot0);
 		});
 	}
 
 	public Command increaseOffset() {
 		return runOnce(() -> {
-			speedOffset += FuelShooterConstants.SHOOTER_OFFSET_SIZE;
+			distanceOffset += FuelShooterConstants.SHOOTER_OFFSET_SIZE;
 		});
 	}
 
 	public Command decreaseOffset() {
 		return runOnce(() -> {
-			speedOffset -= FuelShooterConstants.SHOOTER_OFFSET_SIZE;
+			distanceOffset -= FuelShooterConstants.SHOOTER_OFFSET_SIZE;
 		});
 	}
 

@@ -154,7 +154,7 @@ public final class Constants {
     public final class FuelShooterConstants {
         public static final double SHOOTER_RPM = 3250;
         public static final double STOPPED_SPEED = 0.000;
-        public static final double SHOOTER_OFFSET_SIZE = 50.0;
+        public static final double SHOOTER_OFFSET_SIZE = 0.1;
     }
 
     public final class FuelAimingConstants {
