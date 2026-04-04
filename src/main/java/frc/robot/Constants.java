@@ -186,7 +186,7 @@ public final class Constants {
         public static final double BELT_SPEED = 1.0;
         public static final double KICK_SPEED = 0.5;
         public static final double KICK_RPM = 4000;
-        public static final double SPIN_SPEED = 0.5;
+        public static final double SPIN_SPEED = 1.0;
     }
     public final class ClimberConstants {
         public static final double CLIMBER_POWER = 0.8;
