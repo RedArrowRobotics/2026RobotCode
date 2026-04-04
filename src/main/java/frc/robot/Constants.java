@@ -27,6 +27,28 @@ public final class Constants {
         public static final int DRIVE_ORIENTATION_SWITCH = 12;
     }
 
+    public final class DeviceConstants {
+        //Motor Controllers
+        public static final int KICKER_MOTOR_ID = 10;
+        public static final int FUEL_SHOOTER_MOTOR_1_ID = 11;
+        public static final int FUEL_SHOOTER_MOTOR_2_ID = 12;
+        public static final int TURRET_ROTATOR = 13;
+        public static final int SPINNER_MOTOR_ID = 14;
+        public static final int BELT_MOTOR_ID = 15;
+        public static final int HOOD_ROTATOR = 17;
+        public static final int CLIMBER_MOTOR_ID = 19;
+        public static final int INTAKE_MOTOR_ID = 23;
+        public static final int HOPPER_EXTENDER_MOTOR_ID = 24;
+
+        //Limelights
+        public static final String LIMELIGHT_FRONT = "limelight-front";
+        public static final String LIMELIGHT_BACK = "limelight-back";
+
+        //External Encoders/Sensors
+        public static final int CLIMBER_ENCODER_CHANNEL = 22;
+        public static final int TURRET_AIMMER_LIMIT_SWITCH_CHANNEL = 9;
+    }
+
     public final class AprilTagIDs {
         public static final int[] RED_HUB_IDS = {2,3,4,5,8,9,10,11};
         public static final int[] RED_TRENCH_IDS = {1,6,7,12};
@@ -50,28 +72,6 @@ public final class Constants {
         public static final Translation2d RED_ALLIANCE_TRENCH_OUTPOST = new Translation2d(11.900, 7.500);
         public static final Translation2d BLUE_ALLIANCE_TRENCH_DEPOT = new Translation2d(4.700, 7.500);
         public static final Translation2d BLUE_ALLIANCE_TRENCH_OUTPOST = new Translation2d(4.700, 0.650);
-    }
-
-    public final class DeviceConstants {
-        //Motor Controllers
-        public static final int KICKER_MOTOR_ID = 10;
-        public static final int FUEL_SHOOTER_MOTOR_1_ID = 11;
-        public static final int FUEL_SHOOTER_MOTOR_2_ID = 12;
-        public static final int TURRET_ROTATOR = 13;
-        public static final int SPINNER_MOTOR_ID = 14;
-        public static final int BELT_MOTOR_ID = 15;
-        public static final int HOOD_ROTATOR = 17;
-        public static final int CLIMBER_MOTOR_ID = 19;
-        public static final int INTAKE_MOTOR_ID = 23;
-        public static final int HOPPER_EXTENDER_MOTOR_ID = 24;
-
-        //Limelights
-        public static final String LIMELIGHT_FRONT = "limelight-front";
-        public static final String LIMELIGHT_BACK = "limelight-back";
-
-        //External Encoders/Sensors
-        public static final int CLIMBER_ENCODER_CHANNEL = 22;
-        public static final int TURRET_AIMMER_LIMIT_SWITCH_CHANNEL = 9;
     }
 
     public final class FeedforwardConstants {
@@ -147,14 +147,22 @@ public final class Constants {
         public static final double CLIMBER_MAX_ERROR = 1000;
     }
 
-    public final class DriveConstants {
-        public static final String SWERVE_CONFIG = "swerve";
+    public final class AgitatorConstants {
+        public static final double BELT_SPEED = 1.0;
+        public static final double KICK_SPEED = 0.5;
+        public static final double KICK_RPM = 4000;
+        public static final double SPIN_SPEED = 1.0;
+    }
+    
+    public final class ClimberConstants {
+        public static final double CLIMBER_POWER = 0.8;
+
+        public static final double CLIMBER_DOWN_POSITION = 0.0;
+        public static final double CLIMBER_UP_POSITION = 170.0;
     }
 
-    public final class FuelShooterConstants {
-        public static final double SHOOTER_RPM = 3250;
-        public static final double STOPPED_SPEED = 0.000;
-        public static final double SHOOTER_OFFSET_SIZE = 0.1;
+    public final class DriveConstants {
+        public static final String SWERVE_CONFIG = "swerve";
     }
 
     public final class FuelAimingConstants {
@@ -171,8 +179,10 @@ public final class Constants {
         public static final double HOOD_ROTATOR_MANUAL_POWER = 1.0;
     }
 
-    public final class IntakeConstants {
-        public static final double INTAKE_SPEED = 1.0;
+    public final class FuelShooterConstants {
+        public static final double SHOOTER_RPM = 3250;
+        public static final double STOPPED_SPEED = 0.000;
+        public static final double SHOOTER_OFFSET_SIZE = 0.1;
     }
 
     public final class HopperConstants {
@@ -182,17 +192,8 @@ public final class Constants {
         public static final double HOPPER_RETRACTED_POSITION = 0.0;
     }
 
-    public final class AgitatorConstants {
-        public static final double BELT_SPEED = 1.0;
-        public static final double KICK_SPEED = 0.5;
-        public static final double KICK_RPM = 4000;
-        public static final double SPIN_SPEED = 1.0;
-    }
-    public final class ClimberConstants {
-        public static final double CLIMBER_POWER = 0.8;
-
-        public static final double CLIMBER_DOWN_POSITION = 0.0;
-        public static final double CLIMBER_UP_POSITION = 170.0;
+    public final class IntakeConstants {
+        public static final double INTAKE_SPEED = 1.0;
     }
 }
     
