@@ -48,8 +48,12 @@ public class RobotContainer {
         ControlInputs.componentsBoard.button(InputConstants.SHOOT_FUEL).whileTrue(fuelShooter.shootFuelVarSpeed(() -> swerveDriveTrain.getPose()).alongWith(agitator.agitateIn()));
         ControlInputs.componentsBoard.button(InputConstants.INTAKE_OUT).whileFalse(fuelIntake.intakeFuelOut().alongWith(agitator.agitateOut()));
         ControlInputs.componentsBoard.button(InputConstants.INTAKE_IN).whileFalse(fuelIntake.intakeFuelIn());
-        ControlInputs.componentsBoard.button(InputConstants.EXTEND_HOPPER).whileTrue(hopper.extendHopper());
-        ControlInputs.componentsBoard.button(InputConstants.EXTEND_HOPPER).whileFalse(hopper.retractHopper());
+        ControlInputs.componentsBoard.button(InputConstants.EXTEND_HOPPER).multiPress(2, 0.75).onTrue(hopper.extendHopper());
+        ControlInputs.componentsBoard.button(InputConstants.EXTEND_HOPPER).whileTrue(hopper.extendHopperManual());
+        ControlInputs.componentsBoard.button(InputConstants.RETRACT_HOPPER).multiPress(2, 0.75).onTrue(hopper.retractHopper());
+        ControlInputs.componentsBoard.button(InputConstants.RETRACT_HOPPER).whileTrue(hopper.retractHopperManual());
+        //ControlInputs.componentsBoard.button(InputConstants.EXTEND_HOPPER).whileTrue(hopper.extendHopper());
+        //ControlInputs.componentsBoard.button(InputConstants.EXTEND_HOPPER).whileFalse(hopper.retractHopper());
         ControlInputs.componentsBoard.button(InputConstants.CLIMBER_DOWN).and(ControlInputs.componentsBoard.button(InputConstants.MANUAL_SWITCH)).whileTrue(climber.climberDownManual());
         //ControlInputs.componentsBoard.button(InputConstants.CLIMBER_DOWN).and(ControlInputs.componentsBoard.button(InputConstants.MANUAL_SWITCH).negate()).whileTrue(climber.climberDownPID());
         ControlInputs.componentsBoard.button(InputConstants.CLIMBER_UP).and(ControlInputs.componentsBoard.button(InputConstants.MANUAL_SWITCH)).whileTrue(climber.climberUpManual());

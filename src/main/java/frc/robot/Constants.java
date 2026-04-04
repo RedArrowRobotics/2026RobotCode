@@ -17,6 +17,7 @@ public final class Constants {
         public static final int INTAKE_OUT = 2;
         public static final int INTAKE_IN = 3;
         public static final int EXTEND_HOPPER = 4;
+        public static final int RETRACT_HOPPER = 13;
         public static final int CLIMBER_DOWN = 5;
         public static final int CLIMBER_UP = 6;
         public static final int MANUAL_SWITCH = 7;
