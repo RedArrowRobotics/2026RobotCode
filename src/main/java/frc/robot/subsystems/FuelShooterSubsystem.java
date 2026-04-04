@@ -85,13 +85,15 @@ public class FuelShooterSubsystem extends SubsystemBase {
 	}
 
 	public Command shootFuelVarSpeed(Supplier<Pose2d> robotPose) {
-		return run(() -> {
+		return runEnd(() -> {
 			//Do math to figure out optimal motor speed as a function of distance
 			//Min Distance: 30 in -> 1.359m     Max Distance: 241.7 in -> 6.139m
 			//39.3701 converts from inches to meters
 			double distance = hubPosition.getDistance(robotPose.get().getTranslation());
 			speedParabolic = (.0544 * Math.pow((distance + distanceOffset) * 39.3701, 2)) - (2.33 * (distance + distanceOffset) * 39.3701) + 2605.55;			
 			shooterController.setSetpoint(speedParabolic, ControlType.kMAXMotionVelocityControl, ClosedLoopSlot.kSlot0);
+		}, () -> {
+			shooterController.setSetpoint(0.0, ControlType.kMAXMotionVelocityControl);
 		});
 	}
 
