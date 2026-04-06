@@ -32,6 +32,7 @@ public class RobotContainer {
     
     public RobotContainer() throws IOException, Exception {
         swerveDriveTrain = new DriveSubsystem();
+        agitator.setDefaultCommand(agitator.dontBreakTheKicker());
 
         //If turret misbehaves
         fuelAiming.setDefaultCommand(fuelAiming.timeOut());
