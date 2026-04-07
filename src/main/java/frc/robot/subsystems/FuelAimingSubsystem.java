@@ -223,6 +223,7 @@ public class FuelAimingSubsystem extends SubsystemBase {
 			hoodEncoderPosition = 1.4 + 0.01052 * (distanceToHub - 241);
 			if(hoodEncoderPosition < 0) {
 				hoodEncoderPosition = 0;
+				hoodSetpointWithinRange = true;
 			} else if(hoodEncoderPosition > 2.0) {
 				hoodEncoderPosition = 2.0;
 				hoodSetpointWithinRange = false;
