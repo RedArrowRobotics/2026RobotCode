@@ -68,7 +68,7 @@ public class HopperSubsytem extends SubsystemBase {
 	public Command extendHopperManual() {
 		return runEnd(() -> {
 			if(hopperExtender.getEncoder().getPosition() < HopperConstants.HOPPER_EXTENDED_POSITION) {
-				hopperExtender.set(HopperConstants.HOPPER_MANUAL_SPEED);
+				hopperExtender.set(0.2 - (0.02857 * hopperExtender.getEncoder().getPosition()));
 			} else {
 				hopperExtender.set(0.0);
 			}
@@ -81,7 +81,7 @@ public class HopperSubsytem extends SubsystemBase {
 	public Command retractHopperManual() {
 		return runEnd(() -> {
 			if(hopperExtender.getEncoder().getPosition() > HopperConstants.HOPPER_RETRACTED_POSITION) {
-				hopperExtender.set(HopperConstants.HOPPER_MANUAL_SPEED * -1);
+				hopperExtender.set(-0.2 + (0.02857 * hopperExtender.getEncoder().getPosition()));
 			} else {
 				hopperExtender.set(0.0);
 			}
