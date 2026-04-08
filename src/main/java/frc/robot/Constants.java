@@ -124,7 +124,7 @@ public final class Constants {
         public static final double HOPPER_kS = 0.049637;
         public static final double HOPPER_kA = 0.00094535;
         public static final Double HOPPER_kG = 0.11061;
-        public static final double HOPPER_MAX_VELOCITY = 150;
+        public static final double HOPPER_MAX_VELOCITY = 1500;
         public static final double HOPPER_MAX_ACCELERATION = 3000;
         public static final double HOPPER_MAX_ERROR = 150;
         
