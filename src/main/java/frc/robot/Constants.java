@@ -120,13 +120,13 @@ public final class Constants {
         public static final double HOPPER_kP = 3.596;
         public static final double HOPPER_kI = 0.0;
         public static final double HOPPER_kD = 0.0;
-        public static final double HOPPER_kV = 0.025052;
-        public static final double HOPPER_kS = 0.55954;
-        public static final double HOPPER_kA = 0.012042;
-        public static final Double HOPPER_kG = 0.15691;
-        public static final double HOPPER_MAX_VELOCITY = 300;
-        public static final double HOPPER_MAX_ACCELERATION = 300;
-        public static final double HOPPER_MAX_ERROR = 50;
+        public static final double HOPPER_kV = 0.0034039;
+        public static final double HOPPER_kS = 0.049637;
+        public static final double HOPPER_kA = 0.00094535;
+        public static final Double HOPPER_kG = 0.11061;
+        public static final double HOPPER_MAX_VELOCITY = 150;
+        public static final double HOPPER_MAX_ACCELERATION = 3000;
+        public static final double HOPPER_MAX_ERROR = 150;
         
         //Kicker Constants
         public static final double KICKER_kP = 0.00014281;
@@ -193,7 +193,7 @@ public final class Constants {
     public final class HopperConstants {
         public static final double HOPPER_MANUAL_SPEED = 0.5;
 
-        public static final double HOPPER_EXTENDED_POSITION = 1.72;
+        public static final double HOPPER_EXTENDED_POSITION = 7.0;
         public static final double HOPPER_RETRACTED_POSITION = 0.0;
     }
 
