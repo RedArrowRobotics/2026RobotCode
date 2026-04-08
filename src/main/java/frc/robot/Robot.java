@@ -67,7 +67,7 @@ public class Robot extends TimedRobot {
     public void autonomousInit() {
         robotContainer.ifPresent(RobotContainer::resetGyro);
         // If we have an autonomous command selected, schedule it.
-        //autonomousCommand = robotContainer.flatMap(RobotContainer::getAutonomousCommand);
+        autonomousCommand = robotContainer.get().getAutonomousCommand();
         autonomousCommand.ifPresent(command -> CommandScheduler.getInstance().schedule(command));
     }
 
