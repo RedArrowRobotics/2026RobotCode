@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 
 public class ControlInputs {
     // Joysticks
-    public static final CommandJoystick driveController = new CommandJoystick(OperatorConstants.EMERGENCY_JANKY_FLIGHT_STICK);
+    public static final CommandJoystick driveController = new CommandJoystick(OperatorConstants.DRIVE_JOYSTICK_PORT);
     public static final CommandGenericHID componentsBoard1 = new CommandGenericHID(OperatorConstants.COMPONENTS_BOARD_1_PORT);
     public static final CommandGenericHID componentsBoard2 = new CommandGenericHID(OperatorConstants.COMPONENTS_BOARD_2_PORT);
 
