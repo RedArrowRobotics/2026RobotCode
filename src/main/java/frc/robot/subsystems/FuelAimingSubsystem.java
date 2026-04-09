@@ -17,6 +17,7 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.units.VelocityUnit;
 import edu.wpi.first.units.VoltageUnit;
@@ -29,6 +30,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -49,10 +51,13 @@ public class FuelAimingSubsystem extends SubsystemBase {
 	private DigitalInput turretAimingLimitSwitch = new DigitalInput(DeviceConstants.TURRET_AIMMER_LIMIT_SWITCH_CHANNEL);
 	private boolean turretSetZeroStart = false;
 
+	private Field2d field = new Field2d();
+
 	private boolean inAllianceZone;
 	private double distanceToHub;
 	private double thetaToHub;
 	private double degreeToHubRelativeToRobot;
+	private Pose2d turretHeading;
 	private double hoodEncoderPosition;
 	private boolean turretSetpointWithinRange;
 	private boolean hoodSetpointWithinRange;
@@ -212,6 +217,7 @@ public class FuelAimingSubsystem extends SubsystemBase {
 			}
 			if(inAllianceZone && turretSetpointWithinRange) {
 				turretController.setSetpoint((degreeToHubRelativeToRobot + turretOffset) * FuelAimingConstants.DEGREES_TO_ROTATIONS, ControlType.kMAXMotionPositionControl);
+				turretHeading = new Pose2d(robotPose.get().getX(), robotPose.get().getY(), Rotation2d.fromDegrees(degreeToHubRelativeToRobot));
 			} else {
 				turretRotator.set(0.0);
 			}
@@ -223,18 +229,19 @@ public class FuelAimingSubsystem extends SubsystemBase {
 			hoodEncoderPosition = 1.4 + 0.01052 * (distanceToHub - 241);
 			if(hoodEncoderPosition < 0) {
 				hoodEncoderPosition = 0;
+				hoodSetpointWithinRange = true;
 			} else if(hoodEncoderPosition > 2.0) {
 				hoodEncoderPosition = 2.0;
 				hoodSetpointWithinRange = false;
 			} else {
 				hoodSetpointWithinRange = true;
 			}
-			if(robotPose.get().getTranslation().getDistance(outpostTrench) - 0.6 > Math.abs(allianceZoneLine.getX() - outpostTrench.getX()) && inAllianceZone
+			if(robotPose.get().getTranslation().getDistance(outpostTrench) > Math.abs(allianceZoneLine.getX() - outpostTrench.getX()) && inAllianceZone
 				||
-			   robotPose.get().getTranslation().getDistance(depotTrench) - 0.6 > Math.abs(allianceZoneLine.getX() - depotTrench.getX()) && inAllianceZone) {
-				//hoodController.setSetpoint(hoodEncoderPosition, ControlType.kMAXMotionPositionControl);
+			   robotPose.get().getTranslation().getDistance(depotTrench) > Math.abs(allianceZoneLine.getX() - depotTrench.getX()) && inAllianceZone) {
+				hoodController.setSetpoint(hoodEncoderPosition, ControlType.kMAXMotionPositionControl);
 			   } else {
-				//hoodController.setSetpoint(0.0, ControlType.kMAXMotionPositionControl);
+				hoodController.setSetpoint(0.0, ControlType.kMAXMotionPositionControl);
 			   }
 		});
 	}

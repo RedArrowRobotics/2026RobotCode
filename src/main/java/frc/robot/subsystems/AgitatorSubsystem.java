@@ -33,6 +33,7 @@ public class AgitatorSubsystem extends SubsystemBase {
     private final SparkMax spinner = new SparkMax(DeviceConstants.SPINNER_MOTOR_ID, MotorType.kBrushless);
     private final SparkMaxConfig kickerConfig = new SparkMaxConfig();
     private final SparkClosedLoopController kickerController = kicker.getClosedLoopController();
+    private final MakeKickerWork codeMagic = new MakeKickerWork();
 
     public AgitatorSubsystem() {
         kickerConfig.closedLoop
@@ -51,15 +52,21 @@ public class AgitatorSubsystem extends SubsystemBase {
         kicker.configure(kickerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
 
+    public Command dontBreakTheKicker() {
+        return run(() -> {
+            codeMagic.work();
+        });
+    }
+
     public Command agitateIn() {
         return startEnd(() -> {
             //belt.set(AgitatorConstants.BELT_SPEED);
             kickerController.setSetpoint(AgitatorConstants.KICK_RPM, ControlType.kMAXMotionVelocityControl);
-            spinner.set(AgitatorConstants.SPIN_SPEED);
+            //spinner.set(AgitatorConstants.SPIN_SPEED);
         }, () -> {
             //belt.set(0.0);
             kickerController.setSetpoint(0.0, ControlType.kMAXMotionVelocityControl);
-            spinner.set(0.0);
+            //spinner.set(0.0);
         });
     }
 
