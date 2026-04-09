@@ -49,10 +49,8 @@ public class RobotContainer {
         ControlInputs.componentsBoard1.button(InputConstants.SHOOT_FUEL).whileTrue(fuelShooter.shootFuelVarSpeed(() -> swerveDriveTrain.getPose()).alongWith(agitator.agitateIn()));
         ControlInputs.componentsBoard1.button(InputConstants.INTAKE_OUT).whileFalse(fuelIntake.intakeFuelOut().alongWith(agitator.agitateOut()));
         ControlInputs.componentsBoard1.button(InputConstants.INTAKE_IN).whileFalse(fuelIntake.intakeFuelIn());
-        ControlInputs.componentsBoard1.button(InputConstants.EXTEND_HOPPER).debounce(0.75).onTrue(hopper.extendHopper());
-        ControlInputs.componentsBoard1.button(InputConstants.EXTEND_HOPPER).whileTrue(hopper.extendHopperManual());
-        ControlInputs.componentsBoard1.button(InputConstants.RETRACT_HOPPER).onTrue(hopper.retractHopper());
-        //ControlInputs.componentsBoard1.button(InputConstants.RETRACT_HOPPER).whileTrue(hopper.retractHopperManual());
+        ControlInputs.componentsBoard1.button(InputConstants.EXTEND_HOPPER).whileTrue(hopper.extendHopper());
+        ControlInputs.componentsBoard1.button(InputConstants.RETRACT_HOPPER).whileTrue(hopper.retractHopper(() -> agitator.spinner));
         ControlInputs.componentsBoard1.button(InputConstants.CLIMBER_DOWN).and(ControlInputs.componentsBoard2.button(InputConstants.MANUAL_SWITCH)).whileTrue(climber.climberDownManual());
         ControlInputs.componentsBoard1.button(InputConstants.CLIMBER_UP).and(ControlInputs.componentsBoard2.button(InputConstants.MANUAL_SWITCH)).whileTrue(climber.climberUpManual());
         ControlInputs.componentsBoard2.button(InputConstants.MANUAL_HOOD_UP).and(ControlInputs.componentsBoard2.button(InputConstants.MANUAL_SWITCH)).whileTrue(fuelAiming.manualHoodControlUp());
@@ -68,7 +66,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("Agitate Fuel", agitator.agitateIn().withTimeout(Seconds.of(5.0)));
         NamedCommands.registerCommand("Climber Up", climber.climberUpPID());
         NamedCommands.registerCommand("Climber Down", climber.climberDownPID());
-        NamedCommands.registerCommand("Hopper In", hopper.retractHopper());
+        NamedCommands.registerCommand("Hopper In", hopper.retractHopper(() -> agitator.spinner));
         NamedCommands.registerCommand("Hopper Out", hopper.extendHopper());
         NamedCommands.registerCommand("Intake Fuel", fuelIntake.intakeFuelIn());
         NamedCommands.registerCommand("'Barf' Fuel", fuelIntake.intakeFuelOut());

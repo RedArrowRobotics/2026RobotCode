@@ -30,7 +30,7 @@ import frc.robot.Constants.FeedforwardConstants;
 public class AgitatorSubsystem extends SubsystemBase {
     //private final SparkMax belt = new SparkMax(DeviceConstants.BELT_MOTOR_ID, MotorType.kBrushless);
     private final SparkMax kicker = new SparkMax(DeviceConstants.KICKER_MOTOR_ID, MotorType.kBrushless);
-    private final SparkMax spinner = new SparkMax(DeviceConstants.SPINNER_MOTOR_ID, MotorType.kBrushless);
+    public final SparkMax spinner = new SparkMax(DeviceConstants.SPINNER_MOTOR_ID, MotorType.kBrushless);
     private final SparkMaxConfig kickerConfig = new SparkMaxConfig();
     private final SparkClosedLoopController kickerController = kicker.getClosedLoopController();
     private final MakeKickerWork codeMagic = new MakeKickerWork();

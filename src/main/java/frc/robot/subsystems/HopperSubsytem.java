@@ -6,12 +6,14 @@ import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.units.Units.Volts;
 
 import java.util.Optional;
+import java.util.function.Supplier;
 
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
+import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import edu.wpi.first.units.VelocityUnit;
@@ -66,41 +68,20 @@ public class HopperSubsytem extends SubsystemBase {
 		hopperController.setSetpoint(0.0, ControlType.kMAXMotionPositionControl);
 	}
 
-	public Command extendHopperManual() {
-		return runEnd(() -> {
-			if(hopperExtender.getEncoder().getPosition() < HopperConstants.HOPPER_EXTENDED_POSITION) {
-				hopperExtender.set(0.1 - (0.0071428 * hopperExtender.getEncoder().getPosition()));
-			} else {
-				hopperExtender.set(0.0);
-			}
-		}, () -> {
-			hopperController.setSetpoint(hopperExtender.getEncoder().getPosition(), ControlType.kMAXMotionPositionControl);
-			hopperExtender.set(0.0);
-		});
-	}
-
-	public Command retractHopperManual() {
-		return runEnd(() -> {
-			if(hopperExtender.getEncoder().getPosition() > HopperConstants.HOPPER_RETRACTED_POSITION) {
-				hopperExtender.set(-0.15 + (0.0071428 * hopperExtender.getEncoder().getPosition()));
-			} else {
-				hopperExtender.set(0.0);
-			}
-		}, () -> {
-			hopperController.setSetpoint(hopperExtender.getEncoder().getPosition(), ControlType.kMAXMotionPositionControl);
-			hopperExtender.set(0.0);
-		});
-	}
-
 	public Command extendHopper() {
-		return runOnce(() -> {
-			hopperController.setSetpoint(HopperConstants.HOPPER_EXTENDED_POSITION, ControlType.kMAXMotionPositionControl);
+		return run(() -> {
+			if(hopperController.getSetpoint() < HopperConstants.HOPPER_RETRACTED_POSITION) {
+				hopperController.setSetpoint(hopperController.getSetpoint() + 0.01, ControlType.kMAXMotionPositionControl);
+			}
 		});
 	}
 
-	public Command retractHopper() {
-		return runOnce(() -> {
-			hopperController.setSetpoint(HopperConstants.HOPPER_RETRACTED_POSITION, ControlType.kMAXMotionPositionControl);
+	public Command retractHopper(Supplier<SparkMax> spinner) {
+		return run(() -> {
+			if(hopperController.getSetpoint() > HopperConstants.HOPPER_EXTENDED_POSITION) {
+				hopperController.setSetpoint(hopperController.getSetpoint() - 0.01, ControlType.kMAXMotionPositionControl);
+				spinner.get().set(0.2);
+			}
 		});
 	}
 
@@ -165,9 +146,7 @@ public class HopperSubsytem extends SubsystemBase {
 		sysId.ifPresent(sysid -> sysid.configureSendables());
 
 		//Testing
-		SmartDashboard.putData("Extend Hopper Manual", extendHopperManual());
-		SmartDashboard.putData("Retract Hopper Manual", retractHopperManual());
 		SmartDashboard.putData("Extend Hopper PIDF", extendHopper());
-		SmartDashboard.putData("Retract Hopper PIDF", retractHopper());
+		SmartDashboard.putData("Retract Hopper PIDF", retractHopper(() -> null));
 	}
 }
