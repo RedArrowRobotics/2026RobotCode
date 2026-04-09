@@ -4,8 +4,10 @@
   "holonomicMode": true,
   "pathFolders": [
     "Center SSC Paths",
-    "Life-Goal Paths",
     "Left SSC Paths",
+    "Life-Goal Paths",
+    "Lil' SS",
+    "Crash Course",
     "Right SSC Paths"
   ],
   "autoFolders": [],

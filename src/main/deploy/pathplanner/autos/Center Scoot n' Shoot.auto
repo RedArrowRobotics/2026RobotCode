@@ -28,12 +28,6 @@
           "data": {
             "commands": [
               {
-                "type": "named",
-                "data": {
-                  "name": "Aim Routine"
-                }
-              },
-              {
                 "type": "parallel",
                 "data": {
                   "commands": [

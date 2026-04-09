@@ -62,7 +62,7 @@ public class RobotContainer {
 
         NamedCommands.registerCommand("Zero Turret", fuelAiming.zeroTurret());
         NamedCommands.registerCommand("Aim Routine", fuelAiming.automaticAimRoutine(() -> swerveDriveTrain.getPose()).until(() -> fuelAiming.turretAtSetpoint()));
-        NamedCommands.registerCommand("Shoot Fuel Var Speed", fuelShooter.shootFuelVarSpeed(() -> swerveDriveTrain.getPose()).withTimeout(Seconds.of(8.0)));
+        NamedCommands.registerCommand("Shoot Fuel Var Speed", fuelShooter.shootFuelVarSpeed(() -> swerveDriveTrain.getPose()).withTimeout(Seconds.of(5.0)));
         NamedCommands.registerCommand("Agitate Fuel", agitator.agitateIn().withTimeout(Seconds.of(5.0)));
         NamedCommands.registerCommand("Climber Up", climber.climberUpPID());
         NamedCommands.registerCommand("Climber Down", climber.climberDownPID());
@@ -70,6 +70,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("Hopper Out", hopper.extendHopperFull());
         NamedCommands.registerCommand("Intake Fuel", fuelIntake.intakeFuelIn());
         NamedCommands.registerCommand("'Barf' Fuel", fuelIntake.intakeFuelOut());
+        NamedCommands.registerCommand("Brake Mode", swerveDriveTrain.brake());
     }
 
     /**

@@ -3,25 +3,41 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.6419743589743607,
-        "y": 4.011743589743591
+        "x": 3.7466282051282063,
+        "y": 7.360666666666666
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.641974358974358,
-        "y": 4.011743589743591
+        "x": 5.733768683323758,
+        "y": 7.2443278033829195
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.4,
-        "y": 4.011743589743591
+        "x": 7.456025641025644,
+        "y": 7.0350769230769234
       },
       "prevControl": {
-        "x": 3.4,
-        "y": 4.011743589743591
+        "x": 6.89517660903584,
+        "y": 7.617752834736435
+      },
+      "nextControl": {
+        "x": 7.963422258321652,
+        "y": 6.507933664030915
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 7.572307692307692,
+        "y": 4.279192307692308
+      },
+      "prevControl": {
+        "x": 7.49283952835081,
+        "y": 5.235165072299925
       },
       "nextControl": null,
       "isLocked": false,
@@ -45,7 +61,7 @@
     "rotation": 0.0
   },
   "reversed": false,
-  "folder": "Lil' SS",
+  "folder": "Crash Course",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 0.0
