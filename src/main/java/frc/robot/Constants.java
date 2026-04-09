@@ -188,7 +188,7 @@ public final class Constants {
     public final class HopperConstants {
         public static final double HOPPER_MANUAL_SPEED = 0.25;
 
-        public static final double HOPPER_EXTENDED_POSITION = 7.0;
+        public static final double HOPPER_EXTENDED_POSITION = 7.5;
         public static final double HOPPER_RETRACTED_POSITION = 0.0;
     }
 
