@@ -77,11 +77,13 @@ public class HopperSubsytem extends SubsystemBase {
 	}
 
 	public Command retractHopper(Supplier<SparkMax> spinner) {
-		return run(() -> {
+		return runEnd(() -> {
 			if(hopperController.getSetpoint() > HopperConstants.HOPPER_RETRACTED_POSITION) {
 				hopperController.setSetpoint(hopperController.getSetpoint() - 0.01, ControlType.kMAXMotionPositionControl);
 				spinner.get().set(0.2);
 			}
+		}, () -> {
+			spinner.get().set(0.0);
 		});
 	}
 
