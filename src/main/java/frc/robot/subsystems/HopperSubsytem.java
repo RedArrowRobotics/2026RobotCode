@@ -85,6 +85,21 @@ public class HopperSubsytem extends SubsystemBase {
 		});
 	}
 
+	public Command extendHopperFull() {
+		return runOnce(() -> {
+			hopperController.setSetpoint(HopperConstants.HOPPER_EXTENDED_POSITION, ControlType.kMAXMotionPositionControl);
+		});
+	}
+
+	public Command retractHopperFull(Supplier<SparkMax> spinner) {
+		return startEnd(() -> {
+			hopperController.setSetpoint(HopperConstants.HOPPER_RETRACTED_POSITION, ControlType.kMAXMotionPositionControl);
+			spinner.get().set(0.2);
+		}, () -> {
+			spinner.get().set(0.0);
+		});
+	}
+
 	public boolean hopperHome() {
 		return hopperController.getSetpoint() == HopperConstants.HOPPER_RETRACTED_POSITION && hopperController.isAtSetpoint();
 	}

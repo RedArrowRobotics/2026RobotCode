@@ -66,8 +66,8 @@ public class RobotContainer {
         NamedCommands.registerCommand("Agitate Fuel", agitator.agitateIn().withTimeout(Seconds.of(5.0)));
         NamedCommands.registerCommand("Climber Up", climber.climberUpPID());
         NamedCommands.registerCommand("Climber Down", climber.climberDownPID());
-        NamedCommands.registerCommand("Hopper In", hopper.retractHopper(() -> agitator.spinner));
-        NamedCommands.registerCommand("Hopper Out", hopper.extendHopper());
+        NamedCommands.registerCommand("Hopper In", hopper.retractHopperFull(() -> agitator.spinner).withTimeout(1.5));
+        NamedCommands.registerCommand("Hopper Out", hopper.extendHopperFull());
         NamedCommands.registerCommand("Intake Fuel", fuelIntake.intakeFuelIn());
         NamedCommands.registerCommand("'Barf' Fuel", fuelIntake.intakeFuelOut());
     }
