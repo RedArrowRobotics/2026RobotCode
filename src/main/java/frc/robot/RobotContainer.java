@@ -50,8 +50,8 @@ public class RobotContainer {
         ControlInputs.componentsBoard1.button(InputConstants.INTAKE_IN).whileFalse(fuelIntake.intakeFuelIn());
         ControlInputs.componentsBoard1.button(InputConstants.EXTEND_HOPPER).debounce(0.75).onTrue(hopper.extendHopper());
         ControlInputs.componentsBoard1.button(InputConstants.EXTEND_HOPPER).whileTrue(hopper.extendHopperManual());
-        ControlInputs.componentsBoard1.button(InputConstants.RETRACT_HOPPER).debounce(0.75).onTrue(hopper.retractHopper());
-        ControlInputs.componentsBoard1.button(InputConstants.RETRACT_HOPPER).whileTrue(hopper.retractHopperManual());
+        ControlInputs.componentsBoard1.button(InputConstants.RETRACT_HOPPER).onTrue(hopper.retractHopper());
+        //ControlInputs.componentsBoard1.button(InputConstants.RETRACT_HOPPER).whileTrue(hopper.retractHopperManual());
         ControlInputs.componentsBoard1.button(InputConstants.CLIMBER_DOWN).and(ControlInputs.componentsBoard2.button(InputConstants.MANUAL_SWITCH)).whileTrue(climber.climberDownManual());
         ControlInputs.componentsBoard1.button(InputConstants.CLIMBER_UP).and(ControlInputs.componentsBoard2.button(InputConstants.MANUAL_SWITCH)).whileTrue(climber.climberUpManual());
         ControlInputs.componentsBoard2.button(InputConstants.MANUAL_HOOD_UP).and(ControlInputs.componentsBoard2.button(InputConstants.MANUAL_SWITCH)).whileTrue(fuelAiming.manualHoodControlUp());

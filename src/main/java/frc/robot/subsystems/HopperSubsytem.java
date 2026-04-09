@@ -60,6 +60,7 @@ public class HopperSubsytem extends SubsystemBase {
 		.maxAcceleration(FeedforwardConstants.HOPPER_MAX_ACCELERATION)
 		.allowedProfileError(FeedforwardConstants.HOPPER_MAX_ERROR);
 
+		hopperConfig.smartCurrentLimit(30);
 		hopperExtender.configure(hopperConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
 		hopperController.setSetpoint(0.0, ControlType.kMAXMotionPositionControl);
