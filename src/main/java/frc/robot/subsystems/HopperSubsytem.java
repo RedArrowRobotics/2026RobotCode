@@ -60,23 +60,34 @@ public class HopperSubsytem extends SubsystemBase {
 		.maxAcceleration(FeedforwardConstants.HOPPER_MAX_ACCELERATION)
 		.allowedProfileError(FeedforwardConstants.HOPPER_MAX_ERROR);
 
+		hopperConfig.smartCurrentLimit(30);
 		hopperExtender.configure(hopperConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
 		hopperController.setSetpoint(0.0, ControlType.kMAXMotionPositionControl);
 	}
 
 	public Command extendHopperManual() {
-		return startEnd(() -> {
-			hopperExtender.set(HopperConstants.HOPPER_MANUAL_SPEED);
+		return runEnd(() -> {
+			if(hopperExtender.getEncoder().getPosition() < HopperConstants.HOPPER_EXTENDED_POSITION) {
+				hopperExtender.set(0.1 - (0.0071428 * hopperExtender.getEncoder().getPosition()));
+			} else {
+				hopperExtender.set(0.0);
+			}
 		}, () -> {
+			hopperController.setSetpoint(hopperExtender.getEncoder().getPosition(), ControlType.kMAXMotionPositionControl);
 			hopperExtender.set(0.0);
 		});
 	}
 
 	public Command retractHopperManual() {
-		return startEnd(() -> {
-			hopperExtender.set(HopperConstants.HOPPER_MANUAL_SPEED * -1);
+		return runEnd(() -> {
+			if(hopperExtender.getEncoder().getPosition() > HopperConstants.HOPPER_RETRACTED_POSITION) {
+				hopperExtender.set(-0.15 + (0.0071428 * hopperExtender.getEncoder().getPosition()));
+			} else {
+				hopperExtender.set(0.0);
+			}
 		}, () -> {
+			hopperController.setSetpoint(hopperExtender.getEncoder().getPosition(), ControlType.kMAXMotionPositionControl);
 			hopperExtender.set(0.0);
 		});
 	}

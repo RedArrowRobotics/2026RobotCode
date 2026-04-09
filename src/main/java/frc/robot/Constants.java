@@ -8,23 +8,50 @@ public final class Constants {
     
     public final class OperatorConstants {
         public static final int DRIVE_JOYSTICK_PORT = 0;
-        public static final int COMPONENTS_BOARD_PORT = 1;
-        public static final int EMERGENCY_JANKY_FLIGHT_STICK = 2;
+        public static final int COMPONENTS_BOARD_1_PORT = 1;
+        public static final int COMPONENTS_BOARD_2_PORT = 2;
+        public static final int EMERGENCY_JANKY_FLIGHT_STICK = 3;
     }
 
     public final class InputConstants {
+        //Board 1
         public static final int SHOOT_FUEL = 1;
         public static final int INTAKE_OUT = 2;
         public static final int INTAKE_IN = 3;
         public static final int EXTEND_HOPPER = 4;
-        public static final int CLIMBER_DOWN = 5;
+        public static final int RETRACT_HOPPER = 5;
         public static final int CLIMBER_UP = 6;
-        public static final int MANUAL_SWITCH = 7;
-        public static final int MANUAL_HOOD_UP = 8;
-        public static final int MANUAL_HOOD_DOWN = 9;
-        public static final int MANUAL_TURRET_CW = 10;
-        public static final int MANUAL_TURRET_CCW = 11;
+        public static final int CLIMBER_DOWN = 7;
         public static final int DRIVE_ORIENTATION_SWITCH = 12;
+
+        //Board 2
+        public static final int MANUAL_SWITCH = 1;
+        public static final int MANUAL_HOOD_UP = 2;
+        public static final int MANUAL_HOOD_DOWN = 3;
+        public static final int MANUAL_TURRET_CW = 4;
+        public static final int MANUAL_TURRET_CCW = 5;
+    }
+
+    public final class DeviceConstants {
+        //Motor Controllers
+        public static final int KICKER_MOTOR_ID = 10;
+        public static final int FUEL_SHOOTER_MOTOR_1_ID = 11;
+        public static final int FUEL_SHOOTER_MOTOR_2_ID = 12;
+        public static final int TURRET_ROTATOR = 13;
+        public static final int SPINNER_MOTOR_ID = 14;
+        public static final int BELT_MOTOR_ID = 15;
+        public static final int HOOD_ROTATOR = 17;
+        public static final int CLIMBER_MOTOR_ID = 19;
+        public static final int INTAKE_MOTOR_ID = 23;
+        public static final int HOPPER_EXTENDER_MOTOR_ID = 24;
+
+        //Limelights
+        public static final String LIMELIGHT_FRONT = "limelight-front";
+        public static final String LIMELIGHT_BACK = "limelight-back";
+
+        //External Encoders/Sensors
+        public static final int CLIMBER_ENCODER_CHANNEL = 22;
+        public static final int TURRET_AIMMER_LIMIT_SWITCH_CHANNEL = 9;
     }
 
     public final class DeviceConstants {
@@ -153,6 +180,9 @@ public final class Constants {
         public static final double KICK_RPM = 4000;
         public static final double SPIN_SPEED = 1.0;
     }
+    
+    public final class ClimberConstants {
+        public static final double CLIMBER_POWER = 0.8;
 
     public final class ClimberConstants {
         public static final double CLIMBER_POWER = 0.8;
