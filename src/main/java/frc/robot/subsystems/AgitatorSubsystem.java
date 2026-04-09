@@ -60,10 +60,10 @@ public class AgitatorSubsystem extends SubsystemBase {
     public Command agitateIn() {
         return startEnd(() -> {
             kickerController.setSetpoint(AgitatorConstants.KICK_RPM, ControlType.kMAXMotionVelocityControl);
-            //spinner.set(AgitatorConstants.SPIN_SPEED);
+            spinner.set(AgitatorConstants.SPIN_SPEED);
         }, () -> {
             kickerController.setSetpoint(0.0, ControlType.kMAXMotionVelocityControl);
-            //spinner.set(0.0);
+            spinner.set(0.0);
         });
     }
 

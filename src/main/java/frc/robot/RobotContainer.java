@@ -36,7 +36,7 @@ public class RobotContainer {
         agitator.setDefaultCommand(agitator.dontBreakTheKicker());
 
         //If turret misbehaves
-        fuelAiming.setDefaultCommand(fuelAiming.timeOut());
+        fuelAiming.setDefaultCommand(fuelAiming.telemetry(() -> swerveDriveTrain.getPose()));
 
         configureBindings();
 

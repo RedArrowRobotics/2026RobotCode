@@ -42,8 +42,8 @@ import frc.robot.Constants.FieldPoses;
 import frc.robot.Constants.FuelAimingConstants;
 
 public class FuelAimingSubsystem extends SubsystemBase {
-	private final SparkMax turretRotator = new SparkMax(DeviceConstants.TURRET_ROTATOR, MotorType.kBrushless);
-	private final SparkMax hoodRotator = new SparkMax(DeviceConstants.HOOD_ROTATOR, MotorType.kBrushed);
+	private final SparkMax turretRotator = new SparkMax(DeviceConstants.TURRET_ROTATOR_MOTOR_ID, MotorType.kBrushless);
+	private final SparkMax hoodRotator = new SparkMax(DeviceConstants.HOOD_ROTATOR_MOTOR_ID, MotorType.kBrushed);
 	private final SparkMaxConfig turretConfig = new SparkMaxConfig();
 	private final SparkMaxConfig hoodConfig = new SparkMaxConfig();
 	private final SparkClosedLoopController turretController = turretRotator.getClosedLoopController();
@@ -193,6 +193,19 @@ public class FuelAimingSubsystem extends SubsystemBase {
 		}, () -> {
 			hoodController.setSetpoint(hoodRotator.getEncoder().getPosition(), ControlType.kMAXMotionPositionControl); 
 			hoodRotator.set(0.0);
+		});
+	}
+
+	public Command telemetry(Supplier<Pose2d> robotPose) {
+		return run(() -> {
+			inAllianceZone = switch(DriverStation.getAlliance().orElse(Alliance.Red)) {
+				case Blue -> robotPose.get().getX() < allianceZoneLine.getX();
+				case Red -> robotPose.get().getX() > allianceZoneLine.getX();
+			};
+			thetaToHub = Math.atan((hubPosition.getY() - robotPose.get().getY()) /
+								   (hubPosition.getX() - robotPose.get().getX()));
+			degreeToHubRelativeToRobot = (thetaToHub * (180/Math.PI)) - robotPose.get().getRotation().getDegrees();
+			distanceToHub = hubPosition.getDistance(robotPose.get().getTranslation());
 		});
 	}
 

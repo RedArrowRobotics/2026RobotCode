@@ -71,7 +71,9 @@ public class HopperSubsytem extends SubsystemBase {
 	public Command extendHopper() {
 		return run(() -> {
 			if(hopperController.getSetpoint() < HopperConstants.HOPPER_EXTENDED_POSITION) {
-				hopperController.setSetpoint(hopperController.getSetpoint() + 0.01, ControlType.kMAXMotionPositionControl);
+				hopperController.setSetpoint(hopperController.getSetpoint() + 0.3, ControlType.kMAXMotionPositionControl);
+			} else if(hopperController.getSetpoint() >= HopperConstants.HOPPER_EXTENDED_POSITION) {
+				hopperController.setSetpoint(HopperConstants.HOPPER_EXTENDED_POSITION, ControlType.kMAXMotionPositionControl);
 			}
 		});
 	}
@@ -79,8 +81,10 @@ public class HopperSubsytem extends SubsystemBase {
 	public Command retractHopper(Supplier<SparkMax> spinner) {
 		return runEnd(() -> {
 			if(hopperController.getSetpoint() > HopperConstants.HOPPER_RETRACTED_POSITION) {
-				hopperController.setSetpoint(hopperController.getSetpoint() - 0.01, ControlType.kMAXMotionPositionControl);
-				spinner.get().set(0.2);
+				hopperController.setSetpoint(hopperController.getSetpoint() - 0.3, ControlType.kMAXMotionPositionControl);
+				spinner.get().set(0.1);
+			} else if(hopperController.getSetpoint() <= HopperConstants.HOPPER_RETRACTED_POSITION) {
+				hopperController.setSetpoint(HopperConstants.HOPPER_RETRACTED_POSITION, ControlType.kMAXMotionPositionControl);
 			}
 		}, () -> {
 			spinner.get().set(0.0);
@@ -96,7 +100,7 @@ public class HopperSubsytem extends SubsystemBase {
 	public Command retractHopperFull(Supplier<SparkMax> spinner) {
 		return startEnd(() -> {
 			hopperController.setSetpoint(HopperConstants.HOPPER_RETRACTED_POSITION, ControlType.kMAXMotionPositionControl);
-			spinner.get().set(0.2);
+			spinner.get().set(0.1);
 		}, () -> {
 			spinner.get().set(0.0);
 		});

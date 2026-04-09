@@ -37,9 +37,9 @@ public final class Constants {
         public static final int KICKER_MOTOR_ID = 10;
         public static final int FUEL_SHOOTER_MOTOR_1_ID = 11;
         public static final int FUEL_SHOOTER_MOTOR_2_ID = 12;
-        public static final int TURRET_ROTATOR = 13;
+        public static final int TURRET_ROTATOR_MOTOR_ID = 13;
         public static final int SPINNER_MOTOR_ID = 14;
-        public static final int HOOD_ROTATOR = 17;
+        public static final int HOOD_ROTATOR_MOTOR_ID = 17;
         public static final int CLIMBER_MOTOR_ID = 19;
         public static final int INTAKE_MOTOR_ID = 23;
         public static final int HOPPER_EXTENDER_MOTOR_ID = 24;
