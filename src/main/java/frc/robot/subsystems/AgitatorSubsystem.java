@@ -77,7 +77,7 @@ public class AgitatorSubsystem extends SubsystemBase {
         });
     }
 
-     // Mutable holder for unit-safe voltage values, persisted to avoid reallocation.
+    // Mutable holder for unit-safe voltage values, persisted to avoid reallocation.
     private final MutVoltage m_appliedVoltage = Volts.mutable(0);
     // Mutable holder for unit-safe linear distance values, persisted to avoid reallocation.
     private final MutAngle m_distance = Rotations.mutable(0);
