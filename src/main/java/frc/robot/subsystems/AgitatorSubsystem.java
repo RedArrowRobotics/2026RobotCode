@@ -31,6 +31,7 @@ public class AgitatorSubsystem extends SubsystemBase {
     private final SparkMax kicker = new SparkMax(DeviceConstants.KICKER_MOTOR_ID, MotorType.kBrushless);
     public final SparkMax spinner = new SparkMax(DeviceConstants.SPINNER_MOTOR_ID, MotorType.kBrushless);
     private final SparkMaxConfig kickerConfig = new SparkMaxConfig();
+    private final SparkMaxConfig spinnerConfig = new SparkMaxConfig();
     private final SparkClosedLoopController kickerController = kicker.getClosedLoopController();
     private final MakeKickerWork codeMagic = new MakeKickerWork();
 
@@ -49,6 +50,10 @@ public class AgitatorSubsystem extends SubsystemBase {
         .allowedProfileError(FeedforwardConstants.HOOD_ROTATOR_MAX_ERROR);
 
         kicker.configure(kickerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+        spinnerConfig.smartCurrentLimit(40);
+
+        spinner.configure(kickerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
 
     public Command dontBreakTheKicker() {

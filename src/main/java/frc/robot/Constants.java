@@ -43,6 +43,7 @@ public final class Constants {
         public static final int CLIMBER_MOTOR_ID = 19;
         public static final int INTAKE_MOTOR_ID = 23;
         public static final int HOPPER_EXTENDER_MOTOR_ID = 24;
+        public static final int HOPPER_EXTENDER_NEW_MOTOR_ID = 25;
 
         //Limelights
         public static final String LIMELIGHT_FRONT = "limelight-front";
@@ -94,13 +95,13 @@ public final class Constants {
         public static final double SHOOTER_MAX_ERROR = 50.0;
 
         //Turret Constants
-        public static final double TURRET_ROTATOR_kP = 0.45558;
+        public static final double TURRET_ROTATOR_kP = 0.1;
         public static final double TURRET_ROTATOR_kI = 0.0;
         public static final double TURRET_ROTATOR_kD = 0.0080607;
         public static final double TURRET_ROTATOR_kV = 0.001059;
         public static final double TURRET_ROTATOR_kS = 0.23111;
         public static final double TURRET_ROTATOR_kA = 8.407E-05;
-        public static final double TURRET_ROTATOR_MAX_VELOCITY = 8000; //RPM
+        public static final double TURRET_ROTATOR_MAX_VELOCITY = 3000; //RPM
         public static final double TURRET_ROTATOR_MAX_ACCELERATION = 12000; //RPM/s
         public static final double TURRET_ROTATOR_MAX_ERROR = 100; //RPM
 
@@ -116,15 +117,15 @@ public final class Constants {
         public static final double HOOD_ROTATOR_MAX_ERROR = 84.241;
 
         //Hopper Constants
-        public static final double HOPPER_kP = 3.596;
+        public static final double HOPPER_kP = 2.0751;
         public static final double HOPPER_kI = 0.0;
-        public static final double HOPPER_kD = 0.0;
-        public static final double HOPPER_kV = 0.0034039;
-        public static final double HOPPER_kS = 0.049637;
-        public static final double HOPPER_kA = 0.00094535;
-        public static final Double HOPPER_kG = 0.11061;
-        public static final double HOPPER_MAX_VELOCITY = 1500;
-        public static final double HOPPER_MAX_ACCELERATION = 3000;
+        public static final double HOPPER_kD = 0.020145;
+        public static final double HOPPER_kV = 0.0020938;
+        public static final double HOPPER_kS = 0.084491;
+        public static final double HOPPER_kA = 0.00024058;
+        public static final Double HOPPER_kG = 0.015774;
+        public static final double HOPPER_MAX_VELOCITY = 5000;
+        public static final double HOPPER_MAX_ACCELERATION = 6000;
         public static final double HOPPER_MAX_ERROR = 150;
         
         //Kicker Constants
@@ -190,9 +191,9 @@ public final class Constants {
     }
 
     public final class HopperConstants {
-        public static final double HOPPER_MANUAL_SPEED = 0.25;
+        public static final double HOPPER_MANUAL_SPEED = 0.1;
 
-        public static final double HOPPER_EXTENDED_POSITION = 7.5;
+        public static final double HOPPER_EXTENDED_POSITION = 100;
         public static final double HOPPER_RETRACTED_POSITION = 0.0;
     }
 

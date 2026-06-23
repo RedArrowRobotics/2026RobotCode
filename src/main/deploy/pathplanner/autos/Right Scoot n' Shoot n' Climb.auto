@@ -97,6 +97,6 @@
     }
   },
   "resetOdom": true,
-  "folder": null,
+  "folder": "SSC",
   "choreoAuto": false
 }

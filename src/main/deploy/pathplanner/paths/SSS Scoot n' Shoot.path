@@ -3,41 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.7466282051282063,
-        "y": 7.360666666666666
+        "x": 3.549,
+        "y": 4.0
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.733768683323758,
-        "y": 7.2443278033829195
+        "x": 2.5490000000000004,
+        "y": 4.0
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 7.456025641025644,
-        "y": 7.0350769230769234
+        "x": 2.0,
+        "y": 4.0
       },
       "prevControl": {
-        "x": 6.89517660903584,
-        "y": 7.617752834736435
-      },
-      "nextControl": {
-        "x": 7.963422258321652,
-        "y": 6.507933664030915
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 7.572307692307692,
-        "y": 4.279192307692308
-      },
-      "prevControl": {
-        "x": 7.49283952835081,
-        "y": 5.235165072299925
+        "x": 3.0,
+        "y": 4.0
       },
       "nextControl": null,
       "isLocked": false,
@@ -61,7 +45,7 @@
     "rotation": 0.0
   },
   "reversed": false,
-  "folder": "Crash Course",
+  "folder": "SSS",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 0.0

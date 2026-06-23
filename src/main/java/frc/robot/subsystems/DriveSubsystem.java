@@ -132,6 +132,7 @@ public class DriveSubsystem extends SubsystemBase {
                 power.dy /= 2;
                 power.dtheta /= 2;
             }
+            updatePosition();
             manualDrive(power, orientation);
         });
     }
@@ -207,7 +208,7 @@ public class DriveSubsystem extends SubsystemBase {
         if (LimelightHelpers.getTV(Constants.DeviceConstants.LIMELIGHT_BACK) == true) {
             // Add vision measurement
             LimelightHelpers.PoseEstimate poseEstimate = LimelightHelpers
-                    .getBotPoseEstimate_wpiBlue_MegaTag2(Constants.DeviceConstants.LIMELIGHT_BACK);
+                    .getBotPoseEstimate_wpiBlue(Constants.DeviceConstants.LIMELIGHT_BACK);
             limelightBackDistance = NetworkTableInstance.getDefault().getTable(Constants.DeviceConstants.LIMELIGHT_BACK).getEntry("botpose").getDoubleArray(new double[11])[9];
             limelightBackDeviaiton = Math.max(0.1, 0.2 * limelightBackDistance - 0.1);
             swerveDrive.setVisionMeasurementStdDevs(VecBuilder.fill(limelightBackDeviaiton, limelightBackDeviaiton, 9999999.0));
@@ -221,7 +222,7 @@ public class DriveSubsystem extends SubsystemBase {
         if (LimelightHelpers.getTV(Constants.DeviceConstants.LIMELIGHT_FRONT) == true) {
             // Add vision measurement
             LimelightHelpers.PoseEstimate poseEstimate = LimelightHelpers
-                    .getBotPoseEstimate_wpiBlue_MegaTag2(Constants.DeviceConstants.LIMELIGHT_FRONT);
+                    .getBotPoseEstimate_wpiBlue(Constants.DeviceConstants.LIMELIGHT_FRONT);
             limelightFrontDistance = NetworkTableInstance.getDefault().getTable(Constants.DeviceConstants.LIMELIGHT_FRONT).getEntry("botpose").getDoubleArray(new double[11])[9];
             limelightFrontDeviaiton = Math.max(0.1, 0.2 * limelightFrontDistance - 0.1);
             swerveDrive.setVisionMeasurementStdDevs(VecBuilder.fill(limelightFrontDeviaiton, limelightFrontDeviaiton, 9999999.0));

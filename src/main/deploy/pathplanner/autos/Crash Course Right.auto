@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Crash Course"
+            "pathName": "Crash Course Right"
           }
         },
         {
@@ -20,6 +20,6 @@
     }
   },
   "resetOdom": true,
-  "folder": null,
+  "folder": "Special",
   "choreoAuto": false
 }

@@ -5,51 +5,25 @@
     "data": {
       "commands": [
         {
+          "type": "path",
+          "data": {
+            "pathName": "SSS Scoot n' Shoot"
+          }
+        },
+        {
           "type": "parallel",
           "data": {
             "commands": [
               {
                 "type": "named",
                 "data": {
-                  "name": "Zero Turret"
+                  "name": "Shoot Fuel Var Speed"
                 }
               },
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "Center Leave"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "sequential",
-          "data": {
-            "commands": [
               {
                 "type": "named",
                 "data": {
-                  "name": "Aim Routine"
-                }
-              },
-              {
-                "type": "parallel",
-                "data": {
-                  "commands": [
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "Agitate Fuel"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "Shoot Fuel Var Speed"
-                      }
-                    }
-                  ]
+                  "name": "Agitate Fuel"
                 }
               }
             ]
@@ -62,26 +36,63 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Center Shoot to Climb"
+                  "pathName": "SSS Scoot n' Suck"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "Climber Up"
+                  "name": "Hopper Out"
                 }
               }
             ]
           }
         },
         {
-          "type": "sequential",
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "SSS Suck"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake Fuel"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Stop Intake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "SSS Return"
+          }
+        },
+        {
+          "type": "parallel",
           "data": {
             "commands": [
               {
                 "type": "named",
                 "data": {
-                  "name": "Climber Down"
+                  "name": "Shoot Fuel Var Speed"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Agitate Fuel"
                 }
               }
             ]
@@ -91,6 +102,6 @@
     }
   },
   "resetOdom": true,
-  "folder": "SSC",
+  "folder": "SSS",
   "choreoAuto": false
 }

@@ -16,6 +16,8 @@ import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkFlexConfig;
+import com.revrobotics.spark.config.SparkMaxConfig;
+
 import edu.wpi.first.units.VelocityUnit;
 import edu.wpi.first.units.VoltageUnit;
 import edu.wpi.first.units.measure.MutDistance;
@@ -36,9 +38,9 @@ import frc.robot.Constants.FeedforwardConstants;
 import frc.robot.Constants.HopperConstants;
 
 public class HopperSubsytem extends SubsystemBase {
-	private final SparkFlex hopperExtender = new SparkFlex(DeviceConstants.HOPPER_EXTENDER_MOTOR_ID, MotorType.kBrushless);
+	private final SparkMax hopperExtender = new SparkMax(DeviceConstants.HOPPER_EXTENDER_NEW_MOTOR_ID, MotorType.kBrushless);
 	private final SparkClosedLoopController hopperController = hopperExtender.getClosedLoopController();
-	private final SparkFlexConfig hopperConfig = new SparkFlexConfig();
+	private final SparkMaxConfig hopperConfig = new SparkMaxConfig();
 
 	public final Optional<SysId> sysId;
 
@@ -106,6 +108,30 @@ public class HopperSubsytem extends SubsystemBase {
 		});
 	}
 
+	public Command extendHopperManual() {
+		return startEnd(() -> {
+			hopperExtender.set(HopperConstants.HOPPER_MANUAL_SPEED);
+		}, () -> {
+			hopperController.setSetpoint(hopperExtender.getEncoder().getPosition(), ControlType.kMAXMotionPositionControl);
+			hopperExtender.set(0.0);
+		});
+	}
+
+	public Command retractHopperManual() {
+		return startEnd(() -> {
+			hopperExtender.set(-0.1);
+		}, () -> {
+			hopperController.setSetpoint(hopperExtender.getEncoder().getPosition(), ControlType.kMAXMotionPositionControl);
+			hopperExtender.set(0.0);
+		});
+	}
+
+	public Command retractHopperFullNoSpin() {
+		return runOnce(() -> {
+			hopperController.setSetpoint(HopperConstants.HOPPER_RETRACTED_POSITION, ControlType.kMAXMotionPositionControl);
+		});
+	}
+
 	public boolean hopperHome() {
 		return hopperController.getSetpoint() == HopperConstants.HOPPER_RETRACTED_POSITION && hopperController.isAtSetpoint();
 	}
@@ -116,8 +142,8 @@ public class HopperSubsytem extends SubsystemBase {
 		private final MutLinearVelocity m_velocity = MetersPerSecond.mutable(0);
 
 		private final VelocityUnit<VoltageUnit> voltsPerSecond = Volts.per(Seconds);
-		private final Velocity<VoltageUnit> rampRate = voltsPerSecond.of(0.2);
-		private final Voltage dynamicVoltage = Volts.of(1.307);
+		private final Velocity<VoltageUnit> rampRate = voltsPerSecond.of(0.5);
+		private final Voltage dynamicVoltage = Volts.of(3.0);
 		private final Time runTime = Seconds.of(30.0);
 
 		// Creates a SysIdRoutine
@@ -167,7 +193,9 @@ public class HopperSubsytem extends SubsystemBase {
 		sysId.ifPresent(sysid -> sysid.configureSendables());
 
 		//Testing
-		SmartDashboard.putData("Extend Hopper PIDF", extendHopper());
-		SmartDashboard.putData("Retract Hopper PIDF", retractHopper(() -> null));
+		SmartDashboard.putData("Extend Hopper PIDF", extendHopperFull());
+		SmartDashboard.putData("Retract Hopper PIDF", retractHopperFullNoSpin());
+		SmartDashboard.putData("Extend Hopper Manual", extendHopperManual());
+		SmartDashboard.putData("Retract Hopper Manual", retractHopperManual());
 	}
 }

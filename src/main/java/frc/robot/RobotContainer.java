@@ -7,6 +7,7 @@ import java.util.Optional;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -36,7 +37,7 @@ public class RobotContainer {
         agitator.setDefaultCommand(agitator.dontBreakTheKicker());
 
         //If turret misbehaves
-        fuelAiming.setDefaultCommand(fuelAiming.telemetry(() -> swerveDriveTrain.getPose()));
+        fuelAiming.setDefaultCommand(fuelAiming.timeOut());
 
         configureBindings();
 
@@ -49,10 +50,11 @@ public class RobotContainer {
         ControlInputs.componentsBoard1.button(InputConstants.SHOOT_FUEL).whileTrue(fuelShooter.shootFuelVarSpeed(() -> swerveDriveTrain.getPose()).alongWith(agitator.agitateIn()));
         ControlInputs.componentsBoard1.button(InputConstants.INTAKE_OUT).whileFalse(fuelIntake.intakeFuelOut().alongWith(agitator.agitateOut()));
         ControlInputs.componentsBoard1.button(InputConstants.INTAKE_IN).whileFalse(fuelIntake.intakeFuelIn());
-        ControlInputs.componentsBoard1.button(InputConstants.EXTEND_HOPPER).whileTrue(hopper.extendHopper());
-        ControlInputs.componentsBoard1.button(InputConstants.RETRACT_HOPPER).whileTrue(hopper.retractHopper(() -> agitator.spinner));
+        ControlInputs.componentsBoard1.button(InputConstants.EXTEND_HOPPER).whileTrue(hopper.extendHopperFull());
+        ControlInputs.componentsBoard1.button(InputConstants.RETRACT_HOPPER).whileTrue(hopper.retractHopperFull(() -> agitator.spinner));
         ControlInputs.componentsBoard1.button(InputConstants.CLIMBER_DOWN).and(ControlInputs.componentsBoard2.button(InputConstants.MANUAL_SWITCH)).whileTrue(climber.climberDownManual());
         ControlInputs.componentsBoard1.button(InputConstants.CLIMBER_UP).and(ControlInputs.componentsBoard2.button(InputConstants.MANUAL_SWITCH)).whileTrue(climber.climberUpManual());
+        ControlInputs.componentsBoard2.button(InputConstants.MANUAL_SWITCH).whileFalse(fuelAiming.automaticAimRoutine(() -> swerveDriveTrain.getPose()));
         ControlInputs.componentsBoard2.button(InputConstants.MANUAL_HOOD_UP).and(ControlInputs.componentsBoard2.button(InputConstants.MANUAL_SWITCH)).whileTrue(fuelAiming.manualHoodControlUp());
         ControlInputs.componentsBoard2.button(InputConstants.MANUAL_HOOD_DOWN).and(ControlInputs.componentsBoard2.button(InputConstants.MANUAL_SWITCH)).whileFalse(fuelAiming.manualHoodControlDown());
         ControlInputs.componentsBoard2.button(InputConstants.MANUAL_TURRET_CCW).and(ControlInputs.componentsBoard2.button(InputConstants.MANUAL_SWITCH)).whileTrue(fuelAiming.manualTurretControlCCW());
@@ -71,6 +73,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("Intake Fuel", fuelIntake.intakeFuelIn());
         NamedCommands.registerCommand("'Barf' Fuel", fuelIntake.intakeFuelOut());
         NamedCommands.registerCommand("Brake Mode", swerveDriveTrain.brake());
+        NamedCommands.registerCommand("Stop Intake", fuelIntake.stopIntake());
     }
 
     /**

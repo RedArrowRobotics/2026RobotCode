@@ -62,6 +62,7 @@ public class FuelAimingSubsystem extends SubsystemBase {
 	private boolean turretSetpointWithinRange;
 	private boolean hoodSetpointWithinRange;
 	private double turretOffset = 0.0;
+	private final Rotation2d pi = new Rotation2d(Math.PI);
 	
 	public final Optional<SysIdTurret> sysIdTurret;
     public final Optional<SysIdHood> sysIdHood;
@@ -202,9 +203,9 @@ public class FuelAimingSubsystem extends SubsystemBase {
 				case Blue -> robotPose.get().getX() < allianceZoneLine.getX();
 				case Red -> robotPose.get().getX() > allianceZoneLine.getX();
 			};
-			thetaToHub = Math.atan((hubPosition.getY() - robotPose.get().getY()) /
+			thetaToHub = Math.atan2((hubPosition.getY() - robotPose.get().getY()),
 								   (hubPosition.getX() - robotPose.get().getX()));
-			degreeToHubRelativeToRobot = (thetaToHub * (180/Math.PI)) - robotPose.get().getRotation().getDegrees();
+			degreeToHubRelativeToRobot = (thetaToHub * (180/Math.PI)) - robotPose.get().getRotation().rotateBy(pi).getDegrees();
 			distanceToHub = hubPosition.getDistance(robotPose.get().getTranslation());
 		});
 	}
@@ -216,14 +217,12 @@ public class FuelAimingSubsystem extends SubsystemBase {
 				case Red -> robotPose.get().getX() > allianceZoneLine.getX();
 			};
 			//Turret Control
-			thetaToHub = Math.atan((hubPosition.getY() - robotPose.get().getY()) /
+			thetaToHub = Math.atan2((hubPosition.getY() - robotPose.get().getY()),
 								   (hubPosition.getX() - robotPose.get().getX()));
-			degreeToHubRelativeToRobot = (thetaToHub * (180/Math.PI)) - robotPose.get().getRotation().getDegrees(); /*Convert from radians to degrees and subtract yaw of the robot*/
-			if(degreeToHubRelativeToRobot > 90) {
-				degreeToHubRelativeToRobot  = 90;
+			degreeToHubRelativeToRobot = (thetaToHub * (180/Math.PI)) - robotPose.get().getRotation().rotateBy(pi).getDegrees(); /*Convert from radians to degrees and subtract yaw of the robot*/
+			if(degreeToHubRelativeToRobot > 180) {
 				turretSetpointWithinRange = false;
-			} else if(degreeToHubRelativeToRobot < -90) {
-				degreeToHubRelativeToRobot = -90;
+			} else if(degreeToHubRelativeToRobot < -180) {
 				turretSetpointWithinRange = false;
 			} else {
 				turretSetpointWithinRange = true;
@@ -256,7 +255,7 @@ public class FuelAimingSubsystem extends SubsystemBase {
 			   } else {
 				hoodController.setSetpoint(0.0, ControlType.kMAXMotionPositionControl);
 			   }
-		});
+			});
 	}
 
 	public Command increaseTurretOffset() {
@@ -399,7 +398,7 @@ public class FuelAimingSubsystem extends SubsystemBase {
 		builder.addDoubleProperty("Turret Encoder", () -> turretRotator.getEncoder().getPosition(), null);
 		builder.addDoubleProperty("Turret Power", () -> turretRotator.get(), null);
 		builder.addDoubleProperty("Turret Voltage", () -> turretRotator.getAppliedOutput(), null);
-		builder.addDoubleProperty("Turret Setpoint", () -> turretController.getSetpoint(), null);
+		builder.addDoubleProperty("Turret Setpoint", () -> degreeToHubRelativeToRobot * FuelAimingConstants.DEGREES_TO_ROTATIONS, null);
 		builder.addDoubleProperty("Turret Velocity", () -> turretRotator.getEncoder().getVelocity(), null);
 		builder.addBooleanProperty("Turret Setpoint Within Range", () -> turretSetpointWithinRange, null);
 		builder.addBooleanProperty("Turret At Setpoint", () -> hoodController.isAtSetpoint(), null);
@@ -424,6 +423,8 @@ public class FuelAimingSubsystem extends SubsystemBase {
 		
 		sysIdTurret.ifPresent(sysid -> sysid.configureSendables());
 		sysIdHood.ifPresent(sysid -> sysid.configureSendables());
+
+		builder.addStringProperty("Alliance Color", () -> DriverStation.getAlliance().get().toString(), null);
 
 		SmartDashboard.putData("Turret Offset CCW", increaseTurretOffset());
 		SmartDashboard.putData("Turret Offset CW", decreaseTurretOffset());

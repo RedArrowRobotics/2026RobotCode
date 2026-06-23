@@ -29,6 +29,12 @@ public class FuelIntakeSubsystem extends SubsystemBase {
 		});
 	}
 
+	public Command stopIntake() {
+		return runOnce(() -> {
+			intakeBar.set(0.0);
+		});
+	}
+
 	@Override
 	public void initSendable(SendableBuilder builder) {
 		super.initSendable(builder);
