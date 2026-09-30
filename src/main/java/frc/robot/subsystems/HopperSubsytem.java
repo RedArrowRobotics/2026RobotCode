@@ -119,7 +119,7 @@ public class HopperSubsytem extends SubsystemBase {
 
 	public Command retractHopperManual() {
 		return startEnd(() -> {
-			hopperExtender.set(-0.1);
+			hopperExtender.set(-2 * HopperConstants.HOPPER_MANUAL_SPEED);
 		}, () -> {
 			hopperController.setSetpoint(hopperExtender.getEncoder().getPosition(), ControlType.kMAXMotionPositionControl);
 			hopperExtender.set(0.0);

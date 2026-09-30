@@ -155,7 +155,7 @@ public final class Constants {
     public final class AgitatorConstants {
         public static final double BELT_SPEED = 1.0;
         public static final double KICK_SPEED = 0.5;
-        public static final double KICK_RPM = 4000;
+        public static final double KICK_RPM = 2000;
         public static final double SPIN_SPEED = 1.0;
     }
     
@@ -193,7 +193,7 @@ public final class Constants {
     public final class HopperConstants {
         public static final double HOPPER_MANUAL_SPEED = 0.1;
 
-        public static final double HOPPER_EXTENDED_POSITION = 100;
+        public static final double HOPPER_EXTENDED_POSITION = 120;
         public static final double HOPPER_RETRACTED_POSITION = 0.0;
     }
 

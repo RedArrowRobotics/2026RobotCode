@@ -62,6 +62,7 @@ public class FuelAimingSubsystem extends SubsystemBase {
 	private boolean turretSetpointWithinRange;
 	private boolean hoodSetpointWithinRange;
 	private double turretOffset = 0.0;
+	private double closestMaximum = 0.0;
 	private final Rotation2d pi = new Rotation2d(Math.PI);
 	
 	public final Optional<SysIdTurret> sysIdTurret;
@@ -220,18 +221,22 @@ public class FuelAimingSubsystem extends SubsystemBase {
 			thetaToHub = Math.atan2((hubPosition.getY() - robotPose.get().getY()),
 								   (hubPosition.getX() - robotPose.get().getX()));
 			degreeToHubRelativeToRobot = (thetaToHub * (180/Math.PI)) - robotPose.get().getRotation().rotateBy(pi).getDegrees(); /*Convert from radians to degrees and subtract yaw of the robot*/
-			if(degreeToHubRelativeToRobot > 180) {
+			if(degreeToHubRelativeToRobot > 120) {
 				turretSetpointWithinRange = false;
-			} else if(degreeToHubRelativeToRobot < -180) {
+				closestMaximum = 120.0;
+			} else if(degreeToHubRelativeToRobot < -120) {
 				turretSetpointWithinRange = false;
+				closestMaximum = -120.0;
 			} else {
 				turretSetpointWithinRange = true;
 			}
-			if(inAllianceZone && turretSetpointWithinRange) {
-				turretController.setSetpoint((degreeToHubRelativeToRobot + turretOffset) * FuelAimingConstants.DEGREES_TO_ROTATIONS, ControlType.kMAXMotionPositionControl);
-				turretHeading = new Pose2d(robotPose.get().getX(), robotPose.get().getY(), Rotation2d.fromDegrees(degreeToHubRelativeToRobot));
-			} else {
-				turretRotator.set(0.0);
+			if(inAllianceZone) {
+				if(turretSetpointWithinRange) {
+					turretController.setSetpoint((degreeToHubRelativeToRobot + turretOffset) * FuelAimingConstants.DEGREES_TO_ROTATIONS, ControlType.kMAXMotionPositionControl);
+					turretHeading = new Pose2d(robotPose.get().getX(), robotPose.get().getY(), Rotation2d.fromDegrees(degreeToHubRelativeToRobot));
+				} else {
+					turretController.setSetpoint((closestMaximum + turretOffset) * FuelAimingConstants.DEGREES_TO_ROTATIONS, ControlType.kMAXMotionPositionControl);
+				}
 			}
 			
 			//Hood Control
